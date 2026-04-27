@@ -6,6 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-04-27
+
+### Added — Solana cluster + per-chain compatibility schema (closes task #167)
+- **`schema/clusters.schema.json`** — new schema. Tracks the upstream Solana version on each cluster Rome targets (mainnet, devnet) plus an optional `romeNodeVersion` and `featureSet`. Captures the principle that Rome explicitly does NOT target Solana testnet — Rome's testnet rollups settle to Solana devnet.
+- **`solana/clusters.json`** — new data file. Initial snapshot 2026-04-27: mainnet at solana-core 3.1.13, devnet at 4.0.0-beta.6 (Rome's own RPC running ahead at 4.0.0-beta.7 testing the next devnet release). Verified directly by querying `https://api.mainnet-beta.solana.com` and `https://api.devnet.solana.com`'s `getVersion`.
+- **`schema/chain.schema.json`** — added optional `solana` block per chain: `cluster` (mainnet | devnet — no testnet), optional `tested.{version, verifiedAt, notes}`, optional `romeRpcUrl`, optional `romeNodeVersion`. Schema-evolution: minor bump (additive).
+- **All 4 existing chains backfilled.** marcus / subura / esquiline / maximus — each declares `solana.cluster: "devnet"` and `solana.tested.version: "4.0.0-beta.6"` (verified 2026-04-27). All four chains run against Rome's `4.0.0-beta.7` node.
+
+### Why
+The Rome stack rolls out coordinated upgrades across off-chain services (proxy, hercules, rhea, op-geth) and the Solana node software they depend on. When Solana ships a mainnet upgrade, Rome's services need to be **already tested compatible** before users feel it. The cluster registry plus per-chain `tested` block gives:
+- A single canonical reference for what version each chain has been verified against.
+- A drift-detection input: CI can compare a chain's `tested.version` to `solana/clusters.json`'s `romeNodeVersion` and warn when Rome's node is moving faster than chain verifications.
+- Documentation for partners (self-hosted operators) about which Solana version their stack should target before a Rome image upgrade.
+
+### Verification (this PR)
+- All 4 chains' `solana.cluster: "devnet"` matches reality: each `rpcUrl` points at `*.devnet.romeprotocol.xyz/`, and the bridge contracts in `bridge.json` reference Solana devnet program IDs.
+- Upstream Solana versions verified directly via `getVersion` against both public clusters at the time of snapshot.
+- `npm test`: 24 tests, 4 files passed (clusters schema fixture verified).
+- `npm run validate`: 42 files passed (4 chains × 8 files + assets + protocols + 2 program files + clusters.json + new fixture).
+
+### Released — 0.2.x track
+
 ### Added — On-chain liveness probe (closes task #160)
 - `tools/liveness.ts` replaces the v0.1 stub. For every chain in `chains/<id-slug>/`, runs per-kind verification per `docs/VERIFICATION_RULES.md`:
   - **kind: gas** — re-derives `sol_wallet` PDA + ATA, verifies on-chain pool's mint and token-account-level owner.

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rome-protocol.github.io/registry/schema/clusters.schema.json",
+  "title": "Solana cluster registry — versions Rome targets",
+  "description": "Tracks the upstream Solana versions on the two clusters Rome cares about (mainnet, devnet). Rome explicitly does NOT target Solana testnet — Rome's testnet rollups settle to Solana devnet. Live data lives at solana/clusters.json. Updated whenever Solana ships a new release on either cluster, ideally before Rome's own RPC nodes upgrade so we have a tested-compatible reference point.",
+  "type": "object",
+  "required": ["clusters"],
+  "additionalProperties": false,
+  "properties": {
+    "clusters": {
+      "type": "object",
+      "required": ["mainnet", "devnet"],
+      "additionalProperties": false,
+      "properties": {
+        "mainnet": { "$ref": "#/$defs/cluster" },
+        "devnet":  { "$ref": "#/$defs/cluster" }
+      }
+    }
+  },
+  "$defs": {
+    "cluster": {
+      "type": "object",
+      "required": ["solanaVersion", "rpcUrl", "verifiedAt"],
+      "additionalProperties": false,
+      "properties": {
+        "solanaVersion": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[A-Za-z0-9.]+)?$",
+          "description": "Upstream solana-core version reported by getVersion (e.g. 3.1.13, 4.0.0-beta.6)."
+        },
+        "rpcUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "Public RPC endpoint used to capture the verifiedAt snapshot."
+        },
+        "featureSet": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Optional. The numeric feature-set ID returned alongside solanaVersion. Useful for catching feature-gate flips before client behavior changes."
+        },
+        "verifiedAt": {
+          "type": "string",
+          "format": "date",
+          "description": "ISO-8601 date the snapshot was taken (YYYY-MM-DD)."
+        },
+        "romeNodeVersion": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[A-Za-z0-9.]+)?$",
+          "description": "Optional. Solana version Rome runs on its own RPC nodes for this cluster. Track upstream + Rome side-by-side to catch drift before a coordinated upgrade — Rome ahead of upstream is fine on devnet (testing the next mainnet release); on mainnet it should match upstream once verified."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Free-form context — coordinated rollout windows, known compatibility quirks, blockers."
+        }
+      }
+    }
+  }
+}
