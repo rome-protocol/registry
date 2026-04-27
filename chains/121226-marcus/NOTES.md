@@ -51,9 +51,26 @@ The `tools/liveness.ts` probe (currently a v0.1 stub) implements this check in v
 
 The sol_wallet PDA itself (`GEujTMk…`) shows account-level `owner: SystemProgram` on Solana — because Rome EVM never allocates data on it, it's a signer-only PDA carrying only lamports. The semantic Rome-EVM-ownership is via *PDA derivation*: only the program with the matching ID + the right seeds can sign as that PDA. This is standard Solana for SOL-only wallets used as cross-program signers; not a problem.
 
+## Wrapper verification (on-chain, 2026-04-27)
+
+Per spec [`docs/VERIFICATION_RULES.md`](../../docs/VERIFICATION_RULES.md), every token kind has a verification surface. Marcus's two `spl_wrapper` entries verified:
+
+- **WUSDC** at `0x1f7dfaf9444d46fc10b4b4736d906da5caf46195`:
+  - `eth_getCode` → contract exists ✓
+  - `mint_id()` → `4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU` ✓ matches USDC
+  - `decimals()` → 6 ✓
+  - `symbol()` → `wUSDC` (lowercase). Registry uses `WUSDC` per the capital-W convention; on-chain bytecode discrepancy. Next wrapper redeploy should align.
+- **WETH** at `0x3d81cb32d32b917a1ba3778832536cbf63c3cc15`:
+  - `eth_getCode` → contract exists ✓
+  - `mint_id()` → `6F5YWWrUMNpee8C6BDUc6DmRvYRMDDTgJHwKhbXuifWs` ✓ matches Wormhole-wrapped ETH on Solana devnet
+  - `decimals()` → **8** ✓ (Wormhole-wrapped tokens truncate to 8 decimals on the Solana side to fit u64; the wrapper inherits. Asset catalog `assets/eth.json` has 18 — this divergence is a Wormhole convention, captured in tokens.json as `decimals: 8`)
+  - `symbol()` → `WETH` ✓ matches registry
+
 ## Known caveats
 - Marcus is throwaway and a chain-id rotation is planned. Use the rotation flow in `tools/add-chain.ts --copy-from` when the new chain id is known.
 - The pre-fix wrappers at `0x6ed2944b…` (USDC) and `0x3e52cfb3…` (WETH) carry pre-PR-#63 bytecode that reverts on transfer to fresh recipients. **They are not the canonical entries here and should not be used by integrators.** Tracked but not surfaced in `contracts.json`.
+- WUSDC's on-chain `symbol()` returns lowercase `wUSDC`; the registry uses canonical `WUSDC`. Discrepancy is informational; next wrapper redeploy aligns.
+- WETH's decimals (8) intentionally diverge from the canonical ETH asset catalog (18) due to Wormhole's u64 truncation. Per `docs/VERIFICATION_RULES.md` §"Catalog–per-chain consistency rule" this is a legitimate override and CI should warn but not fail.
 
 ## Contacts
 - Ops: @rome-protocol/ops-team
