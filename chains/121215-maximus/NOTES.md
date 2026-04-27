@@ -1,10 +1,10 @@
 # Rome Maximus — 121215
 
 ## Deploy history
-- 2026-04-14 — initial deploy. Single-state mode. Co-located with the rome-via block-explorer service on the same VM.
+- 2026-04-14 — initial deploy. Single-state mode.
 
 ## Why this exists
-**Meta-Hook E2E testing** rollup. Runs a custom Rome EVM program (`CX3vRqzv1y7EEf3zr7myXz7UnwJMf2GiP1fUZZpVynSs`) from the `fix-meta-hook-data` branch — distinct from the canonical shared program used by Marcus / Subura / Esquiline (`DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3`). Meta-Hook Router on Solana: `H3q3...`.
+**Meta-Hook E2E testing** rollup. Runs a custom Rome EVM program (`CX3vRqzv1y7EEf3zr7myXz7UnwJMf2GiP1fUZZpVynSs`) for meta-hook integration testing — distinct from the canonical shared program used by Marcus / Subura / Esquiline (`DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3`). Meta-Hook Router on Solana: `H3q3...`.
 
 Internal use only. Not partner-facing.
 

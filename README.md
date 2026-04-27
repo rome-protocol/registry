@@ -8,9 +8,9 @@ Canonical chain, contract, and token metadata for the Rome Protocol ecosystem.
 
 | Chain ID | Name | Network | Status | Gas | Mode | Notes |
 |---|---|---|---|---|---|---|
-| 121215 | [Rome Maximus](chains/121215-maximus/) | devnet | live | SOL (no SPL) | single-state | Custom rome-evm program (meta-hook test branch) |
+| 121215 | [Rome Maximus](chains/121215-maximus/) | devnet | live | SOL (no SPL) | single-state | Custom rome-evm program for meta-hook integration testing |
 | 121222 | [Rome Subura](chains/121222-subura/) | devnet | live | RSOL (`Hpur18Q…`) | single-state | Internal devnet; oracle deployed; non-canonical gas mint |
-| 121225 | [Rome Esquiline](chains/121225-esquiline/) | devnet | live | USDC (`4zMMC9…`) | single-state | First K8s-deployed L2; oracle deployed |
+| 121225 | [Rome Esquiline](chains/121225-esquiline/) | devnet | live | USDC (`4zMMC9…`) | single-state | Containerized L2; oracle deployed |
 | 121226 | [Rome Marcus](chains/121226-marcus/) | testnet | live | USDC (`4zMMC9…`) | single-state | Bridge Phase 1 + oracle; primary integration target |
 
 ## How to consume
@@ -52,7 +52,7 @@ const usdcAsset = getAsset("USDC");
 | `solana/programs/` | Solana program IDs (mainnet, devnet) — SPL Token, ATA, Wormhole, CCTP |
 | `schema/` | JSON-Schemas (draft-2020-12) for every file shape |
 | `tools/` | CLI scaffolder, drift-check library, validation, type generation |
-| `docs/` | Plans, contributing guide, schema-versioning policy |
+| `docs/` | Contributing guide, schema-versioning policy, registration architecture, verification rules |
 
 ## Token kinds
 
@@ -75,7 +75,8 @@ See [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md). Two registration paths:
 
 ## Spec
 
-Design at [`rome-specs/active/technical/2026-04-27-rome-registry-design.md`](https://github.com/rome-protocol/rome-specs/blob/main/active/technical/2026-04-27-rome-registry-design.md).
+- Design: [`rome-specs/active/technical/2026-04-27-rome-registry-design.md`](https://github.com/rome-protocol/rome-specs/blob/main/active/technical/2026-04-27-rome-registry-design.md)
+- v0.1 implementation plan (archived): [`rome-specs/archive/technical/rome-registry-v0.1-plan.md`](https://github.com/rome-protocol/rome-specs/blob/main/archive/technical/rome-registry-v0.1-plan.md)
 
 ## License
 

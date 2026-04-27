@@ -151,3 +151,23 @@ npm run codegen         # regenerate tools/types.ts from schemas (run after sche
 ```
 
 The `prepublishOnly` script runs codegen + tsc before any `npm publish`, so the published NPM package always carries fresh types.
+
+## NOTES.md style — what to keep public
+
+Each chain's `NOTES.md` is a public document read by external integrators. Keep it focused on what they need to integrate; keep operator-side context out:
+
+**Do include:**
+- Deploy history with public commit / PR links and on-chain addresses
+- Why the chain exists, who it's for ("internal devnet", "primary integration target")
+- Symbol conventions and any subtleties that affect contract calls
+- Known caveats integrators should be aware of (e.g., wrapper-decimals divergence, non-canonical gas mint)
+- Verified on-chain values (PDAs, pools, balances) with derivation
+
+**Don't include:**
+- Operator-side repo paths or file paths — abstract them ("the operator deploy registry", "the Rome EVM program's PDA derivation")
+- Internal feature-branch names (use the program ID and a neutral description)
+- Cloud-provider-specific topology (namespace names, Helm chart paths, monitoring stack details, VM co-location)
+- Strategic timing or roadmap commentary ("first deploy of X before partner chains land", "throwaway and rotation planned")
+- @-handles of specific team members, or internal task tracker IDs
+
+The principle: a public NOTES.md should leave external readers with everything they need to integrate without revealing operator topology or internal planning. If a fact would help a competitor or a threat actor more than it would help an integrator, it belongs in operator-side docs, not here.

@@ -8,21 +8,21 @@ When a partner registers a new chain on Rome stack, data lands in four distinct 
 ┌────────────────────────────────────────────────────────────────┐
 │ Layer 1 — On-chain (Solana, immutable)                         │
 │   Rome EVM program OwnerInfo PDA + sol_wallet gas-pool ATA     │
-│   Source: rome-evm-private/program/src/api/reg_owner.rs        │
+│   Source: Rome EVM program — `reg_owner` instruction           │
 └────────────────────────────────────────────────────────────────┘
                             ▲ (one-shot, signed by registration_key)
                             │
 ┌────────────────────────────────────────────────────────────────┐
-│ Layer 2 — Operator (rome-ops Ansible registry)                 │
+│ Layer 2 — Operator (automation deploy registry)                   │
 │   services, infrastructure, image tags, health, deployment mode│
-│   Source: rome-ops/ansible/deployments/registry.json           │
+│   Source: operator-side deploy registry (private)              │
 └────────────────────────────────────────────────────────────────┘
                             ▲ (provisioning workflow)
                             │
 ┌────────────────────────────────────────────────────────────────┐
 │ Layer 3 — Sovereign Portal DB (Postgres, partner-private)      │
 │   Submission state, audit log, contacts, use case, jurisdictions│
-│   Source: rome-sovereign-portal/prisma/schema.prisma           │
+│   Source: Sovereign Portal database schema (private)           │
 │   Status: WIP — schema may evolve                              │
 └────────────────────────────────────────────────────────────────┘
                             ▲ (partner-driven Wizard)
@@ -56,9 +56,9 @@ The `reg_owner` instruction must be signed by `registration_key::ID` (Rome-contr
 
 **This is the only immutable record.** Layers 2–4 can be re-derived or rewritten; Layer 1 cannot without a migration.
 
-## Layer 2 — what lives in Ansible (operator-side)
+## Layer 2 — what lives in automation (operator-side)
 
-Per-chain `rome-ops/ansible/deployments/registry.json` entry. Operator-private (cloud creds, server IPs not for public consumption):
+Per-chain entry in the operator-side deploy registry (private). Operator-private (cloud credentials, server IPs not for public consumption):
 
 - `chain_id`, `rollup_name`, `environment`
 - `mode` — `single_state` or `dual` (matches on-chain `single_state`)
@@ -70,7 +70,7 @@ Per-chain `rome-ops/ansible/deployments/registry.json` entry. Operator-private (
 - `gas_pricing` — `meteora_pool`, `type` (operator hint; canonical version surfaces in Layer 4 `gasPricing.json`)
 - `deployed_at`, `deployed_by`, `status`, `last_health_check`, `notes`
 
-**Per-entry additions** (landed in rome-ops PR #69):
+**Per-entry additions:**
 - `deployment_mode` — three values:
   - `internal` — Rome team operates this rollup for our own use (testing, integration, dev). **Not partner-facing.** All current production rollups (testrollup, subura, maximus, marcus, esquiline) are `internal`.
   - `full_service` — Rome runs validator + Hercules + proxy on behalf of a partner. Partner submitted via Sovereign Portal.
@@ -79,7 +79,7 @@ Per-chain `rome-ops/ansible/deployments/registry.json` entry. Operator-private (
 
 ## Layer 3 — what lives in the Sovereign Portal DB
 
-`Submission.data` is a JSON blob conforming to `lib/validation/wizard-schema.ts`. Partner-private until approved:
+`Submission.data` is a JSON blob conforming to the portal's wizard schema. Partner-private until approved:
 
 **Always private (never leaves Layer 3):**
 - Contact info: `email`, `twitter`, `telegram`, `discord`, `website`
