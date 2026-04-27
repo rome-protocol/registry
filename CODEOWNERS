@@ -1,0 +1,20 @@
+# CODEOWNERS — see spec §Permissions for rationale.
+# Production-chain chain.json edits require two ops-team approvals
+# (configured via GitHub branch protection, not in this file).
+
+chains/*/chain.json              @rome-protocol/ops-team
+chains/*/contracts.json          @rome-protocol/protocol-team
+chains/*/tokens.json             @rome-protocol/protocol-team @rome-protocol/community-leads
+chains/*/bridge.json             @rome-protocol/protocol-team
+chains/*/oracle.json             @rome-protocol/protocol-team
+chains/*/endpoints.json          @rome-protocol/ops-team
+chains/*/operationalLimits.json  @rome-protocol/ops-team
+chains/*/NOTES.md                @rome-protocol/ops-team @rome-protocol/protocol-team
+abis/                            @rome-protocol/protocol-team
+assets/                          @rome-protocol/protocol-team @rome-protocol/community-leads
+protocols/                       @rome-protocol/protocol-team
+solana/                          @rome-protocol/protocol-team
+schema/                          @rome-protocol/protocol-team @rome-protocol/ops-team
+tools/                           @rome-protocol/protocol-team
+docs/                            @rome-protocol/ops-team @rome-protocol/protocol-team
+*                                @rome-protocol/protocol-team
