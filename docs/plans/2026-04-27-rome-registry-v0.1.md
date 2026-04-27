@@ -1251,6 +1251,23 @@ Expected: returns the Marcus chain.json content.
 
 ---
 
+## Phase 5 — Sovereign Portal integration (post-portal-completion)
+
+Out of scope for v0.1 (the portal is WIP); captured here so the work is tracked and the contract is clear.
+
+The four-layer registration architecture is documented in [`docs/REGISTRATION_ARCHITECTURE.md`](../REGISTRATION_ARCHITECTURE.md). When the Sovereign Portal completes, the Phase 5 work formalizes the handoffs:
+
+| Owner | Task | Tracked as |
+|---|---|---|
+| **@sanjeevkkansal (rome-ops)** | Extend `rome-ops/ansible/deployments/registry.json` with `deployment_mode` (full_service / self_hosted) + `sovereign_submission_id`. Backfill existing chains. | #162 |
+| **@sanjeevkkansal (rome-ops)** | Document the operator runbook for new-chain bring-up via portal flow (admin approves → ops signs reg_owner → ops runs add-chain → registry PR opened). Lives in rome-ops repo. | #163 |
+| **Sovereign Portal team** | Define + lock the deployment-artifact JSON shape that feeds `tools/add-chain.ts --deployments-from` (or expose a portal API endpoint). | #164 |
+| **Sovereign Portal team** | Annotate Submission.data fields with destination-layer markers (Layer 1 / 2 / 3-only / 4). Implement admin-export filter so Layer 3-only fields never leak into Layer 4. Add unit test for the boundary. | #165 |
+| **@anil (this repo)** | Add `provenance` block to `chain.json` schema (registrationSlot, registrationTx, deploymentMode, sovereignSubmissionId). Schema bump = minor version. | #161 |
+| **@anil (validation)** | End-to-end test the architecture with the first real partner registration. Verify each layer behaves as documented; capture field-mapping gaps as follow-ups. | #166 |
+
+Phase 5 doesn't block Phase 1–4 (the registry is functional for Rome-team-operated chains right now). Phase 5 unlocks partner-driven onboarding at scale once the portal is live.
+
 ## Self-review
 
 Spec coverage check (§ section in spec → task in plan):
