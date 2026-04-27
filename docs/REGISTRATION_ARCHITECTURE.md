@@ -70,9 +70,12 @@ Per-chain `rome-ops/ansible/deployments/registry.json` entry. Operator-private (
 - `gas_pricing` — `meteora_pool`, `type` (operator hint; canonical version surfaces in Layer 4 `gasPricing.json`)
 - `deployed_at`, `deployed_by`, `status`, `last_health_check`, `notes`
 
-**Recommended additions** (separate task):
-- `deployment_mode` — `full_service` (Rome runs everything) or `self_hosted` (partner runs validator + node)
-- `sovereign_submission_id` — link back to Layer 3 portal record
+**Per-entry additions** (landed in rome-ops PR #69):
+- `deployment_mode` — three values:
+  - `internal` — Rome team operates this rollup for our own use (testing, integration, dev). **Not partner-facing.** All current production rollups (testrollup, subura, maximus, marcus, esquiline) are `internal`.
+  - `full_service` — Rome runs validator + Hercules + proxy on behalf of a partner. Partner submitted via Sovereign Portal.
+  - `self_hosted` — Partner runs everything; Rome only stamps the on-chain registration via the Rome-controlled `registration_key`.
+- `sovereign_submission_id` — `string | null` back-link to the Layer 3 portal record. `null` for `internal` rollups (no partner).
 
 ## Layer 3 — what lives in the Sovereign Portal DB
 
