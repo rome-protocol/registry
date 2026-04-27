@@ -1,0 +1,40 @@
+{
+  "name": "@rome-protocol/registry",
+  "version": "0.1.0-pre",
+  "description": "Canonical chain, contract, and token metadata for the Rome Protocol ecosystem",
+  "license": "MIT",
+  "repository": "github:rome-protocol/registry",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "chains",
+    "assets",
+    "abis",
+    "protocols",
+    "solana",
+    "schema"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "validate": "tsx tools/validate.ts",
+    "drift-check": "tsx tools/drift-check.ts",
+    "add-chain": "tsx tools/add-chain.ts",
+    "codegen": "tsx tools/codegen.ts",
+    "prepare": "npm run codegen && npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "ajv": "^8.17.0",
+    "ajv-formats": "^3.0.0",
+    "bs58": "^6.0.0",
+    "json-schema-to-typescript": "^15.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "viem": "^2.27.0",
+    "vitest": "^3.2.0",
+    "yaml": "^2.6.0"
+  }
+}
