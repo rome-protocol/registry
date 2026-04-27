@@ -20,12 +20,14 @@
     "build": "tsc",
     "test": "vitest run",
     "validate": "tsx tools/validate.ts",
+    "liveness": "tsx tools/liveness.ts",
     "drift-check": "tsx tools/drift-check.ts",
     "add-chain": "tsx tools/add-chain.ts",
     "codegen": "tsx tools/codegen.ts",
     "prepublishOnly": "npm run codegen && npm run build"
   },
   "devDependencies": {
+    "@solana/web3.js": "^1.98.4",
     "@types/node": "^22.0.0",
     "ajv": "^8.17.0",
     "ajv-formats": "^3.0.0",
