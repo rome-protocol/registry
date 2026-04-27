@@ -80,6 +80,17 @@ gh pr create
 - **`previousChainId` cross-link** lets consumers walk the chain rotation history.
 - **Top-level catalogs** (`assets/`, `abis/`, `protocols/`, `solana/programs/`) grow monotonically — you only ever ADD; never remove. Logo updates, decimals corrections, etc. go in place via standard PR.
 
+## Curation policy — canonical vs ephemeral
+
+The registry is **curated**. Not every wrapped token a user happens to deploy on a Rome chain belongs here.
+
+| Source | Lives here |
+|---|---|
+| Curated / canonical — gas tokens, partner assets, USDC/ETH/SOL/etc., important community tokens. PR-reviewed. | Registry: `chains/<id>/tokens.json` + `assets/<symbol>.json` |
+| Ad-hoc / ephemeral — anyone calls `ERC20SPLFactory.add_spl_token_no_metadata()`. Permissionless. Indexed via the on-chain `TokenCreated` event. | NOT in registry. The factory address (in `chains/<id>/contracts.json` under name `"ERC20SPLFactory"`) is the discovery point for consumers. |
+
+A token can graduate from ephemeral to canonical via PR (someone curates a popular community token; asset catalog gets a new entry; per-chain `tokens.json` gets a new row). Never automatic. See [`VERIFICATION_RULES.md`](VERIFICATION_RULES.md) §"Curation policy".
+
 ## Adding a token
 
 For a new SPL wrapper or ERC-20 on an existing chain:
@@ -88,6 +99,37 @@ For a new SPL wrapper or ERC-20 on an existing chain:
 2. Edit `chains/<id>/tokens.json` and add the entry.
 3. If the token is gas-kind, the schema requires `mintId` AND `gasPool`. The on-chain liveness probe verifies the gasPool's owner is the Rome EVM program — without that the entry is rejected. See `chains/<id>/NOTES.md` § "Gas token registration" for the rule.
 4. Open a PR.
+
+## Partner L2 — bringing up a new chain on Rome stack
+
+When a partner launches their own L2 with the Rome stack and registers in the registry:
+
+1. **Mint creation** — partner creates an SPL mint on Solana for their gas token. Mainnet for production, devnet for testing. Doesn't need to be Circle USDC; can be any SPL the partner controls.
+
+2. **New asset entry** — if the asset isn't already in `assets/` (USDC, ETH, SOL, BTC, USDT are pre-seeded), add `assets/<symbol>.json` with the brand-level metadata. Use partner-prefixed symbols when there's ambiguity (e.g., `partner-usd.json` for a partner-issued stablecoin distinct from Circle USDC).
+
+3. **Run `add-chain` in fresh mode** with the partner's deployment artifact:
+   ```bash
+   npx @rome-protocol/registry add-chain \
+     --deployments-from <path-to-partner-deployments.json> \
+     --id <partner-chain-id> \
+     --slug <partner-slug> \
+     --name "<Partner Chain>" \
+     --network mainnet \
+     --rpc <partner-rpc>
+   ```
+
+4. **Populate gas entry** in the new `chains/<id>/tokens.json`:
+   - `kind: "gas"`, `mintId: <partner mint>`, `gasPool: <derived>`, `assetRef: <partner asset symbol>`.
+   - The gas-pool derivation rule is the same for every Rome chain — `find_program_address([chainId.to_le_bytes(8), "CONTRACT_SOL_WALLET"], romeEvmProgram)` then ATA against the partner's mint and the SPL Token program. Liveness probe verifies on-chain.
+
+5. **Populate `gasPricing.json`**:
+   - Initially: `{ "type": "default" }` if no pricing pool exists yet. Marcus is in this state today.
+   - Once the partner opens a pricing pool (Meteora / Raydium / Orca / Phoenix / etc.): `{ "type": "<protocol>", "poolAddress": "<pool>", "pair": { "base": "<gas mint>", "quote": "<USDC or SOL>" } }`. Liveness verifies the pool exists, is owned by the correct AMM program, and pairs the gas mint correctly.
+
+6. **Bridge wiring** in `bridge.json` only if the partner's chain participates in CCTP / Wormhole. May not — isolated rollups can skip.
+
+7. **Open the PR.** CODEOWNERS routes to ops + protocol; production-chain entries require two ops-team approvals.
 
 ## Adding a contract version
 

@@ -100,6 +100,60 @@ The asset catalog is the canonical "what is this asset" record. Per-chain entrie
 
 ---
 
+## Gas pricing verification (per-chain `gasPricing.json`)
+
+Every chain has a `chains/<id>/gasPricing.json` capturing how the chain prices gas. Two states:
+
+**`type: "default"`** — chain uses Rome's built-in gas pricing, no external pool. No further on-chain checks; only the schema requirement (must NOT have `poolAddress`). This is Marcus's current state — no Solana devnet pool yet for USDC/SOL.
+
+**Pool-based** — `type: "meteora_damm_v1_pool" | "meteora_damm_v2_pool" | "raydium_amm_v4" | "raydium_clmm" | "raydium_cpmm" | "orca_whirlpool" | "orca_amm_v2" | "phoenix"`. Requires `poolAddress` (Solana base58). Verification:
+
+1. Solana RPC `getAccountInfo(poolAddress)` returns successfully.
+2. Account-level `owner` matches the named protocol's program ID (e.g. for `meteora_damm_v1_pool`, the Meteora DAMM v1 program; for `raydium_clmm`, the Raydium CLMM program; etc.).
+3. If `pair` is set, parse the pool account's mint addresses from its data layout (per-protocol; the probe needs per-protocol parsers) and assert one side equals the chain's gas mint and the other side equals `pair.quote` (typically a pricing reference like SOL or canonical USDC).
+
+Per-protocol pool parsers ship as part of v0.2 implementation. Adding a new pool protocol means: extend the schema enum + add a parser. Schema enum change is a minor version bump per `SCHEMA_VERSIONING.md`.
+
+## Partner L2 guidance
+
+Partners using Rome stack to launch their own L2 follow this flow when registering:
+
+1. **Mint creation**: partner creates an SPL mint on Solana (mainnet for production, devnet for testing). The mint isn't necessarily Circle-issued USDC — could be a partner-specific token, a wrapped form, etc.
+
+2. **New asset entry**: if the asset is partner-specific (not USDC/ETH/SOL/BTC/USDT — already in the catalog), add `assets/<symbol>.json` with the asset's brand-level metadata. Use a clear partner-prefixed symbol where ambiguity is possible (e.g. `partner-usdc.json` if it's a partner-issued stablecoin distinct from Circle USDC).
+
+3. **Chain entry** via `tools/add-chain.ts`:
+   - `chain.json` with the new chainId, RPC, native currency.
+   - `tokens.json` gas entry: `kind: "gas"`, `mintId: <partner mint>`, `gasPool: <derived>`, `assetRef: <partner asset>`. The gas-pool derivation rule is the same as Marcus — `find_program_address([chainId.to_le_bytes(8), "CONTRACT_SOL_WALLET"], romeEvmProgram)` then ATA — independent of which mint or which partner.
+   - `gasPricing.json` with `type: "default"` initially (no pool yet) or with the partner's pool address once their Meteora/Raydium/Orca pool is live.
+
+4. **Pool registration** (when partner opens a pricing pool):
+   - Update `gasPricing.json` to `type: <protocol>` + `poolAddress: <pool>`.
+   - The liveness probe verifies the pool exists, is owned by the correct AMM program, and contains the partner's gas mint on one side.
+
+5. **Bridge wiring** in `bridge.json` if the chain participates in CCTP / Wormhole. May not — partners running an isolated rollup might skip the bridge block.
+
+The verification rules in this document apply unchanged to partner chains. No special-casing.
+
+## Curation policy — what belongs in the registry vs what doesn't
+
+The registry holds **canonical / curated** entries:
+
+- All chains the Rome team or a Rome-stack partner runs. New chains are PR-gated and reviewed.
+- Gas tokens for those chains. Always.
+- Wrapped tokens (`spl_wrapper`) that the Rome team or a partner has deemed canonical for their chain — typically the asset has its own catalog entry (USDC, ETH, SOL, etc.) and is integration-grade.
+- Native ERC-20s (`erc20`) of similar significance — partner governance tokens, well-known DeFi tokens.
+
+The registry does NOT hold ad-hoc / ephemeral entries:
+
+- Anyone can call `ERC20SPLFactory.add_spl_token_no_metadata(mint, name, symbol)` on any chain to deploy a wrapper for an arbitrary SPL mint. The on-chain `TokenCreated` event is what the rome-ui backend's token watcher consumes — that's the discovery mechanism for ephemeral tokens.
+- High-volume, mostly long-tail / experimental, no curation review.
+- Permissionless on-chain; never PR'd to the registry.
+
+Consumers needing the full ephemeral set: subscribe to the chain's factory address (in `chains/<id>/contracts.json` under `name: "ERC20SPLFactory"`). Consumers needing canonical metadata: registry. The two are complementary.
+
+A token can graduate from ephemeral to canonical via PR — someone curates a popular community token, asset catalog gets a new `assets/<symbol>.json`, the per-chain `tokens.json` gets a new entry. Never automatic.
+
 ## Implementation status
 
 - v0.1 (current): static schema validation enforces required fields per kind via JSON-Schema `if/then/else`. Rules above are documented + Marcus's gas pool, WUSDC, and WETH have been manually verified once on-chain.

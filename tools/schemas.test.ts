@@ -7,6 +7,7 @@ import path from "node:path";
 const SCHEMAS = [
   "chain", "contracts", "tokens", "asset", "bridge",
   "oracle", "endpoints", "operationalLimits", "protocol", "programs",
+  "gasPricing",
 ];
 
 const ajv = new Ajv({ allErrors: true, strict: false });

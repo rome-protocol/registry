@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rome-protocol.github.io/registry/schema/gasPricing.schema.json",
+  "title": "Per-chain gas pricing source",
+  "description": "How the chain prices gas. `type: default` means no external pool — Rome uses its built-in pricing. Any pool-based type requires `poolAddress` (Solana base58) and the pool's pair must contain the chain's gas mint on one side and a pricing reference (SOL, USDC, or similar) on the other.",
+  "type": "object",
+  "required": ["type"],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "enum": [
+        "default",
+        "meteora_damm_v1_pool",
+        "meteora_damm_v2_pool",
+        "raydium_amm_v4",
+        "raydium_clmm",
+        "raydium_cpmm",
+        "orca_whirlpool",
+        "orca_amm_v2",
+        "phoenix"
+      ],
+      "description": "default = no external pool; otherwise names the AMM protocol whose pool is read."
+    },
+    "poolAddress": {
+      "type": "string",
+      "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+      "description": "Solana base58 address of the pool. Required when type != 'default'."
+    },
+    "pair": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "base":  { "type": "string", "description": "Mint id (base58) of the chain's gas mint side." },
+        "quote": { "type": "string", "description": "Mint id (base58) of the pricing-reference side (typically USDC, SOL)." }
+      }
+    },
+    "notes": { "type": "string" }
+  },
+  "allOf": [
+    {
+      "if":   { "properties": { "type": { "const": "default" } }, "required": ["type"] },
+      "then": { "not": { "required": ["poolAddress"] } }
+    },
+    {
+      "if":   { "properties": { "type": { "not": { "const": "default" } } }, "required": ["type"] },
+      "then": { "required": ["poolAddress"] }
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+{
+  "type": "default",
+  "notes": "No external pool yet on Solana devnet for USDC/SOL. proxy_track_gas=false; Rome uses default gas pricing. Upgrade once a pool is created."
+}

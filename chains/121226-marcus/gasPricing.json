@@ -1,0 +1,4 @@
+{
+  "type": "default",
+  "notes": "No USDC/SOL Meteora pool on Solana devnet yet. proxy_track_gas=false; chain uses default gas pricing. Upgrade once a pool is created. Sourced from rome-ops/ansible/deployments/registry.json."
+}

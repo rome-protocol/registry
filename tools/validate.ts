@@ -20,6 +20,7 @@ const schemas = {
   operationalLimits: load("schema/operationalLimits.schema.json"),
   protocol: load("schema/protocol.schema.json"),
   programs: load("schema/programs.schema.json"),
+  gasPricing: load("schema/gasPricing.schema.json"),
 };
 
 type Failure = { file: string; errors: string };
@@ -39,6 +40,7 @@ if (existsSync("chains")) {
       ["oracle.json",            "oracle"],
       ["endpoints.json",         "endpoints"],
       ["operationalLimits.json", "operationalLimits"],
+      ["gasPricing.json",        "gasPricing"],
     ] as const) {
       const fp = path.join(dir, filename);
       if (existsSync(fp)) check(fp, schemas[schemaKey]);

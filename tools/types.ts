@@ -81,6 +81,42 @@ export interface PerChainOffChainEndpoints {
   };
 }
 
+/**
+ * How the chain prices gas. `type: default` means no external pool — Rome uses its built-in pricing. Any pool-based type requires `poolAddress` (Solana base58) and the pool's pair must contain the chain's gas mint on one side and a pricing reference (SOL, USDC, or similar) on the other.
+ */
+export type PerChainGasPricingSource = {
+  [k: string]: unknown | undefined;
+} & {
+  /**
+   * default = no external pool; otherwise names the AMM protocol whose pool is read.
+   */
+  type:
+    | "default"
+    | "meteora_damm_v1_pool"
+    | "meteora_damm_v2_pool"
+    | "raydium_amm_v4"
+    | "raydium_clmm"
+    | "raydium_cpmm"
+    | "orca_whirlpool"
+    | "orca_amm_v2"
+    | "phoenix";
+  /**
+   * Solana base58 address of the pool. Required when type != 'default'.
+   */
+  poolAddress?: string;
+  pair?: {
+    /**
+     * Mint id (base58) of the chain's gas mint side.
+     */
+    base?: string;
+    /**
+     * Mint id (base58) of the pricing-reference side (typically USDC, SOL).
+     */
+    quote?: string;
+  };
+  notes?: string;
+};
+
 export interface PerChainOperationalLimitsAndKnownIncidents {
   maxComputeUnitsPerTx?: number;
   maxCpiPerAtomicTx?: number;
@@ -130,10 +166,10 @@ export interface CrossChainBridgeProtocolConstants {
 }
 
 /**
- * Three token kinds, with different ownership semantics:
- *   - gas: an SPL token deposited into a Rome-EVM-owned gas pool. Underlying SPL sits in the pool (chain-wide); user holds an SPL_ERC20 mint on the EVM side. Requires mintId AND gasPool.
- *   - spl_wrapper: user brings an SPL token; underlying SPL stays in the user's PDA (per-user). EVM-side SPL_ERC20 wrapper is a facade. Requires mintId.
- *   - erc20: native EVM ERC-20 deployed on the chain. No SPL side. No mintId, no gasPool.
+ * All three kinds present an EVM ERC-20 surface (transfer, balanceOf, approve). The kind enum captures what is BEHIND that surface — where the value actually lives.
+ *   - gas: An SPL token deposited into a Rome-EVM-owned gas pool. The pool is a Solana account owned by the Rome EVM program, chain-wide (single pool, not per-user). Users acquire a balance by depositing SPL into the pool; the per-user share is ledgered on the EVM side as an ERC-20-like balance. The underlying SPL never leaves the pool. This is what the chain uses as its gas-accounting unit. Requires mintId AND gasPool. NOT a native EVM ERC-20.
+ *   - spl_wrapper: A user-bringable SPL token. The underlying SPL stays in the user's own PDA (per-user, not pooled). The EVM-side SPL_ERC20 wrapper is a facade that performs SPL Token CPIs against the user's PDA. Requires mintId.
+ *   - erc20: A native EVM-deployed ERC-20 contract. No Solana side at all — no mintId, no gasPool, no PDA backing. e.g. a project's governance token deployed by a developer via standard Solidity. Cannot be the chain's gas token (gas requires Solana SPL backing in a Rome-EVM-owned pool).
  */
 export type PerChainCanonicalTokenList = {
   [k: string]: unknown | undefined;
