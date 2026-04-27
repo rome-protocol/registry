@@ -21,7 +21,9 @@
     "test": "vitest run",
     "validate": "tsx tools/validate.ts",
     "drift-check": "tsx tools/drift-check.ts",
-    "add-chain": "tsx tools/add-chain.ts"
+    "add-chain": "tsx tools/add-chain.ts",
+    "codegen": "tsx tools/codegen.ts",
+    "prepublishOnly": "npm run codegen && npm run build"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
