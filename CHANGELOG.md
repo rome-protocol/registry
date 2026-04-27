@@ -43,10 +43,10 @@ The Rome stack rolls out coordinated upgrades across off-chain services (proxy, 
 ## [0.2.0] — 2026-04-27
 
 ### Added
-- **Three new chains seeded** by the v0.2 data sweep, all verified directly from on-chain `OwnerInfo` PDA (not just rome-ops registry, which was stale on subura's gas mint):
+- **Three new chains seeded** by the v0.2 data sweep, all verified directly from the on-chain `OwnerInfo` PDA:
   - `chains/121215-maximus/` — meta-hook E2E test rollup. Custom Rome EVM program (`CX3vRq…`), no SPL gas (SOL-native), no Oracle Gateway deployed.
   - `chains/121222-subura/` — devnet rollup, internal use. Gas mint `Hpur18Q…` (Rome-issued 9-decimal test token, **not in `assets/` catalog** by design — internal). Oracle Gateway V2 deployed. Pre-reset chainId 121211 noted in NOTES.md as retired.
-  - `chains/121225-esquiline/` — first K8s-deployed L2 (GKE Autopilot). USDC gas (same mint as Marcus). Oracle Gateway V2 deployed. Pool balance verified at 90.99 USDC.
+  - `chains/121225-esquiline/` — first containerized L2. USDC gas (same mint as Marcus). Oracle Gateway V2 deployed. Pool balance verified at 90.99 USDC.
 
 ### Changed
 - **`schema/chain.schema.json`** — added optional `solanaProgramId` field. Captures the Rome EVM program ID a chain is registered under. Most chains share `DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3`; meta-hook test branches and partner forks use their own. Schema-evolution: minor bump (additive). All existing chain entries (Marcus) backfilled.

@@ -13,7 +13,7 @@ When a partner registers a new chain on Rome stack, data lands in four distinct 
                             ▲ (one-shot, signed by registration_key)
                             │
 ┌────────────────────────────────────────────────────────────────┐
-│ Layer 2 — Operator (Ansible deploy registry)                   │
+│ Layer 2 — Operator (automation deploy registry)                   │
 │   services, infrastructure, image tags, health, deployment mode│
 │   Source: operator-side deploy registry (private)              │
 └────────────────────────────────────────────────────────────────┘
@@ -56,7 +56,7 @@ The `reg_owner` instruction must be signed by `registration_key::ID` (Rome-contr
 
 **This is the only immutable record.** Layers 2–4 can be re-derived or rewritten; Layer 1 cannot without a migration.
 
-## Layer 2 — what lives in Ansible (operator-side)
+## Layer 2 — what lives in automation (operator-side)
 
 Per-chain entry in the operator-side deploy registry (private). Operator-private (cloud credentials, server IPs not for public consumption):
 

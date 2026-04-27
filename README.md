@@ -10,7 +10,7 @@ Canonical chain, contract, and token metadata for the Rome Protocol ecosystem.
 |---|---|---|---|---|---|---|
 | 121215 | [Rome Maximus](chains/121215-maximus/) | devnet | live | SOL (no SPL) | single-state | Custom rome-evm program for meta-hook integration testing |
 | 121222 | [Rome Subura](chains/121222-subura/) | devnet | live | RSOL (`Hpur18Q…`) | single-state | Internal devnet; oracle deployed; non-canonical gas mint |
-| 121225 | [Rome Esquiline](chains/121225-esquiline/) | devnet | live | USDC (`4zMMC9…`) | single-state | K8s-deployed L2; oracle deployed |
+| 121225 | [Rome Esquiline](chains/121225-esquiline/) | devnet | live | USDC (`4zMMC9…`) | single-state | Containerized L2; oracle deployed |
 | 121226 | [Rome Marcus](chains/121226-marcus/) | testnet | live | USDC (`4zMMC9…`) | single-state | Bridge Phase 1 + oracle; primary integration target |
 
 ## How to consume

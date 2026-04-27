@@ -167,7 +167,7 @@ Each chain's `NOTES.md` is a public document read by external integrators. Keep 
 - Operator-side repo paths or file paths — abstract them ("the operator deploy registry", "the Rome EVM program's PDA derivation")
 - Internal feature-branch names (use the program ID and a neutral description)
 - Cloud-provider-specific topology (namespace names, Helm chart paths, monitoring stack details, VM co-location)
-- Strategic timing or roadmap commentary ("first K8s before partner chains land", "throwaway and rotation planned")
+- Strategic timing or roadmap commentary ("first deploy of X before partner chains land", "throwaway and rotation planned")
 - @-handles of specific team members, or internal task tracker IDs
 
 The principle: a public NOTES.md should leave external readers with everything they need to integrate without revealing operator topology or internal planning. If a fact would help a competitor or a threat actor more than it would help an integrator, it belongs in operator-side docs, not here.

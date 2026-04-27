@@ -1,7 +1,7 @@
 # Rome Esquiline — 121225
 
 ## Deploy history
-- 2026-04-20 — initial deploy. K8s-deployed L2 rollup, single-state mode. start_slot 456895943.
+- 2026-04-20 — initial deploy. Containerized L2 rollup, single-state mode. start_slot 456895943.
 - 2026-04-21 — Oracle Gateway V2 deployed (PythPullAdapter + SwitchboardV3Adapter + factory + BatchReader; 5 Pyth feeds + 1 Switchboard feed).
 
 ## Why this exists
