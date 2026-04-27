@@ -1,0 +1,10 @@
+{
+  "symbol": "USDC",
+  "name": "USD Coin",
+  "issuer": "Circle",
+  "decimals": 6,
+  "logoURI": "https://cdn.jsdelivr.net/gh/rome-protocol/registry@v0.1.0/assets/usdc.svg",
+  "description": "USD Coin issued by Circle, redeemable 1:1 against US dollars.",
+  "homepage": "https://www.circle.com/usdc",
+  "tags": ["stablecoin", "fiat-backed"]
+}

@@ -1,0 +1,10 @@
+{
+  "symbol": "USDT",
+  "name": "Tether USD",
+  "issuer": "Tether",
+  "decimals": 6,
+  "logoURI": "https://cdn.jsdelivr.net/gh/rome-protocol/registry@v0.1.0/assets/usdt.svg",
+  "description": "USDT issued by Tether. Tracked here as a price reference.",
+  "homepage": "https://tether.to",
+  "tags": ["stablecoin", "fiat-backed"]
+}

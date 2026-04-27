@@ -13,7 +13,7 @@
       "symbol":    { "type": "string" },
       "name":      { "type": "string" },
       "decimals":  { "type": "integer", "minimum": 0, "maximum": 18 },
-      "kind":      { "enum": ["spl_wrapper", "gas", "erc20", "wormhole_wrapped"] },
+      "kind":      { "enum": ["gas", "spl_wrapper", "erc20"] },
       "assetRef":  { "type": "string" },
       "logoURI":   { "type": "string", "format": "uri" },
       "underlying": {

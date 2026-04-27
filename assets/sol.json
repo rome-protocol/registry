@@ -1,0 +1,10 @@
+{
+  "symbol": "SOL",
+  "name": "Solana",
+  "issuer": "Solana Foundation",
+  "decimals": 9,
+  "logoURI": "https://cdn.jsdelivr.net/gh/rome-protocol/registry@v0.1.0/assets/sol.svg",
+  "description": "Native gas token of the Solana network.",
+  "homepage": "https://solana.com",
+  "tags": ["layer1", "gas"]
+}

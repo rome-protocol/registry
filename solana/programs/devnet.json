@@ -1,0 +1,9 @@
+{
+  "splToken":               "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+  "associatedToken":        "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+  "systemProgram":          "11111111111111111111111111111111",
+  "wormholeCore":           "3u8hJUVTA4jH1wYAyUur7FFZVQ8H635K3tSHHF4ssjQ5",
+  "wormholeTokenBridge":    "DZnkkTmCiFWfYTfT41X3Rd1kDgozqzxWaHqsw6W4x2oe",
+  "cctpMessageTransmitter": "CCTPmbSD7gX1bxKPAmg77w8oFzNFpaQiQUWD43TKaecd",
+  "cctpTokenMessenger":     "CCTPiPYPc6AsJuwueEnWgSgucamXDZwBd53dQ11YiKX3"
+}

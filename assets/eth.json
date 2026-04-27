@@ -1,0 +1,10 @@
+{
+  "symbol": "ETH",
+  "name": "Ether",
+  "issuer": "Ethereum Foundation",
+  "decimals": 18,
+  "logoURI": "https://cdn.jsdelivr.net/gh/rome-protocol/registry@v0.1.0/assets/eth.svg",
+  "description": "Native gas token of the Ethereum network. Wrapped forms (WETH on EVM, Wormhole-wrapped ETH on Solana) are tracked per-chain.",
+  "homepage": "https://ethereum.org",
+  "tags": ["layer1", "gas"]
+}

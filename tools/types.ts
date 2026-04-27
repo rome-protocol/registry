@@ -135,7 +135,7 @@ export type PerChainCanonicalTokenList = {
   symbol: string;
   name: string;
   decimals: number;
-  kind: "spl_wrapper" | "gas" | "erc20" | "wormhole_wrapped";
+  kind: "gas" | "spl_wrapper" | "erc20";
   assetRef?: string;
   logoURI?: string;
   underlying?: {

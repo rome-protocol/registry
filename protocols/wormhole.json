@@ -1,0 +1,9 @@
+{
+  "protocol": "wormhole",
+  "domains": {
+    "eth-mainnet": 2,
+    "sepolia": 10002,
+    "solana-mainnet": 1,
+    "solana-devnet": 1
+  }
+}

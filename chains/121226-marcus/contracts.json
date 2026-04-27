@@ -1,0 +1,110 @@
+[
+  {
+    "name": "RomeBridgePaymaster",
+    "versions": [
+      {
+        "address": "0xcaf1fbcf60c3686d87d0a5111f340a99250ce4ef",
+        "version": "1.0.0",
+        "status": "live",
+        "deployedAt": "2026-03-13T00:00:00Z",
+        "abiPath": "abis/RomeBridgePaymaster@1.0.0.json"
+      }
+    ]
+  },
+  {
+    "name": "ERC20Users",
+    "versions": [
+      {
+        "address": "0x6a71c3dccc356abe3ffe37e07ed2afb5b3831ce5",
+        "version": "1.0.0",
+        "status": "live",
+        "deployedAt": "2026-04-26T00:00:00Z",
+        "abiPath": "abis/ERC20Users@1.0.0.json"
+      }
+    ]
+  },
+  {
+    "name": "SPL_ERC20_USDC",
+    "versions": [
+      {
+        "address": "0x1f7dfaf9444d46fc10b4b4736d906da5caf46195",
+        "version": "1.0.0",
+        "status": "live",
+        "deployedAt": "2026-04-26T00:00:00Z",
+        "abiPath": "abis/SPL_ERC20@1.0.0.json"
+      }
+    ]
+  },
+  {
+    "name": "SPL_ERC20_WETH",
+    "versions": [
+      {
+        "address": "0x3d81cb32d32b917a1ba3778832536cbf63c3cc15",
+        "version": "1.0.0",
+        "status": "live",
+        "deployedAt": "2026-04-26T00:00:00Z",
+        "abiPath": "abis/SPL_ERC20@1.0.0.json"
+      }
+    ]
+  },
+  {
+    "name": "RomeBridgeWithdraw",
+    "versions": [
+      {
+        "address": "0x325d62dc31be2b2a6e19e6e5773586e552f7c938",
+        "version": "1.0.0",
+        "status": "live",
+        "deployedAt": "2026-04-26T00:00:00Z",
+        "abiPath": "abis/RomeBridgeWithdraw@1.0.0.json"
+      }
+    ]
+  },
+  {
+    "name": "OracleAdapterFactory",
+    "versions": [
+      {
+        "address": "0x98d2a1eeafd4595b9df1ad791625d0fb16b081b5",
+        "version": "1.0.0",
+        "status": "live",
+        "deployedAt": "2026-04-21T19:15:31Z",
+        "abiPath": "abis/OracleAdapterFactory@1.0.0.json"
+      }
+    ]
+  },
+  {
+    "name": "PythPullAdapter",
+    "versions": [
+      {
+        "address": "0x79380864f61fa5c08bfc98b93d5a55bd71afad35",
+        "version": "1.0.0",
+        "status": "live",
+        "deployedAt": "2026-04-21T19:15:31Z",
+        "abiPath": "abis/PythPullAdapter@1.0.0.json"
+      }
+    ]
+  },
+  {
+    "name": "SwitchboardV3Adapter",
+    "versions": [
+      {
+        "address": "0xb766b12d163a16ad1f7c1f1bb913e398029e0787",
+        "version": "1.0.0",
+        "status": "live",
+        "deployedAt": "2026-04-21T19:15:31Z",
+        "abiPath": "abis/SwitchboardV3Adapter@1.0.0.json"
+      }
+    ]
+  },
+  {
+    "name": "BatchReader",
+    "versions": [
+      {
+        "address": "0x8bc2d008c8fb61daec1ce81276c01f1f234572f3",
+        "version": "1.0.0",
+        "status": "live",
+        "deployedAt": "2026-04-21T19:15:31Z",
+        "abiPath": "abis/BatchReader@1.0.0.json"
+      }
+    ]
+  }
+]

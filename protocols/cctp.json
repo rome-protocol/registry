@@ -1,0 +1,9 @@
+{
+  "protocol": "cctp",
+  "domains": {
+    "eth-mainnet": 0,
+    "sepolia": 0,
+    "solana-mainnet": 5,
+    "solana-devnet": 5
+  }
+}
