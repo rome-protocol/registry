@@ -26,6 +26,39 @@
         "decimals": { "type": "integer", "minimum": 0, "maximum": 18 }
       }
     },
-    "status": { "enum": ["live", "preparing", "retired"] }
+    "status": { "enum": ["live", "preparing", "retired"] },
+    "solana": {
+      "type": "object",
+      "required": ["cluster"],
+      "additionalProperties": false,
+      "description": "Per-chain Solana settlement target + compatibility tracking. Added v0.3.0.",
+      "properties": {
+        "cluster": {
+          "enum": ["mainnet", "devnet"],
+          "description": "Which Solana cluster this Rome chain settles to. Rome only targets mainnet and devnet — never Solana testnet (Rome's testnet rollups use Solana devnet)."
+        },
+        "tested": {
+          "type": "object",
+          "required": ["version", "verifiedAt"],
+          "additionalProperties": false,
+          "description": "Last Solana version this chain's stack (proxy + hercules + rhea) was verified compatible with.",
+          "properties": {
+            "version":    { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[A-Za-z0-9.]+)?$" },
+            "verifiedAt": { "type": "string", "format": "date" },
+            "notes":      { "type": "string" }
+          }
+        },
+        "romeRpcUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "Optional. Rome's own Solana RPC URL this chain's services connect to. Operator-private — partner-self-hosted chains may omit."
+        },
+        "romeNodeVersion": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[A-Za-z0-9.]+)?$",
+          "description": "Optional. Solana version Rome runs on its node for this chain. Cross-reference with solana/clusters.json#romeNodeVersion."
+        }
+      }
+    }
   }
 }

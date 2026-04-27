@@ -10,5 +10,13 @@
     "symbol": "USDC",
     "decimals": 18
   },
-  "status": "live"
+  "status": "live",
+  "solana": {
+    "cluster": "devnet",
+    "tested": {
+      "version": "4.0.0-beta.6",
+      "verifiedAt": "2026-04-27"
+    },
+    "romeNodeVersion": "4.0.0-beta.7"
+  }
 }
