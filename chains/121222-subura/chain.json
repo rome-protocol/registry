@@ -1,0 +1,14 @@
+{
+  "chainId": 121222,
+  "name": "Rome Subura",
+  "network": "devnet",
+  "rpcUrl": "https://subura.devnet.romeprotocol.xyz/",
+  "explorerUrl": "https://romescout-subura.devnet.romeprotocol.xyz/",
+  "solanaProgramId": "DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3",
+  "nativeCurrency": {
+    "name": "Rome Subura",
+    "symbol": "RSOL",
+    "decimals": 18
+  },
+  "status": "live"
+}

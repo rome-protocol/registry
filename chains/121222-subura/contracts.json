@@ -1,0 +1,50 @@
+[
+  {
+    "name": "OracleAdapterFactory",
+    "versions": [
+      {
+        "address": "0xf543ae0b6cab80a9ea282ee7e706e4eb735d0e72",
+        "version": "1.0.0",
+        "status": "live",
+        "deployedAt": "2026-04-21T19:50:11Z",
+        "abiPath": "abis/OracleAdapterFactory@1.0.0.json"
+      }
+    ]
+  },
+  {
+    "name": "PythPullAdapter",
+    "versions": [
+      {
+        "address": "0xefe4c8edeeb7379c688ce6227b13e16b4f8d7f6f",
+        "version": "1.0.0",
+        "status": "live",
+        "deployedAt": "2026-04-21T19:50:11Z",
+        "abiPath": "abis/PythPullAdapter@1.0.0.json"
+      }
+    ]
+  },
+  {
+    "name": "SwitchboardV3Adapter",
+    "versions": [
+      {
+        "address": "0x37fcb45465348a3102c56efd1ad210baf23706e6",
+        "version": "1.0.0",
+        "status": "live",
+        "deployedAt": "2026-04-21T19:50:11Z",
+        "abiPath": "abis/SwitchboardV3Adapter@1.0.0.json"
+      }
+    ]
+  },
+  {
+    "name": "BatchReader",
+    "versions": [
+      {
+        "address": "0x6a3bcb3dea144de2609e9841c4a7d875b6cb8a6e",
+        "version": "1.0.0",
+        "status": "live",
+        "deployedAt": "2026-04-21T19:50:11Z",
+        "abiPath": "abis/BatchReader@1.0.0.json"
+      }
+    ]
+  }
+]

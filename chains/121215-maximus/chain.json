@@ -1,0 +1,14 @@
+{
+  "chainId": 121215,
+  "name": "Rome Maximus",
+  "network": "devnet",
+  "rpcUrl": "https://maximus.devnet.romeprotocol.xyz/",
+  "explorerUrl": "https://romescout-maximus.devnet.romeprotocol.xyz/",
+  "solanaProgramId": "CX3vRqzv1y7EEf3zr7myXz7UnwJMf2GiP1fUZZpVynSs",
+  "nativeCurrency": {
+    "name": "Rome Maximus",
+    "symbol": "RSOL",
+    "decimals": 18
+  },
+  "status": "live"
+}

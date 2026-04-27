@@ -1,0 +1,36 @@
+{
+  "factory": "0xf543ae0b6cab80a9ea282ee7e706e4eb735d0e72",
+  "defaultMaxStaleness": 300,
+  "feeds": {
+    "SOL/USD-pyth": {
+      "address": "0x9D01A836CdA49EC579D77D452b2955Dcf2FBcE6c",
+      "source": "pyth",
+      "underlyingAccount": "7UVimffxr9ow1uXYxsr4LHAcV58mLzhmwaeKvJ1pjLiE"
+    },
+    "BTC/USD-pyth": {
+      "address": "0x32Ecf7fe2B4D0a5Ab571a2a0662b4674BE2c39C9",
+      "source": "pyth",
+      "underlyingAccount": "4cSM2e6rvbGQUFiJbqytoVMi5GgghSMr8LwVrT9VPSPo"
+    },
+    "ETH/USD-pyth": {
+      "address": "0x486b1bFfc19153Fb030E5d25ED0FC5a9b57A7992",
+      "source": "pyth",
+      "underlyingAccount": "42amVS4KgzR9rA28tkVYqVXjq9Qa8dcZQMbH5EYFX6XC"
+    },
+    "USDC/USD-pyth": {
+      "address": "0x9749688C82A3f442456C046655BBb2b12a90B9F9",
+      "source": "pyth",
+      "underlyingAccount": "Dpw1EAVrSB1ibxiDQyTAW6Zip3J4Btk2x4SgApQCeFbX"
+    },
+    "USDT/USD-pyth": {
+      "address": "0xE520aFee5b92a9A15a24d8C3A7779c1916D2C796",
+      "source": "pyth",
+      "underlyingAccount": "HT2PLQBcG5EiCcNSaMHAjSgd9F98ecpATbk4Sk5oYuM"
+    },
+    "SOL/USD-switchboard": {
+      "address": "0x018FdD49E8432f243fB855b1713EDc6773ded14F",
+      "source": "switchboard",
+      "underlyingAccount": "GvDMxPzN1sCj7L26YDK2HnMRXEQmQ2aemov8YBtPS7vR"
+    }
+  }
+}

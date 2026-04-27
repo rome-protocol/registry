@@ -35,6 +35,10 @@ export interface RomeChainCoreIdentity {
   network: "mainnet" | "testnet" | "devnet" | "local";
   rpcUrl: string;
   explorerUrl?: string;
+  /**
+   * Rome EVM program ID (Solana base58) this chain is registered under. Most chains share `DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3`; chains running a custom rome-evm fork (e.g. meta-hook test branches) declare their own. Optional; consumers fall back to the canonical shared program when absent.
+   */
+  solanaProgramId?: string;
   nativeCurrency: {
     name: string;
     symbol: string;

@@ -6,11 +6,12 @@ Canonical chain, contract, and token metadata for the Rome Protocol ecosystem.
 
 ## Available chains
 
-| Chain ID | Name | Network | Status | Files |
-|---|---|---|---|---|
-| 121226 | Rome Marcus | testnet | live | [chain](chains/121226-marcus/chain.json) · [contracts](chains/121226-marcus/contracts.json) · [tokens](chains/121226-marcus/tokens.json) · [bridge](chains/121226-marcus/bridge.json) · [oracle](chains/121226-marcus/oracle.json) · [endpoints](chains/121226-marcus/endpoints.json) · [operationalLimits](chains/121226-marcus/operationalLimits.json) · [NOTES](chains/121226-marcus/NOTES.md) |
-
-More chains land in v0.2 — see [the implementation plan](docs/plans/2026-04-27-rome-registry-v0.1.md).
+| Chain ID | Name | Network | Status | Gas | Mode | Notes |
+|---|---|---|---|---|---|---|
+| 121215 | [Rome Maximus](chains/121215-maximus/) | devnet | live | SOL (no SPL) | single-state | Custom rome-evm program (meta-hook test branch) |
+| 121222 | [Rome Subura](chains/121222-subura/) | devnet | live | RSOL (`Hpur18Q…`) | single-state | Internal devnet; oracle deployed; non-canonical gas mint |
+| 121225 | [Rome Esquiline](chains/121225-esquiline/) | devnet | live | USDC (`4zMMC9…`) | single-state | First K8s-deployed L2; oracle deployed |
+| 121226 | [Rome Marcus](chains/121226-marcus/) | testnet | live | USDC (`4zMMC9…`) | single-state | Bridge Phase 1 + oracle; primary integration target |
 
 ## How to consume
 

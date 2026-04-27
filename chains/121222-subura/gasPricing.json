@@ -1,0 +1,5 @@
+{
+  "type": "meteora_damm_v1_pool",
+  "poolAddress": "6oYHxUqF4QemtpHscf5SWs1fkDsjv6qQekyj7SoEYwd8",
+  "notes": "Meteora DAMM v1 pool used for gas pricing. Captured from rome-ops/ansible/deployments/registry.json (chain reset 2026-04-16 with new pool)."
+}
