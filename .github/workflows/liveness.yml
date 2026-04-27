@@ -1,0 +1,20 @@
+name: On-chain liveness
+
+on:
+  pull_request:
+    paths:
+      - 'chains/**/contracts.json'
+      - 'chains/**/tokens.json'
+      - 'chains/**/oracle.json'
+      - 'chains/**/chain.json'
+
+jobs:
+  liveness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npx tsx tools/liveness.ts
