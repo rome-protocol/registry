@@ -25,7 +25,6 @@ Per docs/VERIFICATION_RULES.md §"kind: gas" — verified directly from Rome EVM
 
 ## Known caveats
 - The gas mint `Hpur18Q…` is **not in the public assets/ catalog** (it's a Rome-issued test token, not a canonical asset like USDC or ETH). The `tokens.json` gas entry intentionally omits `assetRef`. Per the Curation Policy in VERIFICATION_RULES.md, this is fine for an internal devnet rollup — flag if Subura ever serves external integrators.
-- rome-ops registry currently shows `token: {}` (empty) for subura — that's stale. The on-chain truth is the mint above.
 - No bridge contracts deployed (no Bridge phase 1 work on this chain). `bridge.json` carries only the source-chain block for forward compatibility.
 - No `endpoints.json` entries (no off-chain bridge relayers on this chain).
 

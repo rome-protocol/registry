@@ -12,7 +12,7 @@
       "rpcUrl": "https://api.devnet.solana.com",
       "verifiedAt": "2026-04-27",
       "romeNodeVersion": "4.0.0-beta.7",
-      "notes": "Rome testnet rollups (martius, caelian — when live) and the current devnet rollups (marcus, subura, esquiline, maximus) all bridge to Solana devnet, not Solana testnet. Rome explicitly does not target Solana testnet. Rome's own RPC currently runs ahead of upstream devnet (4.0.0-beta.7 vs 4.0.0-beta.6) as we're testing the next devnet release before it lands publicly."
+      "notes": "All Rome devnet and testnet rollups bridge to Solana devnet, not Solana testnet. Rome targets Solana mainnet and devnet only."
     }
   }
 }

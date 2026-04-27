@@ -5,5 +5,5 @@
     "base": "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU",
     "quote": "So11111111111111111111111111111111111111112"
   },
-  "notes": "Meteora DAMM v1 USDC/SOL pool used for gas pricing on Esquiline. Captured from rome-ops/ansible/deployments/registry.json."
+  "notes": "Meteora DAMM v1 USDC/SOL pool used for gas pricing on Esquiline."
 }

@@ -24,10 +24,10 @@ Marcus's gas token is USDC, deposited into a **Rome-EVM-owned gas pool** — the
 
 | Field | Value | Source |
 |---|---|---|
-| Rome EVM program | `DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3` | rome-ops/ansible/deployments/registry.json |
+| Rome EVM program | `DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3` | operator deploy registry |
 | Marcus chain id | 121226 | (same) |
 | Gas mint (USDC) | `4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU` | (same) |
-| sol_wallet PDA seeds | `[chainId.to_le_bytes(8), "CONTRACT_SOL_WALLET"]` | rome-evm-private/program/src/state/pda.rs:167 |
+| sol_wallet PDA seeds | `[chainId.to_le_bytes(8), "CONTRACT_SOL_WALLET"]` | Rome EVM program's PDA derivation |
 | sol_wallet PDA | `GEujTMkvVsytUKpxddXgFLC5CX5MTswjwDFM5oLfHv1Y` (bump 255) | derived + verified on Solana |
 | **Gas pool ATA** | **`6LGWm6pm3DREkxCaQnULuAkWMsMTfR2XbHpHocYFarka`** | derived + verified on Solana |
 | Pool's mint (on-chain) | `4zMMC9srt5...` matches USDC | Solana RPC `getAccountInfo` |
