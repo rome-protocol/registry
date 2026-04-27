@@ -878,19 +878,43 @@ git push
 - Create: `tools/add-chain.ts`
 - Create: `tools/add-chain.test.ts`
 
-Reads an existing rome-solidity `deployments/<network>.json` and scaffolds the registry entries.
+Two modes:
+- **Fresh mode** (`--deployments-from <path>`): reads a rome-solidity `deployments/<network>.json` and scaffolds a brand-new chain entry from scratch.
+- **Rotation mode** (`--copy-from <prev-slug>`): clones an existing chain folder for a new chainId, wipes the addresses that change at rotation, preserves the parts that don't, marks the old chain `retired`, and back-links via `previousChainId`. Solves the Marcus-rotation case where 70-80% of `chains/<id>/` content is identical to the previous Marcus.
 
-- [ ] **Step 1: Test first** — mock a `deployments/marcus.json`-shaped input, run scaffolder, assert it created `chains/<id>-<slug>/{chain,contracts,tokens,bridge,oracle}.json` with extracted values.
+**Rotation-mode logic — what carries vs what wipes:**
 
-- [ ] **Step 2: Implement** — argparse via `node:util.parseArgs`; reads input JSON; writes output files; prints next-step instructions ("Run `git checkout -b add-chain-<slug>` and open a PR").
+| Field | Action |
+|---|---|
+| `chain.json` chainId / name / rpcUrl | wipe → set from CLI flags |
+| `chain.json` network / nativeCurrency | preserve |
+| `contracts.json` `versions[].address`, `deployedAt`, `deployTx` | wipe → read from `--deployments-from` |
+| `contracts.json` `versions[].version`, `abiPath` | preserve (contract version often same) |
+| `tokens.json` `address` | wipe → read from `--deployments-from` |
+| `tokens.json` `mintId`, `symbol`, `name`, `decimals`, `kind`, `assetRef`, `underlying` | preserve (Solana mints don't rotate) |
+| `bridge.json` `sourceEvm` block | preserve (Sepolia / Eth-mainnet didn't change) |
+| `bridge.json` `solana.usdcMint`, `wethMint`, `wormholeChainIdRef`, `cctpDomainRef` | preserve |
+| `oracle.json` `factory`, `feeds[].address` | wipe → read from `--deployments-from` |
+| `oracle.json` `defaultMaxStaleness`, `feeds[].source`, `feeds[].underlyingAccount` | preserve |
+| `endpoints.json` | preserve verbatim (Circle IRIS, Wormhole RPCs are stable) |
+| `operationalLimits.json` | preserve verbatim (Rome-EVM-wide invariants) |
+| `NOTES.md` | reset to template; old NOTES preserved at the retired chain |
+| Old chain's `chain.json` `status` | flip to `retired` |
+| New chain's `chain.json` | new field `previousChainId: <old-id>` for traceability |
 
-- [ ] **Step 3: Pass**
+- [ ] **Step 1: Test fresh mode** — mock a `deployments/marcus.json`-shaped input, run scaffolder with `--deployments-from`, assert it created `chains/<id>-<slug>/{chain,contracts,tokens,bridge,oracle,endpoints,operationalLimits,NOTES.md}` with extracted values + reasonable defaults.
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 2: Test rotation mode** — seed a fake `chains/121226-marcus/` in a tmp registry root; run scaffolder with `--copy-from 121226-marcus --new-id 121227 --new-name "Rome Marcus 2" --new-rpc https://... --deployments-from <new artifact>`. Assert: new folder exists, `chain.json` has new id/name/rpc, `contracts.json` addresses replaced, `tokens.json` addresses replaced but `mintId`/`assetRef` preserved, `bridge.json` source-chain block + Solana mints unchanged, `endpoints.json` + `operationalLimits.json` byte-identical, old chain's `chain.json` flipped to `status: retired`, new chain has `previousChainId: 121226`.
+
+- [ ] **Step 3: Implement** — argparse via `node:util.parseArgs`; route on presence of `--copy-from` vs `--deployments-from`; for rotation mode, walk the source folder via the carry/wipe table above; print next-step instructions ("Run `git checkout -b rotate-<slug>` and open a PR").
+
+- [ ] **Step 4: Pass**
+
+- [ ] **Step 5: Commit**
 
 ```bash
 git add tools/add-chain.ts tools/add-chain.test.ts
-git commit -m "feat(tools): add-chain CLI scaffolder (registration Path B)"
+git commit -m "feat(tools): add-chain CLI scaffolder — fresh + rotation modes (Path B)"
 git push
 ```
 
@@ -1188,7 +1212,7 @@ git push
 More chains land in v0.2 — see [the data sweep plan](docs/plans/2026-04-27-rome-registry-v0.1.md).
 ```
 
-- [ ] **Step 2: `docs/CONTRIBUTING.md`** — registration paths A (PR) + B (CLI), with end-to-end examples for adding a new token, adding a new chain, rotating an address.
+- [ ] **Step 2: `docs/CONTRIBUTING.md`** — registration paths A (PR) + B (CLI), with end-to-end examples for: adding a new token, adding a new chain (fresh), **rotating a chain (chain id change + redeploy — uses `add-chain --copy-from`)**, and rotating a single contract address (version bump). The rotation runbook explicitly covers the Marcus case: what carries (assets/abis/protocols/Solana mints/operationalLimits/endpoints/bridge.sourceEvm), what wipes (every contract address, every token wrapper address, every oracle adapter address), and the lifecycle (old chain `status: retired`, new chain `previousChainId` back-link, registry never deletes).
 
 - [ ] **Step 3: `docs/SCHEMA_VERSIONING.md`** — semver policy (patch / minor / major), 3-month deprecation window, ABI version-bump rule from spec §Persona affordances.
 
