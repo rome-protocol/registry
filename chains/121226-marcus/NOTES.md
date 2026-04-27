@@ -5,6 +5,7 @@
 - 2026-04-19 — bridge bring-up fixes (split outbound Wormhole into approveBurnETH + burnETH; canonical wrapped-ETH mint correction)
 - 2026-04-21 — Oracle Gateway V2 deployed (PythPullAdapter, SwitchboardV3Adapter, OracleAdapterFactory, BatchReader, 5 Pyth feeds + 1 Switchboard feed)
 - 2026-04-26 — SPL_ERC20 wrappers redeployed with auto-ATA fix (rome-solidity #63). New live addresses: ERC20Users `0x6a71c3dc…`, WUSDC `0x1f7dfaf9…`, WETH `0x3d81cb32…`, RomeBridgeWithdraw `0x325d62dc…`. Previous wrappers (`0x6ed29…`, `0x3e52c…`) carry pre-fix bytecode and are not in service.
+- 2026-04-27 — Romeswap (UniswapV2 fork) backfilled into registry: Factory `0xE33fea3D…`, Router `0xddbb7D98…`, WETH9 `0xBD0a5918…`, Multicall3 `0x701c4129…`, ERC20Factory `0x4FeceADD…`, ERC20SPLFactory `0x3e2F524B…`. Addresses verified live on Marcus via `eth_getCode`; sourced from rome-ui's `deploy/chains.sample.yaml` (the prior unregistered source-of-truth). Original on-chain deploy date approximated from rome-ui git history (2026-04-21).
 
 ## Why this exists
 Marcus is the active devnet target for Rome bridge + Oracle + DEX work. Successor to MontiSPL (retired). Used by rome-ui, cardo, partner integrations during testnet bring-up.
