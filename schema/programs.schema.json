@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rome-protocol.github.io/registry/schema/programs.schema.json",
+  "title": "Solana program IDs (per-network)",
+  "type": "object",
+  "required": ["splToken", "associatedToken", "systemProgram"],
+  "additionalProperties": false,
+  "properties": {
+    "splToken":               { "type": "string" },
+    "associatedToken":        { "type": "string" },
+    "systemProgram":          { "type": "string" },
+    "wormholeCore":           { "type": "string" },
+    "wormholeTokenBridge":    { "type": "string" },
+    "cctpMessageTransmitter": { "type": "string" },
+    "cctpTokenMessenger":     { "type": "string" }
+  }
+}

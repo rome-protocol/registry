@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rome-protocol.github.io/registry/schema/contracts.schema.json",
+  "title": "Per-chain Solidity contract registry",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["name", "versions"],
+    "additionalProperties": false,
+    "properties": {
+      "name": { "type": "string" },
+      "versions": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "required": ["address", "version", "status", "deployedAt"],
+          "additionalProperties": false,
+          "properties": {
+            "address":      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+            "version":      { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+            "status":       { "enum": ["live", "deprecated", "retired"] },
+            "deployedAt":   { "type": "string", "format": "date-time" },
+            "deployTx":     { "type": "string" },
+            "deprecatedAt": { "type": "string", "format": "date-time" },
+            "replacedBy":   { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+            "abiPath":      { "type": "string", "pattern": "^abis/.+\\.json$" }
+          }
+        }
+      }
+    }
+  }
+}

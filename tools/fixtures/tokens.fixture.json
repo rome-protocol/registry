@@ -1,0 +1,13 @@
+[
+  {
+    "address": "0x1f7dfaf9444d46fc10b4b4736d906da5caf46195",
+    "mintId":  "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU",
+    "symbol":  "wUSDC",
+    "name":    "Rome USDC",
+    "decimals": 6,
+    "kind":    "spl_wrapper",
+    "assetRef": "usdc",
+    "underlying": { "chain": "solana-devnet", "asset": "USDC" },
+    "factory": "ERC20SPLFactory"
+  }
+]

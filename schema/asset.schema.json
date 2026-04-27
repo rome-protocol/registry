@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rome-protocol.github.io/registry/schema/asset.schema.json",
+  "title": "Logical asset catalog entry",
+  "type": "object",
+  "required": ["symbol", "name", "decimals"],
+  "additionalProperties": false,
+  "properties": {
+    "symbol":      { "type": "string" },
+    "name":        { "type": "string" },
+    "issuer":      { "type": "string" },
+    "decimals":    { "type": "integer", "minimum": 0, "maximum": 18 },
+    "logoURI":     { "type": "string", "format": "uri" },
+    "description": { "type": "string" },
+    "homepage":    { "type": "string", "format": "uri" },
+    "tags":        { "type": "array", "items": { "type": "string" } }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rome-protocol.github.io/registry/schema/tokens.schema.json",
+  "title": "Per-chain canonical token list",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["address", "symbol", "name", "decimals", "kind"],
+    "additionalProperties": false,
+    "properties": {
+      "address":   { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+      "mintId":    { "type": "string" },
+      "symbol":    { "type": "string" },
+      "name":      { "type": "string" },
+      "decimals":  { "type": "integer", "minimum": 0, "maximum": 18 },
+      "kind":      { "enum": ["spl_wrapper", "gas", "erc20", "wormhole_wrapped"] },
+      "assetRef":  { "type": "string" },
+      "logoURI":   { "type": "string", "format": "uri" },
+      "underlying": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "chain": { "type": "string" },
+          "asset": { "type": "string" }
+        }
+      },
+      "factory":    { "type": "string" },
+      "deployedAt": { "type": "string", "format": "date-time" },
+      "deployTx":   { "type": "string" }
+    }
+  }
+}

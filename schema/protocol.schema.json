@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rome-protocol.github.io/registry/schema/protocol.schema.json",
+  "title": "Cross-chain bridge protocol constants",
+  "type": "object",
+  "required": ["protocol", "domains"],
+  "additionalProperties": false,
+  "properties": {
+    "protocol": { "enum": ["cctp", "wormhole"] },
+    "domains": {
+      "type": "object",
+      "description": "Map of source chain identifier (e.g. 'sepolia', 'solana-devnet', 'eth-mainnet') to integer domain or chain id used by this protocol.",
+      "additionalProperties": { "type": "integer" }
+    }
+  }
+}

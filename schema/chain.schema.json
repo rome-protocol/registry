@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rome-protocol.github.io/registry/schema/chain.schema.json",
+  "title": "Rome chain — core identity",
+  "type": "object",
+  "required": ["chainId", "name", "network", "rpcUrl", "nativeCurrency", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "chainId":     { "type": "integer", "minimum": 1 },
+    "name":        { "type": "string", "minLength": 1 },
+    "network":     { "enum": ["mainnet", "testnet", "devnet", "local"] },
+    "rpcUrl":      { "type": "string", "format": "uri" },
+    "explorerUrl": { "type": "string", "format": "uri" },
+    "nativeCurrency": {
+      "type": "object",
+      "required": ["name", "symbol", "decimals"],
+      "additionalProperties": false,
+      "properties": {
+        "name":     { "type": "string" },
+        "symbol":   { "type": "string" },
+        "decimals": { "type": "integer", "minimum": 0, "maximum": 18 }
+      }
+    },
+    "status": { "enum": ["live", "preparing", "retired"] }
+  }
+}

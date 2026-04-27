@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rome-protocol.github.io/registry/schema/bridge.schema.json",
+  "title": "Per-chain bridge wiring",
+  "type": "object",
+  "required": ["sourceEvm", "solana"],
+  "additionalProperties": false,
+  "properties": {
+    "sourceEvm": {
+      "type": "object",
+      "required": ["chainId", "name", "usdc"],
+      "additionalProperties": false,
+      "properties": {
+        "chainId":                { "type": "integer" },
+        "name":                   { "type": "string" },
+        "usdc":                   { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+        "cctpTokenMessenger":     { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+        "cctpMessageTransmitter": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+        "wormholeTokenBridge":    { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" }
+      }
+    },
+    "solana": {
+      "type": "object",
+      "required": ["usdcMint"],
+      "additionalProperties": false,
+      "properties": {
+        "usdcMint":            { "type": "string" },
+        "wethMint":            { "type": "string" },
+        "wormholeChainIdRef":  { "type": "string" },
+        "cctpDomainRef":       { "type": "string" }
+      }
+    }
+  }
+}

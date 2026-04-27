@@ -1,0 +1,16 @@
+{
+  "maxComputeUnitsPerTx": 1400000,
+  "maxCpiPerAtomicTx": 1,
+  "recommendedGasBudgets": {
+    "wrap_gas_to_spl": 27000000,
+    "transfer_to_fresh_recipient": 1500000
+  },
+  "knownIncidents": [
+    {
+      "title": "SPL_ERC20.transfer reverts on fresh recipient (pre-PR #63)",
+      "summary": "Wrappers built before rome-solidity PR #63 reverted with 'Token account does not exist' when sending to a fresh wallet. Fix is in master; new wrappers compile clean.",
+      "fixedAt": "2026-04-26T00:00:00Z",
+      "link": "https://github.com/rome-protocol/rome-solidity/pull/63"
+    }
+  ]
+}

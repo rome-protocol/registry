@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rome-protocol.github.io/registry/schema/oracle.schema.json",
+  "title": "Per-chain oracle gateway config",
+  "type": "object",
+  "required": ["factory", "feeds"],
+  "additionalProperties": false,
+  "properties": {
+    "factory":             { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+    "defaultMaxStaleness": { "type": "integer", "minimum": 1, "maximum": 86400 },
+    "feeds": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["address", "source"],
+        "additionalProperties": false,
+        "properties": {
+          "address":           { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+          "source":            { "enum": ["pyth", "switchboard"] },
+          "underlyingAccount": { "type": "string" }
+        }
+      }
+    }
+  }
+}

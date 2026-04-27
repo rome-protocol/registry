@@ -1,0 +1,14 @@
+[
+  {
+    "name": "RomeBridgePaymaster",
+    "versions": [
+      {
+        "address": "0xcaf1fbcf60c3686d87d0a5111f340a99250ce4ef",
+        "version": "1.0.0",
+        "status": "live",
+        "deployedAt": "2026-03-13T00:00:00Z",
+        "abiPath": "abis/RomeBridgePaymaster@1.0.0.json"
+      }
+    ]
+  }
+]

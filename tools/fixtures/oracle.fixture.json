@@ -1,0 +1,10 @@
+{
+  "factory": "0x98d2a1eeafd4595b9df1ad791625d0fb16b081b5",
+  "defaultMaxStaleness": 300,
+  "feeds": {
+    "ETH/USD": {
+      "address": "0xd61796eFF9e6D044C182aDa82049DC2930B58962",
+      "source": "pyth"
+    }
+  }
+}

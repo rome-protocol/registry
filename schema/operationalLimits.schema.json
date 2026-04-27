@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rome-protocol.github.io/registry/schema/operationalLimits.schema.json",
+  "title": "Per-chain operational limits and known incidents",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "maxComputeUnitsPerTx":  { "type": "integer", "minimum": 1 },
+    "maxCpiPerAtomicTx":     { "type": "integer", "minimum": 1 },
+    "recommendedGasBudgets": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 1 }
+    },
+    "knownIncidents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "summary"],
+        "additionalProperties": false,
+        "properties": {
+          "title":   { "type": "string" },
+          "summary": { "type": "string" },
+          "fixedAt": { "type": "string", "format": "date-time" },
+          "link":    { "type": "string", "format": "uri" }
+        }
+      }
+    }
+  }
+}
