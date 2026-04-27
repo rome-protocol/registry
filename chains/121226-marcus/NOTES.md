@@ -10,11 +10,18 @@
 Marcus is the active devnet target for Rome bridge + Oracle + DEX work. Successor to MontiSPL (retired). Used by rome-ui, cardo, partner integrations during testnet bring-up.
 
 ## Symbol convention
-- `USDC` (no W prefix) — native gas token. Marcus's gas-accounting unit, 18 decimals on the EVM side. Listed in `tokens.json` with kind `gas` and the conventional sentinel address `0xeeee…eeee`.
+- `USDC` (no W prefix) — native gas token. Marcus's gas-accounting unit, 18 decimals on the EVM side. Captured in `chain.json` `nativeCurrency`. Currently NOT listed in `tokens.json` — see "Gas token registration" below.
 - `WUSDC` (capital W prefix) — wrapped SPL form of the Solana USDC mint. 6 decimals. kind `spl_wrapper`. The ERC20 wrapper that contracts and pools transact in.
 - `WETH` (capital W prefix) — wrapped Wormhole-bridged ETH. 18 decimals. kind `spl_wrapper`.
 
 The on-chain `SPL_ERC20.symbol()` for the live WUSDC wrapper at `0x1f7dfaf9…` currently reports lowercase `wUSDC` (compiled into bytecode). Registry uses the canonical `WUSDC` for display. The next wrapper redeploy should align the bytecode-level symbol.
+
+## Gas token registration (deferred to v0.2)
+Marcus's gas token is USDC, deposited into a **Rome-EVM-owned gas pool** (the SPL token account that holds all deposited gas tokens chain-wide; users get an SPL_ERC20 mint balance on the EVM side, but the underlying SPL sits in the pool, not in any user's PDA). This makes the `gas` kind structurally distinct from `spl_wrapper` (where the underlying SPL stays in the per-user PDA).
+
+The `tokens.schema.json` `kind: gas` requires both `mintId` AND `gasPool` (the Solana base58 address of the Rome-EVM-owned pool). On-chain liveness probe (currently a v0.2 stub) must verify the pool's owner is the Rome EVM program — without that sanity check, a gas-kind token registration must be rejected.
+
+For Marcus, the gas pool address has not been resolved at v0.1 bootstrap and the gas entry is intentionally absent from `tokens.json`. v0.2's data-sweep working session populates it, alongside the liveness probe implementation. Until then, consumers needing the gas token's symbol/decimals read `chain.json` `nativeCurrency`.
 
 ## Known caveats
 - Marcus is throwaway and a chain-id rotation is planned. Use the rotation flow in `tools/add-chain.ts --copy-from` when the new chain id is known.

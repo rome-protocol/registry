@@ -1,13 +1,30 @@
 [
   {
+    "address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "mintId": "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU",
+    "gasPool": "5tB4UTaukKzfiZ9LHmk343G7XHdart7Z7uKboaRHpEsf",
+    "symbol": "USDC",
+    "name": "Rome Marcus",
+    "decimals": 18,
+    "kind": "gas",
+    "assetRef": "usdc"
+  },
+  {
     "address": "0x1f7dfaf9444d46fc10b4b4736d906da5caf46195",
     "mintId":  "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU",
     "symbol":  "WUSDC",
-    "name":    "Rome USDC",
+    "name":    "Rome Wrapped USDC",
     "decimals": 6,
     "kind":    "spl_wrapper",
     "assetRef": "usdc",
     "underlying": { "chain": "solana-devnet", "asset": "USDC" },
     "factory": "ERC20SPLFactory"
+  },
+  {
+    "address": "0xabcdef0123456789abcdef0123456789abcdef01",
+    "symbol": "MYTOKEN",
+    "name": "My Native ERC20",
+    "decimals": 18,
+    "kind": "erc20"
   }
 ]

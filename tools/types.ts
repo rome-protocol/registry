@@ -129,20 +129,12 @@ export interface CrossChainBridgeProtocolConstants {
   };
 }
 
+/**
+ * Three token kinds, with different ownership semantics:
+ *   - gas: an SPL token deposited into a Rome-EVM-owned gas pool. Underlying SPL sits in the pool (chain-wide); user holds an SPL_ERC20 mint on the EVM side. Requires mintId AND gasPool.
+ *   - spl_wrapper: user brings an SPL token; underlying SPL stays in the user's PDA (per-user). EVM-side SPL_ERC20 wrapper is a facade. Requires mintId.
+ *   - erc20: native EVM ERC-20 deployed on the chain. No SPL side. No mintId, no gasPool.
+ */
 export type PerChainCanonicalTokenList = {
-  address: string;
-  mintId?: string;
-  symbol: string;
-  name: string;
-  decimals: number;
-  kind: "gas" | "spl_wrapper" | "erc20";
-  assetRef?: string;
-  logoURI?: string;
-  underlying?: {
-    chain?: string;
-    asset?: string;
-  };
-  factory?: string;
-  deployedAt?: string;
-  deployTx?: string;
+  [k: string]: unknown | undefined;
 }[];

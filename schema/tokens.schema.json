@@ -2,6 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://rome-protocol.github.io/registry/schema/tokens.schema.json",
   "title": "Per-chain canonical token list",
+  "description": "Three token kinds, with different ownership semantics:\n  - gas: an SPL token deposited into a Rome-EVM-owned gas pool. Underlying SPL sits in the pool (chain-wide); user holds an SPL_ERC20 mint on the EVM side. Requires mintId AND gasPool.\n  - spl_wrapper: user brings an SPL token; underlying SPL stays in the user's PDA (per-user). EVM-side SPL_ERC20 wrapper is a facade. Requires mintId.\n  - erc20: native EVM ERC-20 deployed on the chain. No SPL side. No mintId, no gasPool.",
   "type": "array",
   "items": {
     "type": "object",
@@ -10,6 +11,11 @@
     "properties": {
       "address":   { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
       "mintId":    { "type": "string" },
+      "gasPool":   {
+        "type": "string",
+        "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+        "description": "Required when kind=gas. The Solana account address (base58) of the Rome-EVM-owned gas pool that holds the underlying SPL token. The pool must be owned by the Rome EVM program; on-chain liveness probe verifies this. Without this rule a gas-kind token must not be accepted."
+      },
       "symbol":    { "type": "string" },
       "name":      { "type": "string" },
       "decimals":  { "type": "integer", "minimum": 0, "maximum": 18 },
@@ -27,6 +33,20 @@
       "factory":    { "type": "string" },
       "deployedAt": { "type": "string", "format": "date-time" },
       "deployTx":   { "type": "string" }
-    }
+    },
+    "allOf": [
+      {
+        "if":   { "properties": { "kind": { "const": "gas" } }, "required": ["kind"] },
+        "then": { "required": ["mintId", "gasPool"] }
+      },
+      {
+        "if":   { "properties": { "kind": { "const": "spl_wrapper" } }, "required": ["kind"] },
+        "then": { "required": ["mintId"] }
+      },
+      {
+        "if":   { "properties": { "kind": { "const": "erc20" } }, "required": ["kind"] },
+        "then": { "not": { "required": ["mintId"] } }
+      }
+    ]
   }
 }
