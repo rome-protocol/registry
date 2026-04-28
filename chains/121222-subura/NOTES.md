@@ -4,6 +4,7 @@
 - Pre-2026-04-16 — original deploy at chainId 121211 (now retired; that chainId is dead)
 - 2026-04-16 — chain reset: new chainId 121222, new start_slot 456000000, new Meteora pool. Full DB + RomeScout data cleaned. RomeScout enabled. Single-state mode.
 - 2026-04-21 — Oracle Gateway V2 deployed (PythPullAdapter + SwitchboardV3Adapter + factory + BatchReader; 5 Pyth feeds + 1 Switchboard feed).
+- 2026-04-28 — Romeswap (UniswapV2 fork) backfilled into registry: Factory `0x0296597E…`, Router `0xd3480D95…`, WETH9 `0x2EC27c5F…`, Multicall3 `0x24cF86C7…`, ERC20Factory `0x123e003D…`, ERC20SPLFactory `0x0E7471FA…`. Addresses verified live on Subura via `eth_getCode`; sourced from rome-ui's `deploy/chains.sample.yaml`. `deployedAt` set to the chain reset date 2026-04-16; the actual on-chain deploy timestamp is some time between then and 2026-04-21 when the yaml first gained these addresses.
 
 ## Why this exists
 Rome devnet rollup, internal use. Single-state mode. Currently used for protocol-team development and integration. Not partner-facing.
