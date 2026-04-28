@@ -46,5 +46,77 @@
         "abiPath": "abis/BatchReader@1.0.0.json"
       }
     ]
+  },
+  {
+    "name": "UniswapV2Factory",
+    "versions": [
+      {
+        "address": "0x0296597E826B5d548F2592cb084DB58727bcC089",
+        "version": "1.0.0",
+        "status": "live",
+        "deployedAt": "2026-04-16T00:00:00Z",
+        "abiPath": "abis/UniswapV2Factory@1.0.0.json"
+      }
+    ]
+  },
+  {
+    "name": "UniswapV2Router",
+    "versions": [
+      {
+        "address": "0xd3480D959d2D2C2BC3c3e3E79567469DF983416e",
+        "version": "1.0.0",
+        "status": "live",
+        "deployedAt": "2026-04-16T00:00:00Z",
+        "abiPath": "abis/UniswapV2Router@1.0.0.json"
+      }
+    ]
+  },
+  {
+    "name": "WETH9",
+    "versions": [
+      {
+        "address": "0x2EC27c5F78B692a29f07a49000b3a4591133Ad5C",
+        "version": "1.0.0",
+        "status": "live",
+        "deployedAt": "2026-04-16T00:00:00Z",
+        "abiPath": "abis/WETH9@1.0.0.json"
+      }
+    ]
+  },
+  {
+    "name": "Multicall3",
+    "versions": [
+      {
+        "address": "0x24cF86C7A36505405d401434e87824614820Fb32",
+        "version": "1.0.0",
+        "status": "live",
+        "deployedAt": "2026-04-16T00:00:00Z",
+        "abiPath": "abis/Multicall3@1.0.0.json"
+      }
+    ]
+  },
+  {
+    "name": "ERC20Factory",
+    "versions": [
+      {
+        "address": "0x123e003D4Ee7b16Dc6a1743fACc45b9D038DE890",
+        "version": "1.0.0",
+        "status": "live",
+        "deployedAt": "2026-04-16T00:00:00Z",
+        "abiPath": "abis/ERC20Factory@1.0.0.json"
+      }
+    ]
+  },
+  {
+    "name": "ERC20SPLFactory",
+    "versions": [
+      {
+        "address": "0x0E7471FA5A4341447b33635f00Deb76ce077744c",
+        "version": "1.0.0",
+        "status": "live",
+        "deployedAt": "2026-04-16T00:00:00Z",
+        "abiPath": "abis/ERC20SPLFactory@1.0.0.json"
+      }
+    ]
   }
 ]
