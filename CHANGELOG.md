@@ -6,6 +6,39 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-04-28
+
+### Added
+- **`schema/chain.schema.json`** — new optional `romeEvmProgramId` field. Same semantics as the v0.3.x `solanaProgramId` (Rome EVM program ID, Solana base58, defaults to the canonical shared program when absent), with an unambiguous name. Schema-evolution: minor bump (additive — both names accepted).
+- **`schema/contracts.schema.json`** — three new optional fields on every `versions[]` entry, captured by the `contract-deploys` workflows when they land an artifact:
+  - `bytecodeSha256` — SHA-256 of deployed runtime bytecode (lowercase 64-hex).
+  - `sourceGitSha` — full Git SHA-1 of the source-repo commit (lowercase 40-hex; never short).
+  - `compilerVersion` — Solidity compiler version that produced the bytecode (e.g. `0.8.28+commit.7893614a`).
+  Together these form a deterministic provenance triple: source → compiler → bytecode → on-chain address. Schema-evolution: minor bump (additive).
+
+### Changed
+- **All 4 chains backfilled** (marcus / subura / esquiline / maximus) — `solanaProgramId` replaced by `romeEvmProgramId`. Same values; the schema continues to accept the legacy name during the deprecation window.
+- **`tools/liveness.ts`** — reads `chain.romeEvmProgramId ?? chain.solanaProgramId ?? DEFAULT_ROME_EVM_PROGRAM`, prefers the new name. Suggestion strings in failure messages updated to reference `romeEvmProgramId`.
+- **`tools/types.ts`** — regenerated via `npm run codegen`.
+- **`tools/fixtures/{chain,contracts}.fixture.json`** — extended to cover the new fields so `schemas.test.ts` exercises them.
+- **`chains/121215-maximus/NOTES.md`** — wording updated to reference `romeEvmProgramId`.
+
+### Deprecated
+- **`schema/chain.schema.json#solanaProgramId`** — retained as an optional alias for one minor cycle so external consumers can migrate. Will be **removed in v1.0.0**, triggering the 3-month deprecation window per `docs/SCHEMA_VERSIONING.md`. New chain entries should use `romeEvmProgramId` only; consumers should prefer `romeEvmProgramId` when both are present.
+
+### Why
+- **Naming hygiene.** "Solana program ID" is ambiguous — Rome chains touch many Solana programs (SPL Token, ATA, Meteora AMM, Token-2022 Transfer Hooks). The chain-level field specifically names the Rome EVM program, not a generic Solana program. `romeEvmProgramId` says exactly that, no decoder ring required.
+- **Provenance for contracts.** As `contract-deploys` becomes the gated path for landing Solidity contracts on every chain, the registry needs to capture *what* code was deployed (bytecodeSha256), *from where* (sourceGitSha), and *with which compiler* (compilerVersion). Without these, the registry is an address ledger; with them, it's a provenance ledger that consumers can verify against on-chain `eth_getCode` and against the source repo.
+
+### Verification
+- `npm test`: 24 tests, 4 files passed (chain + contracts fixtures exercise new fields).
+- `npm run validate`: 42 files passed (schemas accept both legacy `solanaProgramId` and new `romeEvmProgramId`; new contract provenance fields validated against fixture).
+- Backward-compat: any external consumer still sending `solanaProgramId` continues to validate; any consumer reading via `tools/liveness.ts` prefers `romeEvmProgramId` and falls through.
+
+### Migration
+- Consumers reading `chain.solanaProgramId` should switch to `chain.romeEvmProgramId ?? chain.solanaProgramId` until v1.0.0. After v1.0.0, the alias is removed.
+- New chain submissions (`tools/add-chain.ts` Path B) should write `romeEvmProgramId` only.
+
 ## [0.3.0] — 2026-04-27
 
 ### Added — Solana cluster + per-chain compatibility schema (closes task #167)

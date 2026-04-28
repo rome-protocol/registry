@@ -37,8 +37,10 @@ function loadSolanaPrograms(network: "mainnet" | "devnet"): SolanaPrograms {
   ) as SolanaPrograms;
 }
 
-// Default Rome EVM program (most chains share this; chain.json.solanaProgramId
-// can override). Derived from the on-chain truth as of 2026-04-27.
+// Default Rome EVM program (most chains share this; chain.json.romeEvmProgramId
+// can override; chain.json.solanaProgramId is the v0.3.x deprecated alias and
+// is read as a fallback during the v0.4.x → v1.0.0 deprecation window).
+// Derived from the on-chain truth as of 2026-04-27.
 const DEFAULT_ROME_EVM_PROGRAM = "DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3";
 
 // Solana RPCs per network. Could surface in chain.json or solana/rpcs.json
@@ -107,7 +109,7 @@ async function probeGasToken(args: {
       field: "gasPool",
       expected: expectedPool.toBase58(),
       actual: entry.gasPool,
-      suggestion: `gasPool must equal ATA(sol_wallet=${solWallet.toBase58()}, mint=${entry.mintId}, splToken). Update the entry, or correct the chain's solanaProgramId/chainId if the derivation is wrong.`,
+      suggestion: `gasPool must equal ATA(sol_wallet=${solWallet.toBase58()}, mint=${entry.mintId}, splToken). Update the entry, or correct the chain's romeEvmProgramId/chainId if the derivation is wrong.`,
     });
     return;
   }
@@ -153,7 +155,7 @@ async function probeGasToken(args: {
       field: "gasPool.owner",
       expected: solWallet.toBase58(),
       actual: info.owner,
-      suggestion: `Pool's token-account-level owner must be the derived sol_wallet PDA. If it isn't, the chain's solanaProgramId may be wrong.`,
+      suggestion: `Pool's token-account-level owner must be the derived sol_wallet PDA. If it isn't, the chain's romeEvmProgramId may be wrong.`,
     });
   }
 }
@@ -326,6 +328,7 @@ async function main(): Promise<void> {
       name: string;
       network: "mainnet" | "testnet" | "devnet" | "local";
       rpcUrl: string;
+      romeEvmProgramId?: string;
       solanaProgramId?: string;
       status: string;
     };
@@ -343,7 +346,9 @@ async function main(): Promise<void> {
     const solRpc = solanaNetwork === "mainnet" ? MAINNET_RPC : DEVNET_RPC;
     const conn = new Connection(solRpc);
 
-    const programId = new PublicKey(chain.solanaProgramId ?? DEFAULT_ROME_EVM_PROGRAM);
+    const programId = new PublicKey(
+      chain.romeEvmProgramId ?? chain.solanaProgramId ?? DEFAULT_ROME_EVM_PROGRAM,
+    );
     const splToken  = new PublicKey(programs.splToken);
     const ataProgram = new PublicKey(programs.associatedToken);
 

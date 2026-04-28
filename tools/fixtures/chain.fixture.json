@@ -4,6 +4,7 @@
   "network": "testnet",
   "rpcUrl": "https://marcus.devnet.romeprotocol.xyz/",
   "explorerUrl": "https://romescout-marcus.devnet.romeprotocol.xyz/",
+  "romeEvmProgramId": "DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3",
   "nativeCurrency": { "name": "Rome Marcus", "symbol": "USDC", "decimals": 18 },
   "status": "live"
 }
