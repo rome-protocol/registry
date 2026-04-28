@@ -4,7 +4,7 @@
   "network": "devnet",
   "rpcUrl": "https://esquiline.devnet.romeprotocol.xyz/",
   "explorerUrl": "https://romescout-esquiline.devnet.romeprotocol.xyz/",
-  "solanaProgramId": "DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3",
+  "romeEvmProgramId": "DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3",
   "nativeCurrency": {
     "name": "Rome Esquiline",
     "symbol": "USDC",

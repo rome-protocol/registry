@@ -11,10 +11,15 @@
     "network":     { "enum": ["mainnet", "testnet", "devnet", "local"] },
     "rpcUrl":      { "type": "string", "format": "uri" },
     "explorerUrl": { "type": "string", "format": "uri" },
+    "romeEvmProgramId": {
+      "type": "string",
+      "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+      "description": "Rome EVM program ID (Solana base58) this chain is registered under. Most chains share `DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3`; chains running a custom rome-evm fork (e.g. meta-hook test branches) declare their own. Optional; consumers fall back to the canonical shared program when absent. Added v0.4.0 — supersedes `solanaProgramId`."
+    },
     "solanaProgramId": {
       "type": "string",
       "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-      "description": "Rome EVM program ID (Solana base58) this chain is registered under. Most chains share `DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3`; chains running a custom rome-evm fork (e.g. meta-hook test branches) declare their own. Optional; consumers fall back to the canonical shared program when absent."
+      "description": "DEPRECATED v0.4.0 — use `romeEvmProgramId`. Same semantics: the Rome EVM program ID this chain is registered under. Retained as an optional alias for one minor cycle so external consumers can migrate; will be removed in v1.0.0. Consumers should prefer `romeEvmProgramId` when both are present."
     },
     "nativeCurrency": {
       "type": "object",

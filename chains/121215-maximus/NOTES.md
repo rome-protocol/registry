@@ -22,7 +22,7 @@ Per docs/VERIFICATION_RULES.md — verified directly from Maximus's dedicated Ro
 - No gas pool to verify (mint=None means no SPL backing)
 
 ## Known caveats
-- **Different `solanaProgramId`** from the shared rome-evm program. The on-chain liveness probe (v0.2) must use this chain's `solanaProgramId` field, not assume the shared one.
+- **Different `romeEvmProgramId`** from the shared rome-evm program. The on-chain liveness probe (v0.2+) must use this chain's `romeEvmProgramId` field, not assume the shared one. (`solanaProgramId` was the v0.3.x field name; deprecated in v0.4.0, removed in v1.0.0.)
 - **No Oracle Gateway V2 deployed.** `oracle.json` carries placeholder zero-address and empty feeds; Maximus doesn't use the price-feed adapters.
 - **No SPL bridged-asset wrappers.** `tokens.json` is empty (only native SOL gas, no `kind: gas` entry possible without a mint).
 - **No bridge contracts.** `bridge.json` carries only the source-chain block for forward compatibility; no Phase 1 bridge work on this chain.

@@ -24,7 +24,22 @@
             "deployTx":     { "type": "string" },
             "deprecatedAt": { "type": "string", "format": "date-time" },
             "replacedBy":   { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
-            "abiPath":      { "type": "string", "pattern": "^abis/.+\\.json$" }
+            "abiPath":      { "type": "string", "pattern": "^abis/.+\\.json$" },
+            "bytecodeSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$",
+              "description": "SHA-256 of the deployed runtime bytecode (lowercase hex, 64 chars). Lets consumers verify the on-chain code matches what was reviewed off-chain. Optional; emitted by `contract-deploys` workflows. Added v0.4.0."
+            },
+            "sourceGitSha": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$",
+              "description": "Full Git SHA-1 (lowercase hex, 40 chars; never short) of the source repo commit this artifact was compiled from. Combined with `bytecodeSha256` and `compilerVersion`, gives a deterministic provenance triple. Optional. Added v0.4.0."
+            },
+            "compilerVersion": {
+              "type": "string",
+              "pattern": "^0\\.[0-9]+\\.[0-9]+(\\+commit\\.[a-f0-9]+)?$",
+              "description": "Solidity compiler version that produced the bytecode (e.g. `0.8.28` or `0.8.28+commit.7893614a`). Pairs with `sourceGitSha` for reproducible builds. Optional. Added v0.4.0."
+            }
           }
         }
       }
