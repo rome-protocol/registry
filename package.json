@@ -23,6 +23,7 @@
     "liveness": "tsx tools/liveness.ts",
     "drift-check": "tsx tools/drift-check.ts",
     "add-chain": "tsx tools/add-chain.ts",
+    "add-bundle": "tsx tools/add-bundle.ts",
     "codegen": "tsx tools/codegen.ts",
     "prepublishOnly": "npm run codegen && npm run build"
   },
