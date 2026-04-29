@@ -1,0 +1,22 @@
+{
+  "chainId": 121298,
+  "name": "Cassius Test",
+  "network": "devnet",
+  "rpcUrl": "https://cassius-test.devnet.romeprotocol.xyz/",
+  "explorerUrl": "https://cassius-test.via.devnet.romeprotocol.xyz/",
+  "nativeCurrency": {
+    "name": "Rome SOL (cassius-test)",
+    "symbol": "SOL",
+    "decimals": 18
+  },
+  "status": "preparing",
+  "romeEvmProgramId": "FfHDMdFLXCLfJhpVM6tQhLZFTk5Q3REd17t1aPoSHnG1",
+  "solana": {
+    "cluster": "devnet",
+    "tested": {
+      "version": "4.0.0-beta.7",
+      "verifiedAt": "2026-04-29",
+      "notes": "Cassius dry-run rehearsal"
+    }
+  }
+}
