@@ -1,0 +1,9 @@
+{
+  "maxComputeUnitsPerTx": 1400000,
+  "maxCpiPerAtomicTx": 1,
+  "recommendedGasBudgets": {
+    "wrap_gas_to_spl": 27000000,
+    "transfer_to_fresh_recipient": 1500000
+  },
+  "knownIncidents": []
+}

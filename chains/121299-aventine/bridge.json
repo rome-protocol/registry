@@ -1,0 +1,15 @@
+{
+  "sourceEvm": {
+    "chainId": 11155111,
+    "name": "Sepolia",
+    "usdc": "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+    "cctpTokenMessenger": "0x9f3B8679c73C2Fef8b59B4f3444d4e156fb70AA5",
+    "cctpMessageTransmitter": "0x7865fAfC2db2093669d92c0F33AeEF291086BEFD",
+    "wormholeTokenBridge": "0xDB5492265f6038831E89f495670FF909aDe94bd9"
+  },
+  "solana": {
+    "wethMint": "6F5YWWrUMNpee8C6BDUc6DmRvYRMDDTgJHwKhbXuifWs",
+    "wormholeChainIdRef": "sepolia",
+    "cctpDomainRef": "sepolia"
+  }
+}

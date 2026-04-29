@@ -21,8 +21,11 @@
     },
     "solana": {
       "type": "object",
-      "required": ["usdcMint"],
       "additionalProperties": false,
+      "anyOf": [
+        { "required": ["usdcMint"] },
+        { "required": ["wethMint"] }
+      ],
       "properties": {
         "usdcMint":            { "type": "string" },
         "wethMint":            { "type": "string" },
