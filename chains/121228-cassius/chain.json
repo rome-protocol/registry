@@ -1,0 +1,17 @@
+{
+  "chainId": 121228,
+  "name": "Rome Cassius",
+  "network": "devnet",
+  "rpcUrl": "https://cassius.devnet.romeprotocol.xyz/",
+  "explorerUrl": "https://romescout-cassius.devnet.romeprotocol.xyz/",
+  "nativeCurrency": {
+    "name": "Rome Cassius",
+    "symbol": "SOL",
+    "decimals": 18
+  },
+  "status": "preparing",
+  "romeEvmProgramId": "5uBA85gDpaRE3Btd3SiPCsFts5H1QQJbrwwW5zmvcaSH",
+  "solana": {
+    "cluster": "devnet"
+  }
+}
