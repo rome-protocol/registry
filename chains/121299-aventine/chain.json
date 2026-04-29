@@ -1,0 +1,22 @@
+{
+  "chainId": 121299,
+  "name": "Rome Aventine",
+  "network": "devnet",
+  "rpcUrl": "https://aventine.devnet.romeprotocol.xyz/",
+  "explorerUrl": "https://romescout-aventine.devnet.romeprotocol.xyz/",
+  "solanaProgramId": "DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3",
+  "nativeCurrency": {
+    "name": "Rome Aventine",
+    "symbol": "ETH",
+    "decimals": 18
+  },
+  "status": "live",
+  "solana": {
+    "cluster": "devnet",
+    "tested": {
+      "version": "4.0.0-beta.6",
+      "verifiedAt": "2026-04-29"
+    },
+    "romeNodeVersion": "4.0.0-beta.7"
+  }
+}
