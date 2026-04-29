@@ -22,10 +22,7 @@ export interface PerChainBridgeWiring {
     wormholeTokenBridge?: string;
   };
   solana: {
-    usdcMint: string;
-    wethMint?: string;
-    wormholeChainIdRef?: string;
-    cctpDomainRef?: string;
+    [k: string]: unknown | undefined;
   };
 }
 
@@ -210,6 +207,44 @@ export type PerChainGasPricingSource = {
   notes?: string;
 };
 
+/**
+ * Canonical SOL liquid-staking-token (LST) mint addresses, keyed by short symbol. LST tokens have 9 decimals across the board (Solana SOL convention). Cardo's stake intent ranks across these — adding a new LST here is the only step needed to surface it in /orchestrator's stake routes.
+ */
+export interface SolanaLiquidStakingTokenMintsPerNetwork {
+  [k: string]:
+    | {
+        /**
+         * SPL mint address (base58).
+         */
+        mint: string;
+        /**
+         * Display ticker, e.g. 'JitoSOL'.
+         */
+        symbol: string;
+        /**
+         * Human-readable protocol name.
+         */
+        name: string;
+        /**
+         * Underlying staking framework. spl-stake-pool covers most; marinade is its own program.
+         */
+        program: "spl-stake-pool" | "marinade" | "sanctum" | "jpool";
+        /**
+         * Stake-pool account address. For spl-stake-pool members; absent for marinade.
+         */
+        stakePool?: string;
+        /**
+         * Approximate SOL → LST exchange rate at registry update time. Live rate must be read from the pool; this is fallback / sanity-check only.
+         */
+        expectedRate?: number;
+        /**
+         * Approximate APY string, e.g. '~7.0%'. Indicative only.
+         */
+        approxApy?: string;
+      }
+    | undefined;
+}
+
 export interface PerChainOperationalLimitsAndKnownIncidents {
   maxComputeUnitsPerTx?: number;
   maxCpiPerAtomicTx?: number;
@@ -238,14 +273,113 @@ export interface PerChainOracleGatewayConfig {
   };
 }
 
+/**
+ * Canonical program IDs for the protocols Rome integrates with on a given Solana cluster. Required entries are core SPL / system programs that exist identically across networks; everything else is optional and only present when (a) Rome's services or Cardo's adapters use it, and (b) it's deployed on that cluster.
+ */
 export interface SolanaProgramIDsPerNetwork {
+  /**
+   * SPL Token program (classic Tokenkeg).
+   */
   splToken: string;
+  /**
+   * SPL Token-2022 (extensions: transfer hooks, confidential transfers, etc.).
+   */
+  splToken2022?: string;
   associatedToken: string;
   systemProgram: string;
+  /**
+   * SPL Memo program — used by Cardo to tag orchestrator txs.
+   */
+  memo?: string;
   wormholeCore?: string;
   wormholeTokenBridge?: string;
   cctpMessageTransmitter?: string;
   cctpTokenMessenger?: string;
+  /**
+   * SPL stake-pool program — covers JitoSOL, bSOL, JupSOL, dSOL, etc. Marinade is separate.
+   */
+  stakePool?: string;
+  /**
+   * Marinade Liquid Staking — its own program (NOT spl-stake-pool). mSOL deposit/unstake target.
+   */
+  marinade?: string;
+  /**
+   * Raydium hand-rolled AMM v4 — devnet redeploy at HWy1jot…, NOT same as mainnet.
+   */
+  raydiumAmmV4?: string;
+  /**
+   * Raydium constant-product MM — Anchor-based; devnet redeploy at CPMDWBwJ….
+   */
+  raydiumCpmm?: string;
+  /**
+   * Raydium concentrated-liquidity MM — devnet redeploy at devi51m….
+   */
+  raydiumClmm?: string;
+  /**
+   * Meteora Dynamic Liquidity MM (LB-pair / multi-bin).
+   */
+  meteoraDlmm?: string;
+  /**
+   * Meteora dynamic AMM v1 — production gas-pricing pool family.
+   */
+  meteoraDammV1?: string;
+  /**
+   * Meteora dynamic AMM v2.
+   */
+  meteoraDammV2?: string;
+  orcaWhirlpool?: string;
+  /**
+   * Phoenix CLOB — order-book DEX.
+   */
+  phoenix?: string;
+  /**
+   * Pump.fun bonding-curve token launches.
+   */
+  pumpFun?: string;
+  /**
+   * PumpSwap — DEX layer over Pump.fun graduations.
+   */
+  pumpSwap?: string;
+  /**
+   * Kamino lending (klend) — Main market USDC reserve. Mainnet only today.
+   */
+  kaminoLend?: string;
+  /**
+   * Kamino farms — required for klend deposits with farms enabled.
+   */
+  kaminoFarms?: string;
+  /**
+   * Mango v4 — perpetuals + spot + lending.
+   */
+  mangoV4?: string;
+  /**
+   * Drift v2 — perpetuals + spot.
+   */
+  driftV2?: string;
+  /**
+   * MarginFi v2 — lending.
+   */
+  marginfiV2?: string;
+  /**
+   * Streamflow — token vesting + payment streaming.
+   */
+  streamflow?: string;
+  /**
+   * Solana Name Service — domain registration.
+   */
+  sns?: string;
+  /**
+   * Squads V4 multisig — propose / approve / execute.
+   */
+  squadsV4?: string;
+  /**
+   * SPL Governance (Realms) — DAO voting.
+   */
+  splGovernance?: string;
+  /**
+   * Jupiter aggregator router (v6) — used by Cardo orchestrator for swap + stake routing.
+   */
+  jupiterV6?: string;
 }
 
 export interface CrossChainBridgeProtocolConstants {

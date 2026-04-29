@@ -22,6 +22,7 @@ import type {
   PerChainOperationalLimitsAndKnownIncidents,
   CrossChainBridgeProtocolConstants,
   SolanaProgramIDsPerNetwork,
+  SolanaLiquidStakingTokenMintsPerNetwork,
 } from "./types.js";
 
 // Resolve the package root. When installed via NPM, dist/index.js sits one
@@ -145,4 +146,18 @@ export function getProtocol(name: "cctp" | "wormhole"): CrossChainBridgeProtocol
 
 export function getSolanaPrograms(network: "mainnet" | "devnet"): SolanaProgramIDsPerNetwork {
   return readJson<SolanaProgramIDsPerNetwork>(`solana/programs/${network}.json`);
+}
+
+/// Solana liquid-staking-token mints, keyed by symbol (JitoSOL / bSOL /
+/// mSOL / JupSOL / etc.). Cardo's stake intent ranks across these.
+/// Adding a new LST here surfaces it in /orchestrator's stake routes.
+///
+/// Devnet doesn't have most LSTs deployed; the file may be absent there
+/// (returns undefined).
+export function getSolanaLstMints(
+  network: "mainnet" | "devnet",
+): SolanaLiquidStakingTokenMintsPerNetwork | undefined {
+  const p = `solana/lst-mints/${network}.json`;
+  if (!existsSync(path.join(_registryRoot, p))) return undefined;
+  return readJson<SolanaLiquidStakingTokenMintsPerNetwork>(p);
 }
