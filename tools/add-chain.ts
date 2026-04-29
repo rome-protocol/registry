@@ -178,3 +178,115 @@ function writeJson(p: string, data: unknown): void {
   const cleaned = JSON.parse(JSON.stringify(data, (_k, v) => (v === undefined ? undefined : v)));
   writeFileSync(p, JSON.stringify(cleaned, null, 2) + "\n");
 }
+
+const USAGE = `add-chain — scaffold a chains/<chainId>-<slug>/ directory.
+
+Usage (fresh):
+  npx tsx tools/add-chain.ts \\
+    --chain-id <int> \\
+    --slug <slug> \\
+    --name "<Display Name>" \\
+    --network <mainnet|testnet|devnet|local> \\
+    --rpc-url <https://...> \\
+    [--explorer-url <https://...>] \\
+    --native-name <"Currency Name"> --native-symbol <SYM> --native-decimals <int>
+
+Usage (rotate from existing slug):
+  npx tsx tools/add-chain.ts \\
+    --copy-from <existing-slug> \\
+    --new-chain-id <int> \\
+    --new-slug <slug> \\
+    --new-name "<Display Name>" \\
+    --new-rpc-url <https://...>
+
+Common:
+  [--registry-root <path>]   Defaults to process.cwd().
+`;
+
+function parseArgs(argv: string[]): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (!arg.startsWith("--")) continue;
+    const key = arg.slice(2);
+    const next = argv[i + 1];
+    if (!next || next.startsWith("--")) {
+      out[key] = "true";
+    } else {
+      out[key] = next;
+      i++;
+    }
+  }
+  return out;
+}
+
+function requireArg(args: Record<string, string>, name: string): string {
+  const v = args[name];
+  if (!v) {
+    process.stderr.write(`add-chain: missing required --${name}\n\n${USAGE}`);
+    process.exit(2);
+  }
+  return v;
+}
+
+export function main(argv: string[]): void {
+  if (argv.length === 0 || argv.includes("--help") || argv.includes("-h")) {
+    process.stdout.write(USAGE);
+    return;
+  }
+  const args = parseArgs(argv);
+  const registryRoot = args["registry-root"] ?? process.cwd();
+
+  if (args["copy-from"]) {
+    const dir = rotateChain({
+      registryRoot,
+      copyFromSlug: requireArg(args, "copy-from"),
+      newChainId: Number(requireArg(args, "new-chain-id")),
+      newSlug: requireArg(args, "new-slug"),
+      newName: requireArg(args, "new-name"),
+      newRpcUrl: requireArg(args, "new-rpc-url"),
+    });
+    process.stdout.write(`Created (rotation): ${dir}\n`);
+    return;
+  }
+
+  const network = requireArg(args, "network");
+  if (!["mainnet", "testnet", "devnet", "local"].includes(network)) {
+    process.stderr.write(
+      `add-chain: --network must be one of mainnet|testnet|devnet|local; got '${network}'\n`,
+    );
+    process.exit(2);
+  }
+  const decimals = Number(requireArg(args, "native-decimals"));
+  if (!Number.isInteger(decimals) || decimals < 0 || decimals > 36) {
+    process.stderr.write(`add-chain: --native-decimals must be a non-negative integer ≤ 36\n`);
+    process.exit(2);
+  }
+  const dir = addChainFresh({
+    registryRoot,
+    chainId: Number(requireArg(args, "chain-id")),
+    slug: requireArg(args, "slug"),
+    name: requireArg(args, "name"),
+    network: network as "mainnet" | "testnet" | "devnet" | "local",
+    rpcUrl: requireArg(args, "rpc-url"),
+    explorerUrl: args["explorer-url"],
+    nativeCurrency: {
+      name: requireArg(args, "native-name"),
+      symbol: requireArg(args, "native-symbol"),
+      decimals,
+    },
+  });
+  process.stdout.write(`Created (fresh): ${dir}\n`);
+}
+
+// Run as CLI when invoked via `tsx tools/add-chain.ts ...`. Importing the
+// module elsewhere (test files, other scripts) does not trigger main().
+const invokedAsCli =
+  typeof process !== "undefined" &&
+  Array.isArray(process.argv) &&
+  process.argv[1] &&
+  import.meta.url === `file://${process.argv[1]}`;
+
+if (invokedAsCli) {
+  main(process.argv.slice(2));
+}
