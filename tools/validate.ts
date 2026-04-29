@@ -22,6 +22,7 @@ const schemas = {
   programs: load("schema/programs.schema.json"),
   gasPricing: load("schema/gasPricing.schema.json"),
   clusters: load("schema/clusters.schema.json"),
+  lstMints: load("schema/lstMints.schema.json"),
 };
 
 type Failure = { file: string; errors: string };
@@ -73,6 +74,13 @@ if (existsSync("solana/programs")) {
 // solana/clusters.json
 if (existsSync("solana/clusters.json")) {
   check("solana/clusters.json", schemas.clusters);
+}
+
+// solana/lst-mints/{mainnet,devnet}.json
+if (existsSync("solana/lst-mints")) {
+  for (const f of readdirSync("solana/lst-mints")) {
+    if (f.endsWith(".json")) check(path.join("solana/lst-mints", f), schemas.lstMints);
+  }
 }
 
 if (failures.length > 0) {

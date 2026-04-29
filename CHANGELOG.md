@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Added
+- **`schema/programs.schema.json`** — extended to cover Cardo's full Solana protocol stack. New optional fields: `splToken2022`, `memo`, `stakePool`, `marinade`, `raydiumAmmV4`, `raydiumCpmm`, `raydiumClmm`, `meteoraDlmm`, `meteoraDammV1`, `meteoraDammV2`, `orcaWhirlpool`, `phoenix`, `pumpFun`, `pumpSwap`, `kaminoLend`, `kaminoFarms`, `mangoV4`, `driftV2`, `marginfiV2`, `streamflow`, `sns`, `squadsV4`, `splGovernance`, `jupiterV6`. Each documented with a one-line description. Required core (`splToken`, `associatedToken`, `systemProgram`) unchanged. Schema-evolution: minor bump (additive — all new fields optional).
+- **`solana/programs/mainnet.json` + `devnet.json`** — populated with verified-on-chain program IDs for every protocol Cardo's adapters or orchestrator touches. Mainnet/devnet variance documented inline (Marinade, Raydium AMM v4 / CPMM / CLMM, Streamflow have devnet redeploys distinct from mainnet; Phoenix / DLMM / Squads / Realms / Drift / Mango / Pump.fun / PumpSwap deploy identically across networks).
+- **`schema/lstMints.schema.json` + `solana/lst-mints/mainnet.json`** — canonical Liquid-Staking-Token mint addresses (JitoSOL / bSOL / mSOL / JupSOL), with stake-pool back-references where applicable. Cardo's `/orchestrator` stake intent ranks across this list — adding a new entry surfaces it in routing without code change.
+- **`tools/index.ts`** — new public API: `getSolanaLstMints(network)` returns the LST registry as a typed map.
+- **`tools/validate.ts`** — also walks `solana/lst-mints/` and validates against the new schema.
+
+### Why
+Cardo's adapter library (15+ Solana protocols) has been hardcoding program IDs and pinned addresses in `lib/<proto>-program.ts` files. Centralising them here removes:
+- duplicate-source drift (the Raydium AMM v4 devnet redeploy at `HWy1jot…` was rediscovered three times across PRs);
+- per-PR security-scanner false positives (GitGuardian flags any base58 string as a "Generic High Entropy Secret"; consolidating to a canonical list lets that be allowlisted in one place);
+- per-network branching scattered across files (every adapter that has a different devnet ID was open-coding a `network === 'mainnet' ? a : b` style check).
+
+Cardo's follow-up PR (`feat-cardo-registry-imports`) replaces the inline literals with `getSolanaPrograms()` / `getSolanaLstMints()` calls.
+
 ## [0.4.0] — 2026-04-28
 
 ### Added

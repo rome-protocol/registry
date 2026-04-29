@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rome-protocol.github.io/registry/schema/lstMints.schema.json",
+  "title": "Solana Liquid-Staking-Token mints (per-network)",
+  "description": "Canonical SOL liquid-staking-token (LST) mint addresses, keyed by short symbol. LST tokens have 9 decimals across the board (Solana SOL convention). Cardo's stake intent ranks across these — adding a new LST here is the only step needed to surface it in /orchestrator's stake routes.",
+  "type": "object",
+  "additionalProperties": {
+    "type": "object",
+    "required": ["mint", "symbol", "name", "program"],
+    "properties": {
+      "mint":     { "type": "string", "description": "SPL mint address (base58)." },
+      "symbol":   { "type": "string", "description": "Display ticker, e.g. 'JitoSOL'." },
+      "name":     { "type": "string", "description": "Human-readable protocol name." },
+      "program":  { "type": "string", "enum": ["spl-stake-pool", "marinade", "sanctum", "jpool"], "description": "Underlying staking framework. spl-stake-pool covers most; marinade is its own program." },
+      "stakePool": { "type": "string", "description": "Stake-pool account address. For spl-stake-pool members; absent for marinade." },
+      "expectedRate": { "type": "number", "description": "Approximate SOL → LST exchange rate at registry update time. Live rate must be read from the pool; this is fallback / sanity-check only." },
+      "approxApy": { "type": "string", "description": "Approximate APY string, e.g. '~7.0%'. Indicative only." }
+    }
+  }
+}
