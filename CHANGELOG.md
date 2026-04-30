@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Changed — 121228-cassius status: preparing → live
+- **`chains/121228-cassius/chain.json`** — `status` flipped from `preparing` to `live`. Why: `/bring-up-chain` Phase 12 smoke suite passed end-to-end (steps 1, 2, 3, 6, 7 passed; 4, 5, 8 deferred for oracle + oracle-portal which are not yet wired for this chain; 0 failures). Layer-2 (rome-ops) status was flipped to `live` first; this PR aligns Layer-4 (registry) with the operator-side state. RPC `https://cassius.devnet.romeprotocol.xyz/` and the deployed contract set are live and serving traffic.
+
 ### Added — New chain: Rome Cassius (121228)
 - **`chains/121228-cassius/`** — bundled bring-up: `chain.json` (with `romeEvmProgramId` + `solana` block), `contracts.json` (full deploy set from rome-solidity + rome-uniswap-v2), `tokens.json` (gas-token + SPL wrappers), plus `bridge.json` / `oracle.json` / `endpoints.json` / `operationalLimits.json` / `NOTES.md` scaffolds. Status: `preparing` — flip to `live` via a separate `bump-status` PR after the chain proves out via smoke.
 ### Added
