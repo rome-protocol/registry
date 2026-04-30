@@ -9,7 +9,7 @@
     "symbol": "SOL",
     "decimals": 18
   },
-  "status": "preparing",
+  "status": "live",
   "romeEvmProgramId": "5uBA85gDpaRE3Btd3SiPCsFts5H1QQJbrwwW5zmvcaSH",
   "solana": {
     "cluster": "devnet"
