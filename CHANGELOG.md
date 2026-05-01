@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Changed — 121225-esquiline status: live → retired
+- **`chains/121225-esquiline/chain.json`** — `status` flipped from `live` to `retired`. Why: active devnet set is contracting around `subura` + `marcus`; Esquiline served as the first K8s-deployed L2 rollup (GKE Autopilot proving ground for the `rome-l2` Helm chart), and Cassius (chain 121228) has now inherited that role as the canonical K8s production chain. No ongoing workload depends on Esquiline. Decommissioning trigger is `/take-down-chain` — second chain take-down after Maximus, first K8s-mode take-down. Chain directory preserved per registry policy. On-chain liveness probe already skips retired chains (`tools/liveness.ts:336`).
+- **`chains/121225-esquiline/NOTES.md`** — appended `## Retirement` section with date, reason, and post-retirement notes.
+
 ### Changed — 121215-maximus status: live → retired
 - **`chains/121215-maximus/chain.json`** — `status` flipped from `live` to `retired`. Why: active devnet set is contracting around `cassius` + `marcus`; Maximus served its purpose as the Meta-Hook E2E proving ground (Meta-Hook Router v1 shipped 2026-04-17). No ongoing workload depends on it. Decommissioning trigger is `/take-down-chain` — Maximus is the proving rehearsal of the new take-down pipeline (rome-specs#47, rome#107). Chain directory preserved per registry policy. On-chain liveness probe already skips retired chains (`tools/liveness.ts:336`).
 - **`chains/121215-maximus/NOTES.md`** — appended `## Retirement` section with date, reason, and post-retirement notes.

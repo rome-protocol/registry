@@ -28,3 +28,13 @@ Per docs/VERIFICATION_RULES.md §"kind: gas" — verified directly from Rome EVM
 ## Contacts
 - Ops: @rome-protocol/ops-team
 - Protocol: @rome-protocol/protocol-team
+
+## Retirement
+
+**Date:** 2026-05-01
+**Reason:** Decommissioned via `/take-down-chain`. Active devnet set is contracting around Subura + Marcus; Esquiline served its purpose as the first K8s-deployed L2 rollup (GKE Autopilot proving ground for the `rome-l2` Helm chart). Cassius (chain 121228) has now inherited that role as the canonical K8s production chain. No ongoing workload depends on Esquiline.
+
+**Post-retirement:**
+- Chain directory preserved per registry policy.
+- On-chain liveness probe skips retired chains (`tools/liveness.ts:336`).
+- rome-evm program registration row at chain id 121225 remains permanent on Solana (no `DeregRollup` instruction).
