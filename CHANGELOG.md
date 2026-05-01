@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Changed — 121215-maximus status: live → retired
+- **`chains/121215-maximus/chain.json`** — `status` flipped from `live` to `retired`. Why: active devnet set is contracting around `cassius` + `marcus`; Maximus served its purpose as the Meta-Hook E2E proving ground (Meta-Hook Router v1 shipped 2026-04-17). No ongoing workload depends on it. Decommissioning trigger is `/take-down-chain` — Maximus is the proving rehearsal of the new take-down pipeline (rome-specs#47, rome#107). Chain directory preserved per registry policy. On-chain liveness probe already skips retired chains (`tools/liveness.ts:336`).
+- **`chains/121215-maximus/NOTES.md`** — appended `## Retirement` section with date, reason, and post-retirement notes.
+
 ### Added — 121228-cassius oracle feeds populated
 - **`chains/121228-cassius/oracle.json`** — replaces the empty `factory: 0x000…` / `feeds: {}` scaffold with the OracleAdapterFactory address (`0x5b312034d374777232298ebc9b15c205dcc511f9`) and the six adapters deployed at bring-up: five Pyth Pull adapters (SOL/USD, BTC/USD, ETH/USD, USDC/USD, USDT/USD) and one Switchboard V3 adapter (SOL/USD). All addresses verified on-chain via `eth_getCode`. Mirrors the structure already in `chains/121226-marcus/oracle.json`. The underlying Pyth Pull receivers are perma-stale on Solana devnet right now (no actively-keepered feeds within the factory's 60s default); registering the adapters in the registry decouples downstream apps from that gap so they can be discovered via `getOracle(chainId)` once the underlying feed freshens.
 
