@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Changed — 121299-aventine status: live → retired
+- **`chains/121299-aventine/chain.json`** — `status` flipped from `live` to `retired`. Why: active devnet set is contracting around `subura` + `marcus` + `cassius`; Aventine served its purpose as the first ETH-gas Rome chain (Wormhole-wrapped Sepolia-WETH SPL proving ground for ETH-as-native-gas mechanics). Pricing infrastructure (Meteora WETH/WSOL pool on Solana devnet) never materialized; outbound bridge contracts and Romeswap/Oracle Gateway V2 were never deployed on Aventine. The `rome-evm-private` code path is gas-mint-agnostic by design — no protocol-level work is lost. Bring-up lessons folded into `rome-specs/active/technical/2026-04-28-eth-gas-chain.md`. No ongoing workload depends on Aventine. Decommissioning trigger is `/take-down-chain` — third chain take-down after Maximus + Esquiline; first ETH-gas-chain take-down. Chain directory preserved per registry policy. On-chain liveness probe already skips retired chains (`tools/liveness.ts:336`).
+- **`chains/121299-aventine/NOTES.md`** — appended `## Retirement` section with date, reason, and post-retirement notes.
+
 ### Changed — 121225-esquiline status: live → retired
 - **`chains/121225-esquiline/chain.json`** — `status` flipped from `live` to `retired`. Why: active devnet set is contracting around `subura` + `marcus`; Esquiline served as the first K8s-deployed L2 rollup (GKE Autopilot proving ground for the `rome-l2` Helm chart), and Cassius (chain 121228) has now inherited that role as the canonical K8s production chain. No ongoing workload depends on Esquiline. Decommissioning trigger is `/take-down-chain` — second chain take-down after Maximus, first K8s-mode take-down. Chain directory preserved per registry policy. On-chain liveness probe already skips retired chains (`tools/liveness.ts:336`).
 - **`chains/121225-esquiline/NOTES.md`** — appended `## Retirement` section with date, reason, and post-retirement notes.
