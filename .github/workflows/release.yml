@@ -1,17 +1,62 @@
-name: Release
+name: Auto-tag and publish
+
+# When package.json#version is bumped on main, cut the matching git tag and
+# publish to npm. Replaces the previous tag-trigger-only release.yml — that
+# path was unreachable because nothing cut tags after a version bump, so
+# every version since v0.3.0 sat untagged (and unpublished).
+#
+# Idempotent: pushes to main that don't change the version no-op.
+#
+# Inputs are limited to package.json#version (committed, PR-reviewed) and
+# secrets — no untrusted event payload (issue body, PR title, etc.) is
+# referenced anywhere, so the workflow_injection class of risk does not apply.
 
 on:
   push:
-    tags: ["v*"]
+    branches: [main]
 
 jobs:
+  tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      version: ${{ steps.ver.outputs.version }}
+      created: ${{ steps.tag.outputs.created }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: ver
+        run: echo "version=$(jq -r .version package.json)" >> "$GITHUB_OUTPUT"
+      - id: tag
+        env:
+          VERSION: ${{ steps.ver.outputs.version }}
+        run: |
+          v="v$VERSION"
+          if git rev-parse "$v" >/dev/null 2>&1; then
+            echo "$v already exists — no-op."
+            echo "created=false" >> "$GITHUB_OUTPUT"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git tag -a "$v" -m "Release $v"
+            git push origin "$v"
+            echo "created=true" >> "$GITHUB_OUTPUT"
+            echo "Tagged $v at $(git rev-parse HEAD)."
+          fi
+
   publish:
+    needs: tag
+    if: needs.tag.outputs.created == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: v${{ needs.tag.outputs.version }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -19,8 +64,6 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run validate
-      - run: npm run codegen
-      - run: npm run build
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
