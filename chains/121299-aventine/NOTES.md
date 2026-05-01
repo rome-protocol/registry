@@ -46,3 +46,14 @@ These are phase-2 follow-ups; the chain works as a Wormhole-only deployment imme
 ## Test coverage
 
 E2E bridge test from Sepolia → Aventine pending Phase 6 (rome-ui chains.yaml entry).
+
+## Retirement
+
+**Date:** 2026-05-01
+**Reason:** Decommissioned via `/take-down-chain`. Active devnet set is contracting around Subura + Marcus + Cassius; Aventine served its purpose as the first ETH-gas Rome chain (Wormhole-wrapped Sepolia-WETH SPL proving ground for ETH-as-native-gas mechanics). Pricing infrastructure (Meteora WETH/WSOL pool on Solana devnet) never materialized; outbound bridge contracts (`RomeBridgeWithdraw`, ERC20-SPL wrappers, Romeswap, Oracle Gateway V2) were never deployed on Aventine. The `rome-evm-private` code path is gas-mint-agnostic by design — no protocol-level work is lost. The bring-up lessons are folded into [`rome-specs/active/technical/2026-04-28-eth-gas-chain.md`](https://github.com/rome-protocol/rome-specs/blob/main/active/technical/2026-04-28-eth-gas-chain.md). No ongoing workload depends on Aventine.
+
+**Post-retirement:**
+- Chain directory preserved per registry policy.
+- On-chain liveness probe skips retired chains (`tools/liveness.ts:336`).
+- rome-evm program registration row at chain id 121299 remains permanent on Solana (no `DeregRollup` instruction).
+- Future ETH-gas chain (when Meteora WETH/WSOL pool is seeded) will use a fresh chain id; aventine's chain id is reserved for historical lookup only.
