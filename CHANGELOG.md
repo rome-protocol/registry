@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Added — 121228-cassius oracle feeds populated
+- **`chains/121228-cassius/oracle.json`** — replaces the empty `factory: 0x000…` / `feeds: {}` scaffold with the OracleAdapterFactory address (`0x5b312034d374777232298ebc9b15c205dcc511f9`) and the six adapters deployed at bring-up: five Pyth Pull adapters (SOL/USD, BTC/USD, ETH/USD, USDC/USD, USDT/USD) and one Switchboard V3 adapter (SOL/USD). All addresses verified on-chain via `eth_getCode`. Mirrors the structure already in `chains/121226-marcus/oracle.json`. The underlying Pyth Pull receivers are perma-stale on Solana devnet right now (no actively-keepered feeds within the factory's 60s default); registering the adapters in the registry decouples downstream apps from that gap so they can be discovered via `getOracle(chainId)` once the underlying feed freshens.
+
 ### Changed — 121228-cassius status: preparing → live
 - **`chains/121228-cassius/chain.json`** — `status` flipped from `preparing` to `live`. Why: `/bring-up-chain` Phase 12 smoke suite passed end-to-end (steps 1, 2, 3, 6, 7 passed; 4, 5, 8 deferred for oracle + oracle-portal which are not yet wired for this chain; 0 failures). Layer-2 (rome-ops) status was flipped to `live` first; this PR aligns Layer-4 (registry) with the operator-side state. RPC `https://cassius.devnet.romeprotocol.xyz/` and the deployed contract set are live and serving traffic.
 
