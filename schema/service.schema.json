@@ -77,7 +77,7 @@
         "required": ["chain", "since"],
         "additionalProperties": false,
         "properties": {
-          "chain": { "type": "string", "pattern": "^[0-9]+-[a-z0-9-]+$", "description": "Chain slug (e.g. '121226-marcus')." },
+          "chain": { "type": "string", "pattern": "^[0-9]+-[a-z0-9-]+$", "description": "Chain slug (e.g. '<chainId>-<slug>')." },
           "since": { "type": "string", "format": "date-time" },
           "until": { "type": ["string", "null"], "format": "date-time" }
         }

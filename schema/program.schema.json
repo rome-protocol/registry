@@ -225,7 +225,7 @@
     "chainsHosted": {
       "type": "array",
       "items": { "type": "string", "pattern": "^[0-9]+-[a-z0-9-]+$" },
-      "description": "Slug references (e.g. '121226-marcus') of chains currently registered on this program. CI invariant: each entry must have chains/<slug>/chain.json#romeEvmProgramId == this programId."
+      "description": "Slug references (e.g. '<chainId>-<slug>') of chains currently registered on this program. CI invariant: each entry must have chains/<slug>/chain.json#romeEvmProgramId == this programId."
     },
 
     "chainsDecommissioned": {

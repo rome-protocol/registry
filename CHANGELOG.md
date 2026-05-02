@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Changed — clear stale `121226-marcus` references from user-facing docs + schema
+PR #29 dropped `chains/121226-marcus/` and added an empty-state note to `README.md`, but the surrounding code examples and rotation cookbook still used Marcus as the demo chain — so a fresh consumer would read "no live chains" and then see `getChain(121226)` two paragraphs later, producing an undefined return at runtime against the current package version. Same for the `--copy-from 121226-marcus` example in `docs/CONTRIBUTING.md` (the slug no longer exists, so the scaffolder would error). Replaced inline examples with `<chainId>` / `<chain-slug>` placeholders so they're clearly fill-in templates; the historical jsDelivr URL with `@v0.1.0/chains/121226-marcus/...` still resolves on the immutable tag if any reader actually wants Marcus's frozen state, but the current-version example pins to `@v0.4.14` (which has no chains/ entries — the example is a template, not a live URL).
+
+- **`README.md`** — replaced both code blocks. Browser/CDN block now uses `<chain-slug>` and pins to the current `@v0.4.14` tag. NPM block now uses `getChain(<chainId>)` / `listTokens(<chainId>)` and a comment pointing at `listChains()` for discovery (currently empty during clean-slate).
+- **`docs/CONTRIBUTING.md`** — chain-rotation example replaced with `<old-chain-slug>` / `<new-chain-slug>` placeholders; the `git checkout -b rotate-marcus-2` post-scaffolder snippet replaced with `<new-chain-slug>` placeholder.
+- **`schema/program.schema.json`** — `chainsHosted.items.description` example updated from `(e.g. '121226-marcus')` to `(e.g. '<chainId>-<slug>')`.
+- **`schema/service.schema.json`** — `servesChains.items.chain.description` example updated from `(e.g. '121226-marcus')` to `(e.g. '<chainId>-<slug>')`.
+
+After this entry: every user-visible code/CLI example in README and CONTRIBUTING is a template, not a Marcus-specific snippet that breaks against current package state. Test fixtures (`tools/*.test.ts`, `tools/fixtures/chain.fixture.json`) intentionally retain Marcus as a synthetic test chain — those are testing the registry tools, not asserting the chain's existence, so they're left alone.
+
+- **`package.json` / `package-lock.json`** — `0.4.14` → `0.4.15` (data-only patch bump per `docs/SCHEMA_VERSIONING.md` — schema description text is documentation only; no schema-shape change). Lockfile bumped surgically.
+
 ### Changed — services/rome-ui-worker/ decommissioned + serve-window cleanup
 The rome-ui-worker (devnet) infrastructure was destroyed in [rome-protocol/rome-ops#198](https://github.com/rome-protocol/rome-ops/pull/198) (merged 2026-05-02T21:01:17Z) — VM, IPs, firewalls, DNS, service account, secrets, IAM members all removed; ansible inventory `devnet-rome-ui-gcp/` deleted. The registry's `services/rome-ui-worker/service.json` is brought into alignment with that operational reality across three PRs:
 
