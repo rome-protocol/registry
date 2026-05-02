@@ -7,7 +7,6 @@
   "deployment": {
     "cluster": "devnet",
     "kind": "vm",
-    "location": "gcp-vm://rome-developers/europe-north1/devnet-rome-ui",
     "owner": "rome-ops"
   },
   "servesPrograms": [
@@ -23,19 +22,8 @@
     }
   ],
   "servesChains": [],
-  "configRefs": [
-    "rome-ops:ansible/inventories/devnet-rome-ui-gcp/group_vars/host_rome_ui.yml",
-    "rome-ui:deploy/chains.sample.yaml"
-  ],
-  "secretRefs": [
-    {
-      "name": "settlePayers",
-      "shape": "json-map",
-      "keyedBy": "programId",
-      "preservation": "edit-only",
-      "location": "gcp:projects/rome-developers/secrets/rome-ui-settle-payers"
-    }
-  ],
+  "configRefs": [],
+  "secretRefs": [],
   "lifecycle": {
     "createdAt": "2026-03-13T00:00:00Z",
     "decommissionedAt": "2026-05-02T21:01:17Z"
