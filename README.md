@@ -15,12 +15,14 @@ _(no live chains — clean-slate transition. The previous devnet chain set was d
 **Browser / runtime fetch (jsDelivr CDN):**
 
 ```js
+// Replace <chain-slug> with the slug from chains/ (e.g. "121226-marcus") and
+// pin to the registry tag (e.g. "@v0.4.14") for the schema version you target.
 const tokens = await fetch(
-  "https://cdn.jsdelivr.net/gh/rome-protocol/registry@v0.1.0/chains/121226-marcus/tokens.json"
+  "https://cdn.jsdelivr.net/gh/rome-protocol/registry@v0.4.14/chains/<chain-slug>/tokens.json"
 ).then(r => r.json());
 
 const usdcAsset = await fetch(
-  "https://cdn.jsdelivr.net/gh/rome-protocol/registry@v0.1.0/assets/usdc.json"
+  "https://cdn.jsdelivr.net/gh/rome-protocol/registry@v0.4.14/assets/usdc.json"
 ).then(r => r.json());
 ```
 
@@ -33,8 +35,10 @@ import {
   getOperationalLimits, getProtocol, getSolanaPrograms,
 } from "@rome-protocol/registry";
 
-const marcus = getChain(121226);
-const wusdc = listTokens(121226).find(t => t.symbol === "WUSDC");
+// Replace <chainId> with a chainId returned by listChains() (currently empty
+// during the clean-slate transition; see CHANGELOG.md).
+const chain = getChain(<chainId>);
+const tokens = listTokens(<chainId>);
 const usdcAsset = getAsset("USDC");
 ```
 

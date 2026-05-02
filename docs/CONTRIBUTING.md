@@ -37,11 +37,11 @@ The scaffolder reads the deployment artifact, populates `chains/121300-rome-foo/
 
 ```bash
 npx @rome-protocol/registry add-chain \
-  --copy-from 121226-marcus \
-  --new-id 121227 \
-  --new-name "Rome Marcus 2" \
-  --new-rpc https://marcus2.devnet.romeprotocol.xyz/ \
-  --deployments-from ../rome-solidity/deployments/marcus2.json
+  --copy-from <old-chain-slug> \
+  --new-id <new-chain-id> \
+  --new-name "<new chain display name>" \
+  --new-rpc https://<new-chain>.devnet.romeprotocol.xyz/ \
+  --deployments-from ../rome-solidity/deployments/<new-chain>.json
 ```
 
 What carries vs what wipes — the scaffolder enforces this so manual editing doesn't drift:
@@ -66,10 +66,10 @@ What carries vs what wipes — the scaffolder enforces this so manual editing do
 
 After the scaffolder runs:
 ```bash
-git checkout -b rotate-marcus-2
+git checkout -b rotate-<new-chain-slug>
 git add chains/
-git commit -m "rotate: marcus → marcus-2 (chain id 121226 → 121227)"
-git push -u origin rotate-marcus-2
+git commit -m "rotate: <old-chain-slug> -> <new-chain-slug> (chain id <old-id> -> <new-id>)"
+git push -u origin rotate-<new-chain-slug>
 gh pr create
 ```
 
