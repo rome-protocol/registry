@@ -6,11 +6,9 @@ Canonical chain, contract, and token metadata for the Rome Protocol ecosystem.
 
 ## Available chains
 
-| Chain ID | Name | Network | Status | Gas | Mode | Notes |
-|---|---|---|---|---|---|---|
-| 121226 | [Rome Marcus](chains/121226-marcus/) | testnet | live | USDC (`4zMMC9…`) | single-state | Bridge Phase 1 + oracle; primary integration target |
+_(no live chains — clean-slate transition. The previous devnet chain set was decommissioned through 2026-04 / 2026-05 ahead of a fresh `RomeD…` rome-evm program deploy. New chains will be registered here once the new program is live and `/prepare-rollup` registers the first chain on it.)_
 
-> Earlier chains (Maximus, Subura, Esquiline, Cassius, Aventine) were retired through 2026-04 / 2026-05 as the active chain set contracted around Marcus. Their entries were removed from `chains/` to keep the registry surface focused on what is live; `CHANGELOG.md` preserves the retirement history, and the v0.4.x git tags still serve their final on-chain state via the jsDelivr CDN if archival reads are needed.
+> Retired chains (Marcus, Maximus, Subura, Esquiline, Cassius, Aventine, Caelian, Martius) were retired through 2026-04 / 2026-05. Their entries were removed from `chains/` to keep the registry surface focused on what is live; `CHANGELOG.md` preserves the retirement history, and the v0.4.x git tags still serve their final on-chain state via the jsDelivr CDN if archival reads are needed (`cdn.jsdelivr.net/gh/rome-protocol/registry@v0.4.11/chains/121226-marcus/...` etc. continue to resolve against the immutable tags).
 
 ## How to consume
 
