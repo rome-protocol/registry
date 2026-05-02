@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Changed — 121222-subura status: live → retired
+- **`chains/121222-subura/chain.json`** — `status` flipped from `live` to `retired`. Why: active devnet set is contracting around `marcus` alone; Subura served its purpose as the **chain-reset playbook proving ground** (the 121211 → 121222 reset on 2026-04-16 exercised the rotate-in-place workflow now codified in `tools/add-chain.ts#rotateChain`), the **Oracle Gateway V2 integration testbed** (PythPullAdapter + SwitchboardV3Adapter + factory + BatchReader + 5 Pyth feeds + 1 Switchboard feed deployed 2026-04-21), and one of the two chains in the rome-ui multi-chain `chains.yaml` schema validation set (alongside Marcus). With those patterns proven and merged, no ongoing workload depends on Subura. Decommissioning trigger is `/take-down-chain` — fifth chain take-down today after Maximus + Esquiline + Aventine + Cassius + Caelian. Chain directory preserved per registry policy. On-chain liveness probe already skips retired chains (`tools/liveness.ts:336`). Subura uses the canonical shared rome-evm program (`DP1dshBzm…`) — not a `--new-program` chain, no `solana program close` applicable.
+- **`chains/121222-subura/NOTES.md`** — appended `## Retirement` section with date, reason, and post-retirement notes.
+- **`package.json` / `package-lock.json`** — `0.4.9` → `0.4.10` (data-only patch bump per `docs/SCHEMA_VERSIONING.md`; no schema changes). Lockfile version field bumped surgically via `jq` to preserve `libc` metadata on native @rollup optional deps (macOS Node 24 vs CI Node 25 cross-platform pitfall — see rome memory `feedback_npm_lockfile_cross_platform.md`).
+
 ### Changed — 121226-marcus drift reconciliation against on-chain truth
 Reconciles `chains/121226-marcus/` with live state. Cross-checked against on-chain code reads (eth_getCode, mint_id, decimals, latestRoundData, metadata.solanaAccount), `rome-protocol/rome-solidity` `deployments/marcus.json` (operator-side record), and the rome-ui `chains.sample.yaml` Marcus block (currently served to users).
 

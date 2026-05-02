@@ -32,3 +32,16 @@ Per docs/VERIFICATION_RULES.md §"kind: gas" — verified directly from Rome EVM
 ## Contacts
 - Ops: @rome-protocol/ops-team
 - Protocol: @rome-protocol/protocol-team
+
+## Retirement
+
+**Date:** 2026-05-01
+**Reason:** Decommissioned via `/take-down-chain`. Subura served as the validation chain for several patterns that have since become canonical: the **chain-reset workflow** (the original 121211 deployment was reset to 121222 on 2026-04-16 with a fresh start_slot, fresh Meteora pool, and a full DB/RomeScout data wipe — this proved out the rotate-in-place playbook now formalized by `tools/add-chain.ts`'s `rotateChain` API and used implicitly by `/bring-up-chain` for chain-id rotations), the **single-state mode + RomeScout pairing** that became the dominant devnet topology before K8s adoption, and **Oracle Gateway V2** integration (PythPullAdapter + SwitchboardV3Adapter + factory + BatchReader + 5 Pyth feeds + 1 Switchboard feed deployed 2026-04-21 — these deployments are how the Oracle Gateway V2 schema's `oracle.json` shape was exercised end-to-end before being adopted across all devnet chains). Subura also served alongside Marcus as one of two chains in the rome-ui multi-chain `chains.yaml` schema validation set. With those patterns proven and the active devnet set contracting around Marcus alone after the Maximus + Esquiline + Aventine + Cassius take-downs earlier today, Subura is no longer load-bearing — it served its bring-up + multi-chain-validation purpose.
+
+**Post-retirement:**
+- Chain directory preserved per registry policy.
+- On-chain liveness probe skips retired chains (`tools/liveness.ts:336`).
+- rome-evm program registration row at chain id 121222 remains permanent on Solana (no `DeregRollup` instruction).
+- Subura uses the canonical shared rome-evm program at `DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3` (not a `--new-program` chain) — no `solana program close` is applicable. Rent SOL on the per-chain owner-info PDA + balance PDAs stays locked on Solana.
+- Original chain id 121211 was retired on 2026-04-16 at the chain reset; that id is dead and never reused. 121222 enters the same state today.
+- Future chain bring-ups on devnet will use a fresh chain id; Subura's id is reserved for historical lookup only.
