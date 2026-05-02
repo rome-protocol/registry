@@ -1,34 +1,34 @@
 {
-  "factory": "0x98d2a1eeafd4595b9df1ad791625d0fb16b081b5",
-  "defaultMaxStaleness": 300,
+  "factory": "0x454f0cde265ecf530a01c5c1bfd1f40d9e0672af",
+  "defaultMaxStaleness": 86400,
   "feeds": {
     "SOL/USD-pyth": {
-      "address": "0x3Fc712e48F938a0f6C4C3689F953a280Af220fe1",
+      "address": "0xa9158A5B3964910656416a16C0De161143a89592",
       "source": "pyth",
       "underlyingAccount": "7UVimffxr9ow1uXYxsr4LHAcV58mLzhmwaeKvJ1pjLiE"
     },
     "BTC/USD-pyth": {
-      "address": "0x748617Dc27e13F5e13D2829DEB7Ac53CE039e171",
+      "address": "0x3dB406f5e7e55a6d875452BbeA0C35F96e172C49",
       "source": "pyth",
       "underlyingAccount": "4cSM2e6rvbGQUFiJbqytoVMi5GgghSMr8LwVrT9VPSPo"
     },
     "ETH/USD-pyth": {
-      "address": "0x501239dCe69BD362596dB2501dE530256A4D781E",
+      "address": "0xd61796eFF9e6D044C182aDa82049DC2930B58962",
       "source": "pyth",
       "underlyingAccount": "42amVS4KgzR9rA28tkVYqVXjq9Qa8dcZQMbH5EYFX6XC"
     },
     "USDC/USD-pyth": {
-      "address": "0xe32EfcB28b3190B28Bf30aF0e8355806c4ec549e",
+      "address": "0xEFc29b15069835b844d35505832636890FBEF6b3",
       "source": "pyth",
       "underlyingAccount": "Dpw1EAVrSB1ibxiDQyTAW6Zip3J4Btk2x4SgApQCeFbX"
     },
     "USDT/USD-pyth": {
-      "address": "0x3Df0fCde4033A1b006BD3c90b98428349DB0cD53",
+      "address": "0xd66f47f8E4CE5DEB509e1a665dD30AA0CD117e0E",
       "source": "pyth",
       "underlyingAccount": "HT2PLQBcG5EiCcNSaMHAjSgd9F98ecpATbk4Sk5oYuM"
     },
     "SOL/USD-switchboard": {
-      "address": "0xaF320D94e18046D0E8E043D80c38b9c418f0Ecac",
+      "address": "0xa79fd13A0fBB3D395Bf84a02ba30227dB7311000",
       "source": "switchboard",
       "underlyingAccount": "GvDMxPzN1sCj7L26YDK2HnMRXEQmQ2aemov8YBtPS7vR"
     }

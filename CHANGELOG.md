@@ -6,6 +6,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Changed — 121226-marcus drift reconciliation against on-chain truth
+Reconciles `chains/121226-marcus/` with live state. Cross-checked against on-chain code reads (eth_getCode, mint_id, decimals, latestRoundData, metadata.solanaAccount), `rome-protocol/rome-solidity` `deployments/marcus.json` (operator-side record), and the rome-ui `chains.sample.yaml` Marcus block (currently served to users).
+
+Net result: registry now matches the live, post-audit-fix wrapper set + the working oracle factory deploy, and aligns with what rome-ui ships today. Every `live` entry was re-verified to have on-chain bytecode at the claimed address.
+
+- **`chains/121226-marcus/contracts.json`**
+  - `ERC20SPLFactory` — appended new `0x9e595a6e…` (v2) version as `live`; previous `0x3e2F524B…` flipped to `deprecated` with `replacedBy` pointer. The v2 factory is the source of `TokenCreated` events the rome-ui token-discovery indexer consumes; the v1 factory deployed legacy `r`-prefix wrappers and is no longer used.
+  - `SPL_ERC20_USDC` — appended new v9 `0x7B4b…` (`Wrapped USDC v2`, emits `IERC20 Transfer`/`Approval` per rome-solidity#83) as `live`; previous `0x1f7dfaf9…` flipped to `deprecated` with `replacedBy` pointer.
+  - `SPL_ERC20_WETH` — appended new v9 `0x613b22c0…` (`bridgeOutToSolana` + `ensureRecipientAta`) as `live`; previous `0x3d81cb32…` flipped to `deprecated` with `replacedBy` pointer.
+  - `SPL_ERC20_WSOL` — added (was absent). New canonical wSOL wrapper at `0x1b23b52d…` with `bridgeOutToSolana` + `ensureRecipientAta`. mint_id matches `So11111111111111111111111111111111111111112`.
+  - `RomeBridgeInbound` — added (was absent). Address `0x01d5cCfb…` (post-hardening redeploy from rome-solidity#56).
+  - `OracleAdapterFactory` — appended new `0x454f0cde…` (`defaultMaxStaleness=86400`) as `live`; previous `0x98d2a1ee…` flipped to `deprecated` with `replacedBy` pointer. The 60s/300s staleness deploys bricked Pyth feed reads on Solana devnet (Pyth keeper publishes too infrequently); the 24h staleness redeploy is the working set rome-ui consumes today.
+  - `PythPullAdapterImpl` — replaced `0x79380864…` with `0x23f27d84…` (matches the working factory above).
+  - `SwitchboardV3Adapter` — replaced `0xb766b12d…` with `0x827a045a…` (matches the working factory above).
+  - `BatchReader` — replaced `0x8bc2d008…` with `0x0796e4cf…` (matches the working factory above).
+  - All other entries (`UniswapV2Factory`, `UniswapV2Router`, `WETH9`, `Multicall3`, `ERC20Factory`, `RomeBridgePaymaster`, `ERC20Users`, `RomeBridgeWithdraw`) verified `live` — already correct.
+- **`chains/121226-marcus/tokens.json`**
+  - `WUSDC`, `WETH` — addresses bumped to the new v9 wrappers (matching the contracts.json change above). `mintId` and `decimals` (6, 8) verified on-chain via `cast call mint_id()` / `decimals()`.
+  - `WSOL` — added (was absent). 9 decimals; mint_id matches canonical wSOL `So11111111111111111111111111111111111111112`.
+- **`chains/121226-marcus/oracle.json`**
+  - `factory` — `0x98d2a1ee…` → `0x454f0cde…` (the working factory; 24h staleness; all 5 Pyth feeds return live prices).
+  - `defaultMaxStaleness` — added (`86400`). Was absent in the old shape; matches the working factory's deploy parameter.
+  - All 6 `feeds` entries — adapter addresses updated to the working-factory clones; `underlyingAccount` values unchanged (verified by decoding the on-chain `metadata().solanaAccount` field on each new adapter and confirming it matches the registry's prior base58).
+- **`package.json` / `package-lock.json`** — `0.4.8` → `0.4.9` (data-only patch bump per `docs/SCHEMA_VERSIONING.md`; no schema changes).
+
+### Why
+rome-ui PR #165 added a backend that fetches chain config from the registry CDN. When the response was diffed against `rome-ui/deploy/chains.sample.yaml` (which is what users get served today), six fields drifted: `contracts.erc20SplFactory`, `contracts.gasWrapper`, `splWrappers.{wusdc, weth, wsol}`, and `oracle.{factory, feeds}`. Each drifted field was traced through the rome-solidity commit history + decoded directly from on-chain to find the canonical answer. In every case the live state matched yaml; the registry was carrying a stale (or never-replaced) reference to either the pre-PR-#83 wrappers (no IERC20 events, no `bridgeOutToSolana`) or the broken-staleness oracle factory deploy from #44. This PR aligns the registry with what's actually on-chain. After this lands, rome-ui#165 bumps `REGISTRY_REF` to `v0.4.9` and the byte-identical-to-yaml check passes.
+
 ### Added — bridge schema: `sourceEvm.rpcUrl`, top-level `cctpIrisApiBase`, `solana.wsolMint`
 - **`schema/bridge.schema.json`** — three new optional fields:
   - `sourceEvm.rpcUrl` (`string`, `format: uri`) — public source-chain RPC the bridge form uses for user-side balance reads. Reached server-side through rome-ui's `/api/rome-proxy`, never exposed directly to browsers.
