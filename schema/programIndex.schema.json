@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rome-protocol.github.io/registry/schema/programIndex.schema.json",
+  "title": "Rome program index — primary pointer + flat inventory",
+  "description": "Denormalized index over registry/programs/<id>/program.json files. Source of truth still lives in each program.json; this file enables (a) fast lookup of the primary program per cluster, (b) flat inventory of all known programs without filesystem traversal. CI invariant: each entry's role/cluster/chainsHosted must match its program.json.",
+  "type": "object",
+  "required": ["schemaVersion", "primary", "programs"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "1" },
+
+    "primary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["devnet", "mainnet"],
+      "properties": {
+        "devnet": { "type": ["string", "null"], "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$" },
+        "mainnet": { "type": ["string", "null"], "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$" }
+      },
+      "description": "ProgramId designated as the cluster's primary (the default program for new chains). null when no primary has been promoted yet. CI invariant: at most one primary per cluster, and primary[cluster] must match the corresponding program.json#role=='primary'."
+    },
+
+    "programs": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["cluster", "role", "kind", "chainsHosted"],
+        "additionalProperties": false,
+        "properties": {
+          "cluster": { "enum": ["devnet", "mainnet"] },
+          "role": { "enum": ["primary", "secondary", "rehearsal", "decommissioning", "retired", "closed"] },
+          "kind": { "enum": ["rome-evm", "meta-hook", "cardo-orchestrator"] },
+          "chainsHosted": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^[0-9]+-[a-z0-9-]+$" }
+          }
+        }
+      },
+      "propertyNames": { "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$" },
+      "description": "Flat map of programId → minimal denormalized fields. Keys are base58 program IDs."
+    }
+  }
+}
