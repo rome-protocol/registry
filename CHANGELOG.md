@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Added — bridge schema: `sourceEvm.rpcUrl`, top-level `cctpIrisApiBase`, `solana.wsolMint`
+- **`schema/bridge.schema.json`** — three new optional fields:
+  - `sourceEvm.rpcUrl` (`string`, `format: uri`) — public source-chain RPC the bridge form uses for user-side balance reads. Reached server-side through rome-ui's `/api/rome-proxy`, never exposed directly to browsers.
+  - `cctpIrisApiBase` (`string`, `format: uri`, top-level) — Circle's CCTP attestation API base URL (`iris-api-sandbox.circle.com` for Sepolia routes; `iris-api.circle.com` for mainnet). The bridge worker polls this endpoint for V2 message attestations during outbound CCTP completions. Distinct from the `endpoints.cctpIrisApiBase` field already in `endpoints.schema.json` — bridge consumers want it co-located with the rest of the bridge wiring; the top-level field is the canonical location for new consumers, the endpoints copy stays for back-compat.
+  - `solana.wsolMint` (`string`) — canonical wrapped-SOL mint (same address on every Solana cluster: `So11111111111111111111111111111111111111112`). Lets a bridge consumer derive the WSOL route without hardcoding the well-known constant.
+  All three are optional; `additionalProperties: false` retained on every level so unknown fields still fail validation. Schema-evolution: additive — existing bridge.json files validate unchanged.
+- **`chains/121226-marcus/bridge.json`** — populated all three new fields (Sepolia→Marcus is the only chain with a fully-wired CCTP+Wormhole bridge today).
+- **`chains/121299-aventine/bridge.json`** — populated `cctpIrisApiBase` only (Aventine had no `sourceEvm.rpcUrl` or `solana.wsolMint` configured — chain is `retired` but kept aligned for archival completeness).
+- **`tools/fixtures/bridge.fixture.json`** — extended to exercise the three new fields under `schemas.test.ts`.
+- **`tools/schemas.test.ts`** — added a positive-and-negative test block for the new fields: each field individually + all three together pass, unknown fields at every level are rejected, and non-uri values for `rpcUrl` / `cctpIrisApiBase` are rejected.
+- **`tools/types.ts`** — regenerated via `npm run codegen`.
+
+### Why
+rome-ui's `chains.yaml#bridge` block carries these three protocol-fact fields that aren't in the registry today (`deploy/chains.sample.yaml` lines 105, 118, 129 in `rome-protocol/rome-ui`). Consolidating them here lets rome-ui's runtime config pull straight from the registry instead of re-declaring per chain — completing the source-of-truth migration for the bridge config. The only remaining rome-ui-specific bridge field after this change is the curated `bridge.assets[]` picker list, which is genuine UI curation (which symbols to show in the picker for which direction) and stays in rome-ui.
+
 ### Changed — 121299-aventine status: live → retired
 - **`chains/121299-aventine/chain.json`** — `status` flipped from `live` to `retired`. Why: active devnet set is contracting around `subura` + `marcus` + `cassius`; Aventine served its purpose as the first ETH-gas Rome chain (Wormhole-wrapped Sepolia-WETH SPL proving ground for ETH-as-native-gas mechanics). Pricing infrastructure (Meteora WETH/WSOL pool on Solana devnet) never materialized; outbound bridge contracts and Romeswap/Oracle Gateway V2 were never deployed on Aventine. The `rome-evm-private` code path is gas-mint-agnostic by design — no protocol-level work is lost. Bring-up lessons folded into `rome-specs/active/technical/2026-04-28-eth-gas-chain.md`. No ongoing workload depends on Aventine. Decommissioning trigger is `/take-down-chain` — third chain take-down after Maximus + Esquiline; first ETH-gas-chain take-down. Chain directory preserved per registry policy. On-chain liveness probe already skips retired chains (`tools/liveness.ts:336`).
 - **`chains/121299-aventine/NOTES.md`** — appended `## Retirement` section with date, reason, and post-retirement notes.

@@ -12,15 +12,20 @@ export interface LogicalAssetCatalogEntry {
   tags?: string[];
 }
 
+/**
+ * Bridge configuration for a Rome chain — source-EVM contracts, Solana mints, and the off-chain CCTP attestation API the bridge worker polls for this chain's CCTP routes.
+ */
 export interface PerChainBridgeWiring {
   sourceEvm: {
     chainId: number;
     name: string;
+    rpcUrl?: string;
     usdc: string;
     cctpTokenMessenger?: string;
     cctpMessageTransmitter?: string;
     wormholeTokenBridge?: string;
   };
+  cctpIrisApiBase?: string;
   solana: {
     [k: string]: unknown | undefined;
   };

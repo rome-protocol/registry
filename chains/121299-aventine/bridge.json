@@ -7,6 +7,7 @@
     "cctpMessageTransmitter": "0x7865fAfC2db2093669d92c0F33AeEF291086BEFD",
     "wormholeTokenBridge": "0xDB5492265f6038831E89f495670FF909aDe94bd9"
   },
+  "cctpIrisApiBase": "https://iris-api-sandbox.circle.com",
   "solana": {
     "wethMint": "6F5YWWrUMNpee8C6BDUc6DmRvYRMDDTgJHwKhbXuifWs",
     "wormholeChainIdRef": "sepolia",
