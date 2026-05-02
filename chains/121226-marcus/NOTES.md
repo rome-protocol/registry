@@ -73,6 +73,15 @@ Per spec [`docs/VERIFICATION_RULES.md`](../../docs/VERIFICATION_RULES.md), every
 - WUSDC's on-chain `symbol()` returns lowercase `wUSDC`; the registry uses canonical `WUSDC`. Discrepancy is informational; next wrapper redeploy aligns.
 - WETH's decimals (8) intentionally diverge from the canonical ETH asset catalog (18) due to Wormhole's u64 truncation. Per `docs/VERIFICATION_RULES.md` §"Catalog–per-chain consistency rule" this is a legitimate override and CI should warn but not fail.
 
+## Retirement
+
+- **Date:** 2026-05-02
+- **Reason:** Decommissioning marcus to deploy a new rome-evm program. Last live Rome chain on the legacy DP1d program; chain take-down precedes program close + new RomeD program deployment (clean-slate Phase 1 → Phase 5 per `project_clean_slate_execution_plan.md`).
+- **Successor:** None yet. A new chain will be brought up against the new RomeD program once the clean-slate sequence completes.
+- **Solana program close:** `DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3` is a shared rome-evm program — `/close-program` runs as a separate operator-driven step after this take-down.
+- **Take-down trigger:** `/take-down-chain marcus` (chain take-down skill v1.5).
+- **Liveness:** `tools/liveness.ts` already skips retired chains; no probe changes needed.
+
 ## Contacts
 - Ops: @rome-protocol/ops-team
 - Protocol: @rome-protocol/protocol-team
