@@ -1,6 +1,6 @@
 {
   "name": "@rome-protocol/registry",
-  "version": "0.4.15",
+  "version": "0.4.16",
   "description": "Canonical chain, contract, and token metadata for the Rome Protocol ecosystem",
   "license": "MIT",
   "repository": "github:rome-protocol/registry",

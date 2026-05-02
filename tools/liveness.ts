@@ -36,15 +36,19 @@ function loadSolanaPrograms(network: "mainnet" | "devnet"): SolanaPrograms {
   ) as SolanaPrograms;
 }
 
-// Default Rome EVM program (most chains share this; chain.json.romeEvmProgramId
-// can override; chain.json.solanaProgramId is the v0.3.x deprecated alias and
-// is read as a fallback during the v0.4.x → v1.0.0 deprecation window).
-// Derived from the on-chain truth as of 2026-04-27.
-const DEFAULT_ROME_EVM_PROGRAM = "DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3";
+// Default Rome EVM program — there is no canonical default during the
+// clean-slate transition (legacy DP1dshBz… closed 2026-05-02; new RomeD-prefix
+// program lands in Phase 5). Each chain.json MUST declare romeEvmProgramId
+// (chain.json.solanaProgramId is the v0.3.x deprecated alias, still read as
+// fallback during v0.4.x → v1.0.0 deprecation). Once Phase 5 lands a new
+// primary program, this default may be repopulated from
+// programs/index.json#primary[<cluster>].
+const DEFAULT_ROME_EVM_PROGRAM: string | null = null;
 
 // Solana RPCs per network. Could surface in chain.json or solana/rpcs.json
-// later; for now hard-code the canonical Rome devnet endpoint.
-const DEVNET_RPC = "https://node1.devnet-eu-sol-api.devnet.romeprotocol.xyz";
+// later; defaults match `solana/clusters.json` so the liveness probe hits
+// the public clusters even after Rome's private validator is recycled.
+const DEVNET_RPC = "https://api.devnet.solana.com";
 const MAINNET_RPC = "https://api.mainnet-beta.solana.com";
 
 // ── Failure tracking ───────────────────────────────────────────────────────
@@ -345,9 +349,13 @@ async function main(): Promise<void> {
     const solRpc = solanaNetwork === "mainnet" ? MAINNET_RPC : DEVNET_RPC;
     const conn = new Connection(solRpc);
 
-    const programId = new PublicKey(
-      chain.romeEvmProgramId ?? chain.solanaProgramId ?? DEFAULT_ROME_EVM_PROGRAM,
-    );
+    const resolvedProgram = chain.romeEvmProgramId ?? chain.solanaProgramId ?? DEFAULT_ROME_EVM_PROGRAM;
+    if (!resolvedProgram) {
+      throw new Error(
+        `chain.json for ${slug} missing romeEvmProgramId — required during clean-slate transition (no canonical default).`,
+      );
+    }
+    const programId = new PublicKey(resolvedProgram);
     const splToken  = new PublicKey(programs.splToken);
     const ataProgram = new PublicKey(programs.associatedToken);
 

@@ -38,7 +38,7 @@ export interface RomeChainCoreIdentity {
   rpcUrl: string;
   explorerUrl?: string;
   /**
-   * Rome EVM program ID (Solana base58) this chain is registered under. Most chains share `DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3`; chains running a custom rome-evm fork (e.g. meta-hook test branches) declare their own. Optional; consumers fall back to the canonical shared program when absent. Added v0.4.0 — supersedes `solanaProgramId`.
+   * Rome EVM program ID (Solana base58) this chain is registered under. Required for new chains: the post-clean-slate registry has no canonical default to fall back on (legacy `DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3` closed 2026-05-02). Once the next primary rome-evm program is deployed (Phase 5), `programs/index.json#primary[<cluster>]` becomes the authoritative pointer; chains running a custom rome-evm fork (e.g. meta-hook test branches) still declare their own. Schema keeps the field optional for the v0.3.x → v0.4.x compat window (legacy `solanaProgramId` is still read as a deprecated alias). Added v0.4.0 — supersedes `solanaProgramId`.
    */
   romeEvmProgramId?: string;
   /**
@@ -279,6 +279,279 @@ export interface PerChainOracleGatewayConfig {
 }
 
 /**
+ * First-class record for a deployed Solana program (rome-evm or supporting program) tracked by the Rome registry. Captures identity, current authority, current build provenance, lifecycle role, and the chains hosted by this program. Append-only history lives in the sibling upgrades.json and authority.json files.
+ */
+export interface RomeOnChainProgramIdentityLifecycleCurrentBuild {
+  schemaVersion: "1";
+  /**
+   * On-chain Solana program ID (base58). Rome convention for new deploys: prefix `RomeP` for mainnet rome-evm programs, `RomeD` for devnet rome-evm programs — produced via `solana-keygen grind --starts-with` in /deploy-program. Convention is enforced at deploy time by skill, not by schema (legacy/imported programs may not match). CI may warn on violations but not block.
+   */
+  programId: string;
+  /**
+   * Human-readable label, e.g. 'rome-evm primary devnet'.
+   */
+  name?: string;
+  /**
+   * Program family. Most rows are 'rome-evm'.
+   */
+  kind: "rome-evm" | "meta-hook" | "cardo-orchestrator";
+  /**
+   * Solana cluster this program is deployed on. Rome only targets mainnet and devnet.
+   */
+  cluster: "devnet" | "mainnet";
+  /**
+   * Lifecycle of the on-chain program. live = serving traffic; decommissioning = no new chains, existing chains migrating off; retired = no chains hosted, binary still on chain; closed = `solana program close` ran, rent reclaimed, programId permanently unusable. **Mainnet immutability rule**: transitions AWAY from `live` on mainnet programs require human-tagged commits; no automation may flip mainnet status.
+   */
+  status: "live" | "decommissioning" | "retired" | "closed";
+  /**
+   * Role in the cluster's program portfolio. Exactly one program may hold role=primary per cluster (enforced by CI invariant against programs/index.json). secondary = production but not the default for new chains; rehearsal = test/staging program. decommissioning/retired/closed mirror status; redundant-but-explicit so role-based queries don't have to join with status.
+   */
+  role: "primary" | "secondary" | "rehearsal" | "decommissioning" | "retired" | "closed";
+  /**
+   * ISO-8601 timestamp when this program was last promoted into its current role. null for programs created at their current role.
+   */
+  rolePromotedAt?: string | null;
+  /**
+   * Append-only role-transition log. First entry records initial role at deploy time.
+   */
+  roleHistory?: {
+    role: "primary" | "secondary" | "rehearsal" | "decommissioning" | "retired" | "closed";
+    since: string;
+    reason?: string;
+  }[];
+  /**
+   * BPF Loader program ID (typically `BPFLoaderUpgradeab1e11111111111111111111111`).
+   */
+  loader: string;
+  /**
+   * ProgramData account address — derived PDA holding the program binary. Use with getSignaturesForAddress to enumerate upgrade history on-chain.
+   */
+  programDataAddress: string;
+  /**
+   * Who holds upgrade authority RIGHT NOW. Append history to authority.json. Authority key material is NOT stored in the registry — only the pubkey + storage-location metadata.
+   */
+  currentAuthority: {
+    [k: string]: unknown | undefined;
+  };
+  /**
+   * Current build provenance — what code is running on-chain RIGHT NOW. Replaced atomically on each upgrade.
+   */
+  current: {
+    /**
+     * Semver tag if tagged; null otherwise.
+     */
+    version?: string | null;
+    /**
+     * Full 40-char git SHA at the source repo.
+     */
+    gitSha: string;
+    /**
+     * https URL of the source repo.
+     */
+    gitRepo: string;
+    /**
+     * Git tag if applicable (e.g. 'v0.4.2').
+     */
+    gitTag?: string | null;
+    /**
+     * Cargo features active at build time (e.g. ['testnet', 'custom-heap']).
+     */
+    buildFeatureFlags?: string[];
+    toolchain?: {
+      /**
+       * Solana CLI version used by `cargo build-sbf` (e.g. '3.0.0').
+       */
+      solanaVersion?: string;
+      /**
+       * Platform-tools version (e.g. 'v1.51').
+       */
+      platformTools?: string;
+      /**
+       * Rust toolchain version (e.g. '1.79.0').
+       */
+      rustToolchain?: string;
+    };
+    /**
+     * SHA-256 of the on-chain programData bytes. CI verifies against `solana program show`.
+     */
+    programDataSha256: string;
+    /**
+     * Size of the deployed binary in bytes.
+     */
+    binarySize: number;
+    /**
+     * UTC time of the deploy tx.
+     */
+    deployedAt: string;
+    deployedAtSlot: number;
+    /**
+     * Solana tx signature (base58).
+     */
+    deployedAtTx: string;
+    /**
+     * Email/handle of the operator who initiated the deploy.
+     */
+    deployedBy: string;
+    /**
+     * GitHub Actions run URL for the build, if applicable.
+     */
+    ciRunUrl?: string | null;
+    upgradesRef?: "./upgrades.json";
+  };
+  /**
+   * Slug references (e.g. '<chainId>-<slug>') of chains currently registered on this program. CI invariant: each entry must have chains/<slug>/chain.json#romeEvmProgramId == this programId.
+   */
+  chainsHosted: string[];
+  /**
+   * Chains that were once hosted on this program but have since retired.
+   */
+  chainsDecommissioned?: {
+    chain: string;
+    decommissionedAt: string;
+    reason?: string;
+  }[];
+  audit?: {
+    lastReview?: string | null;
+    reviewUrl?: string | null;
+  };
+  /**
+   * Initial deploy timestamp.
+   */
+  createdAt: string;
+  /**
+   * Set when chains have all migrated off this program. **Mainnet immutability rule**: setting this on a mainnet program requires a human-tagged commit; no automation may write to it. Devnet writes may be agent-driven.
+   */
+  decommissionedAt?: string | null;
+  /**
+   * Set when `solana program close` reclaims rent. Mutually implies role=closed and status=closed. **Mainnet immutability rule**: setting this on a mainnet program requires a human-tagged commit; no automation may write to it. The on-chain `solana program close` itself for mainnet must also be operator-typed, never agent-invoked.
+   */
+  closedAt?: string | null;
+}
+
+/**
+ * Per-program append-only log of every upgrade-authority change (BPF Loader SetAuthority ix, or Squads V4 changeConfig). Mirrors the on-chain history for audit. CI invariant: entries[0].kind=='initial-set' and entries are sorted by rotatedAtSlot ascending.
+ */
+export interface RomeProgramAuthorityLogAppendOnlyRotationHistory {
+  schemaVersion: "1";
+  programId: string;
+  entries: {
+    /**
+     * initial-set = authority set during program deploy; rotation = SetUpgradeAuthority to a new signing key; freeze = transfer to non-signing key (no upgrades); burn = transfer to System Program (program permanently immutable).
+     */
+    kind: "initial-set" | "rotation" | "freeze" | "burn";
+    /**
+     * Previous authority. null on initial-set.
+     */
+    from?: {
+      pubkey: string;
+      kind: "cold-ledger" | "hot-keypair" | "gsm-keypair" | "squads-v4-multisig";
+    } | null;
+    to: {
+      pubkey: string;
+      kind: "cold-ledger" | "hot-keypair" | "gsm-keypair" | "squads-v4-multisig" | "frozen" | "burned";
+    };
+    rotatedAt: string;
+    rotatedAtSlot: number;
+    rotatedAtTx: string;
+    /**
+     * Operator email/handle who initiated the rotation.
+     */
+    rotatedBy?: string;
+    reason?: string;
+  }[];
+}
+
+/**
+ * Denormalized index over registry/programs/<id>/program.json files. Source of truth still lives in each program.json; this file enables (a) fast lookup of the primary program per cluster, (b) flat inventory of all known programs without filesystem traversal. CI invariant: each entry's role/cluster/chainsHosted must match its program.json.
+ */
+export interface RomeProgramIndexPrimaryPointerFlatInventory {
+  schemaVersion: "1";
+  /**
+   * ProgramId designated as the cluster's primary (the default program for new chains). null when no primary has been promoted yet. CI invariant: at most one primary per cluster, and primary[cluster] must match the corresponding program.json#role=='primary'.
+   */
+  primary: {
+    devnet: string | null;
+    mainnet: string | null;
+  };
+  /**
+   * Flat map of programId → minimal denormalized fields. Keys are base58 program IDs.
+   */
+  programs: {
+    [k: string]:
+      | {
+          cluster: "devnet" | "mainnet";
+          role: "primary" | "secondary" | "rehearsal" | "decommissioning" | "retired" | "closed";
+          kind: "rome-evm" | "meta-hook" | "cardo-orchestrator";
+          chainsHosted: string[];
+        }
+      | undefined;
+  };
+}
+
+/**
+ * Per-program append-only log of every deploy event (initial + upgrades). Each entry captures the full provenance needed to reproduce or audit the deployed binary. CI invariant: entries are sorted by deployedAtSlot ascending, and entries[0].kind must be 'initial'.
+ */
+export interface RomeProgramUpgradeHistoryAppendOnlyDeployLog {
+  schemaVersion: "1";
+  programId: string;
+  entries: UpgradeEntry[];
+}
+export interface UpgradeEntry {
+  /**
+   * initial = first deploy of this programId; upgrade = subsequent BPF Loader Upgrade ix; authority-rotation = setUpgradeAuthority ix (no binary change).
+   */
+  kind: "initial" | "upgrade" | "authority-rotation";
+  version?: string | null;
+  gitSha: string;
+  /**
+   * gitSha of the immediately previous build. null on initial deploy.
+   */
+  previousGitSha?: string | null;
+  gitRepo?: string;
+  gitTag?: string | null;
+  buildFeatureFlags?: string[];
+  toolchain?: {
+    solanaVersion?: string;
+    platformTools?: string;
+    rustToolchain?: string;
+  };
+  programDataSha256: string;
+  previousProgramDataSha256?: string | null;
+  binarySize: number;
+  deployedAt: string;
+  deployedAtSlot: number;
+  deployedAtTx: string;
+  /**
+   * Email/handle of operator who initiated the deploy.
+   */
+  deployedBy?: string;
+  /**
+   * Authority that signed this upgrade. May differ from program.json#currentAuthority if authority rotated since this entry.
+   */
+  authority: {
+    pubkey: string;
+    kind: "cold-ledger" | "hot-keypair" | "gsm-keypair" | "squads-v4-multisig" | "frozen" | "burned";
+  };
+  /**
+   * Identity that paid SOL for this deploy. Often equal to authority but not required to be.
+   */
+  feePayer: {
+    pubkey: string;
+    kind: "cold-ledger" | "hot-keypair" | "gsm-keypair" | "squads-v4-multisig";
+  };
+  /**
+   * Brief human-readable description of what changed.
+   */
+  summary?: string;
+  includedPRs?: number[];
+  ciRunUrl?: string | null;
+  /**
+   * Whether CI has verified the on-chain binary matches the recorded programDataSha256.
+   */
+  verified?: boolean;
+}
+
+/**
  * Canonical program IDs for the protocols Rome integrates with on a given Solana cluster. Required entries are core SPL / system programs that exist identically across networks; everything else is optional and only present when (a) Rome's services or Cardo's adapters use it, and (b) it's deployed on that cluster.
  */
 export interface SolanaProgramIDsPerNetwork {
@@ -394,6 +667,110 @@ export interface CrossChainBridgeProtocolConstants {
    */
   domains: {
     [k: string]: number | undefined;
+  };
+}
+
+/**
+ * First-class record for shared services in the Rome ecosystem (bridge workers, oracle keepers, frontend apps, block explorers, monitoring, etc.). Services are SHARED resources that bring-up flows REFERENCE (adding to servesPrograms[] / servesChains[]) and that teardown flows preserve (editing references, never destroying the service infrastructure unless explicit /decommission-service is invoked). The kind field is a free-form string (not an enum) so new service types can land without schema bumps; common values are documented in description.
+ */
+export interface RomeSharedServiceIdentityScopeReferences {
+  schemaVersion: "1";
+  /**
+   * Lowercase-hyphen identifier matching the directory name (services/<name>/).
+   */
+  name: string;
+  /**
+   * Service category. Free-form string (not enum) so new types don't require schema bumps. Common values: 'bridge-worker' (rome-ui-worker, CCTP relayer, Wormhole relayer, native-Solana relayer), 'oracle-keeper' (off-chain price pusher to Oracle Gateway adapters), 'frontend-app' (Cardo, rome-ui), 'block-explorer' (rome-via, rome-scout), 'monitoring' (Grafana, exporters), 'alerting' (Slack bot, oncall pager), 'ci-infra' (GHA runners, image registry), 'backup-runner'.
+   */
+  kind: string;
+  /**
+   * One-line human-readable description of what this service does.
+   */
+  purpose?: string;
+  /**
+   * Which Rome lifecycle the service is bound to.
+   * - 'chain': 1:1 with a chain. Created with the chain. Destroyed with the chain. servesChains[] has exactly one entry.
+   * - 'program': bound to one or more rome-evm programs. servesPrograms[] tracks references. Created on first program in cluster; reference-counted; not auto-destroyed when servesPrograms[] becomes empty (operator-only via /decommission-service).
+   * - 'cluster': bound to a Solana cluster. Created on first program in the cluster; never auto-decommissioned.
+   * - 'global': independent of programs/chains/clusters (CI runners, etc.).
+   */
+  scope: "chain" | "program" | "cluster" | "global";
+  deployment: {
+    /**
+     * Solana cluster this service serves. null for 'global' scope.
+     */
+    cluster?: "devnet" | "mainnet" | null;
+    /**
+     * How the service is hosted. 'static-site' for frontend apps deployed to CDN.
+     */
+    kind: "k8s" | "vm" | "external" | "static-site";
+    /**
+     * Free-form location string. Examples: 'gke://rome-l2-gke/devnet-rome-ui', 'gcp-vm://rome-developers/europe-north1/devnet-monitoring', 'cf-pages://rome-website', 'github://rome-protocol/rome-runners'.
+     */
+    location?: string;
+    /**
+     * Team or operator responsible. Examples: 'rome-ops', 'sanjeev@romeprotocol.com', 'sattvik@romeprotocol.com'.
+     */
+    owner?: string;
+  };
+  /**
+   * Reverse-index of programs this service has been brought up for. Bring-up flow appends; teardown flow removes. CI invariant: each entry's programId must have a corresponding programs/<id>/program.json record. Empty array allowed (service running but no current programs — e.g., during clean-slate transitions).
+   */
+  servesPrograms?: {
+    programId: string;
+    since: string;
+    /**
+     * When set, this program no longer served (kept in array for audit history; can be archived).
+     */
+    until?: string | null;
+  }[];
+  /**
+   * Reverse-index of chains this service has been brought up for. Used for scope='chain' and some 'program'-scope services that maintain per-chain config. Same conventions as servesPrograms.
+   */
+  servesChains?: {
+    /**
+     * Chain slug (e.g. '<chainId>-<slug>').
+     */
+    chain: string;
+    since: string;
+    until?: string | null;
+  }[];
+  /**
+   * Pointers to where this service's configuration source-of-truth lives. Skills doing config edits know where to make changes. Format: '<repo>:<path>'. Examples: 'rome-ops:ansible/inventories/devnet-rome-ui-gcp/group_vars/host_rome_ui.yml', 'rome-ui:deploy/chains.sample.yaml'.
+   */
+  configRefs?: string[];
+  /**
+   * Per-secret metadata. Crucial for teardown safety: skills MUST honor preservation='edit-only' (never delete the secret; only mutate its content). preservation='delete-with-service' allows the secret to be cleaned up only when the service itself is decommissioned.
+   */
+  secretRefs?: {
+    name: string;
+    /**
+     * Optional shape hint: 'json-map', 'opaque-bytes', 'json-array', 'plain-text'.
+     */
+    shape?: string;
+    /**
+     * For json-map shapes: what the keys represent. Examples: 'programId', 'chainId', 'protocol'.
+     */
+    keyedBy?: string;
+    /**
+     * 'edit-only': the secret persists across the service's entire lifetime; only its content (e.g. JSON entries inside) gets added/removed by bring-up/teardown. NEVER delete this secret while the service is alive. 'delete-with-service': the secret is owned by the service and gets cleaned up when /decommission-service runs.
+     */
+    preservation: "edit-only" | "delete-with-service";
+    /**
+     * Free-form location, e.g. 'gcp:projects/rome-developers/secrets/rome-ui-settle-payers'.
+     */
+    location: string;
+  }[];
+  lifecycle?: {
+    createdAt: string;
+    /**
+     * Set by /decommission-service. **Mainnet immutability rule**: setting on mainnet services requires human-tagged commits; no automation may write.
+     */
+    decommissionedAt?: string | null;
+  };
+  audit?: {
+    lastReview?: string | null;
+    reviewUrl?: string | null;
   };
 }
 

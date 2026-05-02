@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Changed — clear closed-program defaults from liveness probe + chain schema; regenerate types
+The legacy `DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3` rome-evm program closed 2026-05-02. Two registry entry points still defaulted to it:
+
+- **`tools/liveness.ts` `DEFAULT_ROME_EVM_PROGRAM`** — the fallback constant used when `chain.json#romeEvmProgramId` and the deprecated `solanaProgramId` are both absent. Set to `null`; resolution at line 348 throws a clear error if the chain.json is incomplete (rather than silently probing a closed program). Once Phase 5 lands a new primary program, this can be repopulated from `programs/index.json#primary[<cluster>]`.
+- **`tools/liveness.ts` `DEVNET_RPC`** — was hardcoded to `https://node1.devnet-eu-sol-api.devnet.romeprotocol.xyz` (Rome's private Solana validator endpoint, taken down with the Marcus stack). Replaced with `https://api.devnet.solana.com` to match `solana/clusters.json#clusters.devnet.rpcUrl`.
+- **`schema/chain.schema.json#romeEvmProgramId.description`** — rewritten. Previously read *"Most chains share `DP1dshBz…`; consumers fall back to the canonical shared program when absent."* Both halves now wrong (the program is closed; there is no canonical default). New text explains the clean-slate state explicitly and points consumers at `programs/index.json#primary[<cluster>]` (post-Phase 5).
+- **`tools/types.ts`** — regenerated via `npm run codegen` (18 schemas → 785 lines). Picks up the schema-text change above plus the program/service interfaces added in [#25](https://github.com/rome-protocol/registry/pull/25) and [#26](https://github.com/rome-protocol/registry/pull/26) — types had been lagging since those merges (codegen wasn't part of the PR validation flow at the time). Now in sync.
+
+After this entry: there are zero hardcoded references to the closed `DP1dshBz…` program in tooling defaults or schema descriptions; the only remaining mentions are in `services/rome-ui-worker/service.json` (audit history, expected) and explicit "this is the program that was closed" call-outs in CHANGELOG entries and schema description text.
+
+- **`package.json` / `package-lock.json`** — `0.4.15` → `0.4.16` (data-only patch bump per `docs/SCHEMA_VERSIONING.md` — schema description text + tool defaults; no schema-shape change. The codegen-generated types are exposed but the underlying schemas were already merged in v0.4.13/v0.4.14, so this is purely catching up).
+
 ### Changed — clear stale `121226-marcus` references from user-facing docs + schema
 PR #29 dropped `chains/121226-marcus/` and added an empty-state note to `README.md`, but the surrounding code examples and rotation cookbook still used Marcus as the demo chain — so a fresh consumer would read "no live chains" and then see `getChain(121226)` two paragraphs later, producing an undefined return at runtime against the current package version. Same for the `--copy-from 121226-marcus` example in `docs/CONTRIBUTING.md` (the slug no longer exists, so the scaffolder would error). Replaced inline examples with `<chainId>` / `<chain-slug>` placeholders so they're clearly fill-in templates; the historical jsDelivr URL with `@v0.1.0/chains/121226-marcus/...` still resolves on the immutable tag if any reader actually wants Marcus's frozen state, but the current-version example pins to `@v0.4.14` (which has no chains/ entries — the example is a template, not a live URL).
 
