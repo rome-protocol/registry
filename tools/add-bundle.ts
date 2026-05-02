@@ -183,11 +183,11 @@ function capitalize(s: string): string {
 }
 
 function explorerUrlFor(slug: string, network: string): string {
-  // Same pattern marcus uses: https://romescout-<slug>.<network>.romeprotocol.xyz/
+  // Rome Via pattern: https://via-<slug>.<network>.romeprotocol.xyz/
   // Devnet/testnet share the *.devnet.romeprotocol.xyz pattern in practice
   // (per rome-ops registry convention); mainnet is .romeprotocol.xyz.
   const subdomain = network === "mainnet" ? "" : `.${network === "local" ? "local" : "devnet"}`;
-  return `https://romescout-${slug}${subdomain}.romeprotocol.xyz/`;
+  return `https://via-${slug}${subdomain}.romeprotocol.xyz/`;
 }
 
 function deriveNativeCurrency(
