@@ -14,12 +14,12 @@
     {
       "programId": "DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3",
       "since": "2026-03-13T00:00:00Z",
-      "until": "2026-05-02T21:23:53Z"
+      "until": "2026-05-02T21:01:17Z"
     },
     {
       "programId": "5uBA85gDpaRE3Btd3SiPCsFts5H1QQJbrwwW5zmvcaSH",
       "since": "2026-04-29T22:40:05Z",
-      "until": null
+      "until": "2026-05-02T21:01:17Z"
     }
   ],
   "servesChains": [],
@@ -38,7 +38,7 @@
   ],
   "lifecycle": {
     "createdAt": "2026-03-13T00:00:00Z",
-    "decommissionedAt": null
+    "decommissionedAt": "2026-05-02T21:01:17Z"
   },
   "audit": {
     "lastReview": null,
