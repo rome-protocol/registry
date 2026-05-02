@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Removed — chains/121226-marcus/ retired chain directory (final clean-slate cleanup)
+Marcus was the last live devnet chain. After `/take-down-chain marcus` completed operational decommission (2026-05-02 manifest snapshot), the `chains/121226-marcus/` directory is now removed from the registry surface. The retirement narrative lives in the `### Changed — 121226-marcus status: live → retired` entry below. The v0.4.x git tags + jsDelivr CDN preserve archival reads (`cdn.jsdelivr.net/gh/rome-protocol/registry@v0.4.11/chains/121226-marcus/...` continues to resolve).
+
+After this entry: the registry has zero live chains. The next chain landing here will be the first `/prepare-rollup` call against the post-clean-slate `RomeD…` rome-evm program (Phase 5 of the clean-slate execution plan).
+
+- **`chains/121226-marcus/`** — removed (9 files: chain, contracts, tokens, bridge, oracle, endpoints, gasPricing, operationalLimits, NOTES). Retired 2026-05-02 (see `### Changed — 121226-marcus status: live → retired` below). Same registry policy as the 2026-05-01 batch removal.
+- **`README.md`** — `## Available chains` table replaced with the empty-state note for the clean-slate transition. Retirement-history note now lists Marcus alongside the other retired chains.
+- **`package.json` / `package-lock.json`** — `0.4.12` → `0.4.13` (data-only patch bump per `docs/SCHEMA_VERSIONING.md`; same `Status flip ↔ retired` patch-bucket classification used for the v0.4.11 batch removal).
+
 ### Changed — 121226-marcus status: live → retired
 - **`chains/121226-marcus/chain.json`** — `status` flipped from `live` to `retired`. Why: marcus is being decommissioned to deploy a new rome-evm program. Last live Rome chain on the legacy `DP1dshBz…` program; chain take-down precedes program close + new RomeD program deployment (clean-slate Phase 1 → Phase 5 per the operator's clean-slate execution plan). Marcus served as the active devnet target for Rome bridge + Oracle + DEX work for ~6 weeks (deployed 2026-03-13 → retired 2026-05-02). Decommissioning trigger is `/take-down-chain marcus` — sixth chain take-down in the active-set contraction (Maximus / Esquiline / Aventine / Cassius / Caelian / Subura preceded). Chain directory preserved per registry policy. On-chain liveness probe already skips retired chains (`tools/liveness.ts`). Marcus uses the canonical shared `DP1dshBz…` program — program close runs as a separate `/close-program` step after this take-down.
 - **`chains/121226-marcus/NOTES.md`** — appended `## Retirement` section with date, reason, successor, program-close note, and take-down trigger.
