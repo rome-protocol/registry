@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rome-protocol.github.io/registry/schema/service.schema.json",
+  "title": "Rome shared service — identity, scope, references",
+  "description": "First-class record for shared services in the Rome ecosystem (bridge workers, oracle keepers, frontend apps, block explorers, monitoring, etc.). Services are SHARED resources that bring-up flows REFERENCE (adding to servesPrograms[] / servesChains[]) and that teardown flows preserve (editing references, never destroying the service infrastructure unless explicit /decommission-service is invoked). The kind field is a free-form string (not an enum) so new service types can land without schema bumps; common values are documented in description.",
+  "type": "object",
+  "required": ["schemaVersion", "name", "kind", "scope", "deployment"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "1" },
+
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$",
+      "description": "Lowercase-hyphen identifier matching the directory name (services/<name>/)."
+    },
+
+    "kind": {
+      "type": "string",
+      "description": "Service category. Free-form string (not enum) so new types don't require schema bumps. Common values: 'bridge-worker' (rome-ui-worker, CCTP relayer, Wormhole relayer, native-Solana relayer), 'oracle-keeper' (off-chain price pusher to Oracle Gateway adapters), 'frontend-app' (Cardo, rome-ui), 'block-explorer' (rome-via, rome-scout), 'monitoring' (Grafana, exporters), 'alerting' (Slack bot, oncall pager), 'ci-infra' (GHA runners, image registry), 'backup-runner'."
+    },
+
+    "purpose": {
+      "type": "string",
+      "description": "One-line human-readable description of what this service does."
+    },
+
+    "scope": {
+      "enum": ["chain", "program", "cluster", "global"],
+      "description": "Which Rome lifecycle the service is bound to.\n- 'chain': 1:1 with a chain. Created with the chain. Destroyed with the chain. servesChains[] has exactly one entry.\n- 'program': bound to one or more rome-evm programs. servesPrograms[] tracks references. Created on first program in cluster; reference-counted; not auto-destroyed when servesPrograms[] becomes empty (operator-only via /decommission-service).\n- 'cluster': bound to a Solana cluster. Created on first program in the cluster; never auto-decommissioned.\n- 'global': independent of programs/chains/clusters (CI runners, etc.)."
+    },
+
+    "deployment": {
+      "type": "object",
+      "required": ["kind"],
+      "additionalProperties": false,
+      "properties": {
+        "cluster": {
+          "enum": ["devnet", "mainnet", null],
+          "description": "Solana cluster this service serves. null for 'global' scope."
+        },
+        "kind": {
+          "enum": ["k8s", "vm", "external", "static-site"],
+          "description": "How the service is hosted. 'static-site' for frontend apps deployed to CDN."
+        },
+        "location": {
+          "type": "string",
+          "description": "Free-form location string. Examples: 'gke://rome-l2-gke/devnet-rome-ui', 'gcp-vm://rome-developers/europe-north1/devnet-monitoring', 'cf-pages://rome-website', 'github://rome-protocol/rome-runners'."
+        },
+        "owner": {
+          "type": "string",
+          "description": "Team or operator responsible. Examples: 'rome-ops', 'sanjeev@romeprotocol.com', 'sattvik@romeprotocol.com'."
+        }
+      }
+    },
+
+    "servesPrograms": {
+      "type": "array",
+      "description": "Reverse-index of programs this service has been brought up for. Bring-up flow appends; teardown flow removes. CI invariant: each entry's programId must have a corresponding programs/<id>/program.json record. Empty array allowed (service running but no current programs — e.g., during clean-slate transitions).",
+      "items": {
+        "type": "object",
+        "required": ["programId", "since"],
+        "additionalProperties": false,
+        "properties": {
+          "programId": { "type": "string", "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$" },
+          "since": { "type": "string", "format": "date-time" },
+          "until": { "type": ["string", "null"], "format": "date-time", "description": "When set, this program no longer served (kept in array for audit history; can be archived)." }
+        }
+      }
+    },
+
+    "servesChains": {
+      "type": "array",
+      "description": "Reverse-index of chains this service has been brought up for. Used for scope='chain' and some 'program'-scope services that maintain per-chain config. Same conventions as servesPrograms.",
+      "items": {
+        "type": "object",
+        "required": ["chain", "since"],
+        "additionalProperties": false,
+        "properties": {
+          "chain": { "type": "string", "pattern": "^[0-9]+-[a-z0-9-]+$", "description": "Chain slug (e.g. '121226-marcus')." },
+          "since": { "type": "string", "format": "date-time" },
+          "until": { "type": ["string", "null"], "format": "date-time" }
+        }
+      }
+    },
+
+    "configRefs": {
+      "type": "array",
+      "description": "Pointers to where this service's configuration source-of-truth lives. Skills doing config edits know where to make changes. Format: '<repo>:<path>'. Examples: 'rome-ops:ansible/inventories/devnet-rome-ui-gcp/group_vars/host_rome_ui.yml', 'rome-ui:deploy/chains.sample.yaml'.",
+      "items": { "type": "string" }
+    },
+
+    "secretRefs": {
+      "type": "array",
+      "description": "Per-secret metadata. Crucial for teardown safety: skills MUST honor preservation='edit-only' (never delete the secret; only mutate its content). preservation='delete-with-service' allows the secret to be cleaned up only when the service itself is decommissioned.",
+      "items": {
+        "type": "object",
+        "required": ["name", "preservation", "location"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "shape": { "type": "string", "description": "Optional shape hint: 'json-map', 'opaque-bytes', 'json-array', 'plain-text'." },
+          "keyedBy": { "type": "string", "description": "For json-map shapes: what the keys represent. Examples: 'programId', 'chainId', 'protocol'." },
+          "preservation": {
+            "enum": ["edit-only", "delete-with-service"],
+            "description": "'edit-only': the secret persists across the service's entire lifetime; only its content (e.g. JSON entries inside) gets added/removed by bring-up/teardown. NEVER delete this secret while the service is alive. 'delete-with-service': the secret is owned by the service and gets cleaned up when /decommission-service runs."
+          },
+          "location": { "type": "string", "description": "Free-form location, e.g. 'gcp:projects/rome-developers/secrets/rome-ui-settle-payers'." }
+        }
+      }
+    },
+
+    "lifecycle": {
+      "type": "object",
+      "required": ["createdAt"],
+      "additionalProperties": false,
+      "properties": {
+        "createdAt": { "type": "string", "format": "date-time" },
+        "decommissionedAt": { "type": ["string", "null"], "format": "date-time", "description": "Set by /decommission-service. **Mainnet immutability rule**: setting on mainnet services requires human-tagged commits; no automation may write." }
+      }
+    },
+
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "lastReview": { "type": ["string", "null"], "format": "date" },
+        "reviewUrl": { "type": ["string", "null"], "format": "uri" }
+      }
+    }
+  }
+}
