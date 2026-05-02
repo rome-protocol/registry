@@ -45,7 +45,7 @@
 
     "status": {
       "enum": ["live", "decommissioning", "retired", "closed"],
-      "description": "Lifecycle of the on-chain program. live = serving traffic; decommissioning = no new chains, existing chains migrating off; retired = no chains hosted, binary still on chain; closed = `solana program close` ran, rent reclaimed, programId permanently unusable."
+      "description": "Lifecycle of the on-chain program. live = serving traffic; decommissioning = no new chains, existing chains migrating off; retired = no chains hosted, binary still on chain; closed = `solana program close` ran, rent reclaimed, programId permanently unusable. **Mainnet immutability rule**: transitions AWAY from `live` on mainnet programs require human-tagged commits; no automation may flip mainnet status."
     },
 
     "role": {
@@ -253,7 +253,7 @@
     },
 
     "createdAt": { "type": "string", "format": "date-time", "description": "Initial deploy timestamp." },
-    "decommissionedAt": { "type": ["string", "null"], "format": "date-time" },
-    "closedAt": { "type": ["string", "null"], "format": "date-time", "description": "Set when `solana program close` reclaims rent. Mutually implies role=closed and status=closed." }
+    "decommissionedAt": { "type": ["string", "null"], "format": "date-time", "description": "Set when chains have all migrated off this program. **Mainnet immutability rule**: setting this on a mainnet program requires a human-tagged commit; no automation may write to it. Devnet writes may be agent-driven." },
+    "closedAt": { "type": ["string", "null"], "format": "date-time", "description": "Set when `solana program close` reclaims rent. Mutually implies role=closed and status=closed. **Mainnet immutability rule**: setting this on a mainnet program requires a human-tagged commit; no automation may write to it. The on-chain `solana program close` itself for mainnet must also be operator-typed, never agent-invoked." }
   }
 }
