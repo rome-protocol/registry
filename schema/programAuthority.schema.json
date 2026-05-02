@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rome-protocol.github.io/registry/schema/programAuthority.schema.json",
+  "title": "Rome program authority log — append-only rotation history",
+  "description": "Per-program append-only log of every upgrade-authority change (BPF Loader SetAuthority ix, or Squads V4 changeConfig). Mirrors the on-chain history for audit. CI invariant: entries[0].kind=='initial-set' and entries are sorted by rotatedAtSlot ascending.",
+  "type": "object",
+  "required": ["schemaVersion", "programId", "entries"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "1" },
+    "programId": { "type": "string", "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$" },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "to", "rotatedAt", "rotatedAtSlot", "rotatedAtTx"],
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "enum": ["initial-set", "rotation", "freeze", "burn"],
+            "description": "initial-set = authority set during program deploy; rotation = SetUpgradeAuthority to a new signing key; freeze = transfer to non-signing key (no upgrades); burn = transfer to System Program (program permanently immutable)."
+          },
+          "from": {
+            "type": ["object", "null"],
+            "additionalProperties": false,
+            "required": ["pubkey", "kind"],
+            "properties": {
+              "pubkey": { "type": "string", "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$" },
+              "kind": { "enum": ["cold-ledger", "hot-keypair", "gsm-keypair", "squads-v4-multisig"] }
+            },
+            "description": "Previous authority. null on initial-set."
+          },
+          "to": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["pubkey", "kind"],
+            "properties": {
+              "pubkey": { "type": "string", "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$" },
+              "kind": { "enum": ["cold-ledger", "hot-keypair", "gsm-keypair", "squads-v4-multisig", "frozen", "burned"] }
+            }
+          },
+          "rotatedAt": { "type": "string", "format": "date-time" },
+          "rotatedAtSlot": { "type": "integer", "minimum": 0 },
+          "rotatedAtTx": { "type": "string" },
+          "rotatedBy": { "type": "string", "description": "Operator email/handle who initiated the rotation." },
+          "reason": { "type": "string" }
+        }
+      }
+    }
+  }
+}

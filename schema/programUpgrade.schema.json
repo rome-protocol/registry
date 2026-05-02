@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rome-protocol.github.io/registry/schema/programUpgrade.schema.json",
+  "title": "Rome program upgrade history — append-only deploy log",
+  "description": "Per-program append-only log of every deploy event (initial + upgrades). Each entry captures the full provenance needed to reproduce or audit the deployed binary. CI invariant: entries are sorted by deployedAtSlot ascending, and entries[0].kind must be 'initial'.",
+  "type": "object",
+  "required": ["schemaVersion", "programId", "entries"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "1" },
+    "programId": {
+      "type": "string",
+      "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$"
+    },
+    "entries": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/upgradeEntry" }
+    }
+  },
+  "$defs": {
+    "upgradeEntry": {
+      "type": "object",
+      "required": [
+        "kind",
+        "deployedAt",
+        "deployedAtSlot",
+        "deployedAtTx",
+        "gitSha",
+        "programDataSha256",
+        "binarySize",
+        "authority",
+        "feePayer"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": ["initial", "upgrade", "authority-rotation"],
+          "description": "initial = first deploy of this programId; upgrade = subsequent BPF Loader Upgrade ix; authority-rotation = setUpgradeAuthority ix (no binary change)."
+        },
+        "version": { "type": ["string", "null"] },
+        "gitSha": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+        "previousGitSha": { "type": ["string", "null"], "pattern": "^[a-f0-9]{40}$", "description": "gitSha of the immediately previous build. null on initial deploy." },
+        "gitRepo": { "type": "string", "format": "uri" },
+        "gitTag": { "type": ["string", "null"] },
+        "buildFeatureFlags": { "type": "array", "items": { "type": "string" } },
+        "toolchain": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "solanaVersion": { "type": "string" },
+            "platformTools": { "type": "string" },
+            "rustToolchain": { "type": "string" }
+          }
+        },
+        "programDataSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "previousProgramDataSha256": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+        "binarySize": { "type": "integer", "minimum": 0 },
+        "deployedAt": { "type": "string", "format": "date-time" },
+        "deployedAtSlot": { "type": "integer", "minimum": 0 },
+        "deployedAtTx": { "type": "string" },
+        "deployedBy": { "type": "string", "description": "Email/handle of operator who initiated the deploy." },
+        "authority": {
+          "type": "object",
+          "required": ["pubkey", "kind"],
+          "additionalProperties": false,
+          "properties": {
+            "pubkey": { "type": "string", "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$" },
+            "kind": { "enum": ["cold-ledger", "hot-keypair", "gsm-keypair", "squads-v4-multisig", "frozen", "burned"] }
+          },
+          "description": "Authority that signed this upgrade. May differ from program.json#currentAuthority if authority rotated since this entry."
+        },
+        "feePayer": {
+          "type": "object",
+          "required": ["pubkey", "kind"],
+          "additionalProperties": false,
+          "properties": {
+            "pubkey": { "type": "string", "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$" },
+            "kind": { "enum": ["cold-ledger", "hot-keypair", "gsm-keypair", "squads-v4-multisig"] }
+          },
+          "description": "Identity that paid SOL for this deploy. Often equal to authority but not required to be."
+        },
+        "summary": { "type": "string", "description": "Brief human-readable description of what changed." },
+        "includedPRs": { "type": "array", "items": { "type": "integer" } },
+        "ciRunUrl": { "type": ["string", "null"], "format": "uri" },
+        "verified": { "type": "boolean", "description": "Whether CI has verified the on-chain binary matches the recorded programDataSha256." }
+      }
+    }
+  }
+}

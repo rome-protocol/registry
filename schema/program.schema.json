@@ -1,0 +1,259 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rome-protocol.github.io/registry/schema/program.schema.json",
+  "title": "Rome on-chain program — identity, lifecycle, current build",
+  "description": "First-class record for a deployed Solana program (rome-evm or supporting program) tracked by the Rome registry. Captures identity, current authority, current build provenance, lifecycle role, and the chains hosted by this program. Append-only history lives in the sibling upgrades.json and authority.json files.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "programId",
+    "kind",
+    "cluster",
+    "status",
+    "role",
+    "loader",
+    "programDataAddress",
+    "currentAuthority",
+    "current",
+    "chainsHosted",
+    "createdAt"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "1" },
+
+    "programId": {
+      "type": "string",
+      "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+      "description": "On-chain Solana program ID (base58). Rome convention for new deploys: prefix `RomeP` for mainnet rome-evm programs, `RomeD` for devnet rome-evm programs — produced via `solana-keygen grind --starts-with` in /deploy-program. Convention is enforced at deploy time by skill, not by schema (legacy/imported programs may not match). CI may warn on violations but not block."
+    },
+
+    "name": {
+      "type": "string",
+      "description": "Human-readable label, e.g. 'rome-evm primary devnet'."
+    },
+
+    "kind": {
+      "enum": ["rome-evm", "meta-hook", "cardo-orchestrator"],
+      "description": "Program family. Most rows are 'rome-evm'."
+    },
+
+    "cluster": {
+      "enum": ["devnet", "mainnet"],
+      "description": "Solana cluster this program is deployed on. Rome only targets mainnet and devnet."
+    },
+
+    "status": {
+      "enum": ["live", "decommissioning", "retired", "closed"],
+      "description": "Lifecycle of the on-chain program. live = serving traffic; decommissioning = no new chains, existing chains migrating off; retired = no chains hosted, binary still on chain; closed = `solana program close` ran, rent reclaimed, programId permanently unusable."
+    },
+
+    "role": {
+      "enum": ["primary", "secondary", "rehearsal", "decommissioning", "retired", "closed"],
+      "description": "Role in the cluster's program portfolio. Exactly one program may hold role=primary per cluster (enforced by CI invariant against programs/index.json). secondary = production but not the default for new chains; rehearsal = test/staging program. decommissioning/retired/closed mirror status; redundant-but-explicit so role-based queries don't have to join with status."
+    },
+
+    "rolePromotedAt": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "ISO-8601 timestamp when this program was last promoted into its current role. null for programs created at their current role."
+    },
+
+    "roleHistory": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["role", "since"],
+        "additionalProperties": false,
+        "properties": {
+          "role": { "enum": ["primary", "secondary", "rehearsal", "decommissioning", "retired", "closed"] },
+          "since": { "type": "string", "format": "date-time" },
+          "reason": { "type": "string" }
+        }
+      },
+      "description": "Append-only role-transition log. First entry records initial role at deploy time."
+    },
+
+    "loader": {
+      "type": "string",
+      "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+      "description": "BPF Loader program ID (typically `BPFLoaderUpgradeab1e11111111111111111111111`)."
+    },
+
+    "programDataAddress": {
+      "type": "string",
+      "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+      "description": "ProgramData account address — derived PDA holding the program binary. Use with getSignaturesForAddress to enumerate upgrade history on-chain."
+    },
+
+    "currentAuthority": {
+      "type": "object",
+      "description": "Who holds upgrade authority RIGHT NOW. Append history to authority.json. Authority key material is NOT stored in the registry — only the pubkey + storage-location metadata.",
+      "required": ["pubkey", "kind", "operator"],
+      "additionalProperties": false,
+      "properties": {
+        "pubkey": {
+          "type": "string",
+          "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+          "description": "Authority pubkey. For multisig, this is the multisig PDA address; for single-sig kinds, it's the keypair pubkey."
+        },
+        "kind": {
+          "enum": ["cold-ledger", "hot-keypair", "gsm-keypair", "squads-v4-multisig", "frozen", "burned"],
+          "description": "How the authority is held. cold-ledger = hardware wallet (Ledger/Trezor); hot-keypair = local file on operator machine; gsm-keypair = Google Secret Manager (or equivalent); squads-v4-multisig = on-chain Squads V4 multisig PDA; frozen = authority transferred to a non-signing key (no upgrades possible by this path); burned = authority set to System Program 11...11 (program is permanently immutable)."
+        },
+        "operator": {
+          "type": "string",
+          "description": "Email or handle of the human accountable for this authority. For multisig, the primary operator/coordinator."
+        },
+        "ledger": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "derivationPath": { "type": "string", "description": "e.g. 'usb://ledger?key=0' or BIP44 path." },
+            "deviceModel": { "enum": ["ledger-flex", "ledger-stax", "ledger-nano-x", "ledger-nano-s-plus", "ledger-nano-s"] },
+            "blindSigningRequired": { "type": "boolean" }
+          },
+          "description": "Required when kind=cold-ledger. derivationPath is the form skills pass to `solana program deploy --keypair <path>`."
+        },
+        "secretManager": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["provider", "secretId"],
+          "properties": {
+            "provider": { "enum": ["gcp", "aws", "vault"] },
+            "project": { "type": "string", "description": "GCP project id (or AWS account / Vault namespace)." },
+            "secretId": { "type": "string", "description": "Secret name/path. The actual key material is fetched at deploy time." },
+            "version": { "type": "string", "description": "Optional version pin (e.g. 'latest' or '5')." }
+          },
+          "description": "Required when kind=gsm-keypair. References where the keypair is stored — never the key material itself."
+        },
+        "localKeypair": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["pathHint"],
+          "properties": {
+            "pathHint": { "type": "string", "description": "Filesystem path hint where the operator keeps the keypair (e.g. '~/rome/keypair')." }
+          },
+          "description": "Required when kind=hot-keypair. Hint only — nothing in the registry references the file content."
+        },
+        "multisig": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["multisigPda", "threshold", "members"],
+          "properties": {
+            "multisigPda": { "type": "string", "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$" },
+            "threshold": { "type": "integer", "minimum": 1 },
+            "members": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["pubkey", "kind", "operator"],
+                "additionalProperties": false,
+                "properties": {
+                  "pubkey": { "type": "string", "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$" },
+                  "kind": { "enum": ["cold-ledger", "hot-keypair", "gsm-keypair"] },
+                  "operator": { "type": "string" }
+                }
+              }
+            }
+          },
+          "description": "Required when kind=squads-v4-multisig. multisigPda is what gets passed as --upgrade-authority; members carry per-signer metadata for skill UX (which device to plug in, etc.)."
+        },
+        "rotationLog": {
+          "type": "string",
+          "const": "./authority.json",
+          "description": "Pointer to the append-only authority rotation log."
+        }
+      },
+      "allOf": [
+        { "if": { "properties": { "kind": { "const": "cold-ledger" } } },
+          "then": { "required": ["ledger"], "properties": { "ledger": { "type": "object" } } } },
+        { "if": { "properties": { "kind": { "const": "gsm-keypair" } } },
+          "then": { "required": ["secretManager"], "properties": { "secretManager": { "type": "object" } } } },
+        { "if": { "properties": { "kind": { "const": "hot-keypair" } } },
+          "then": { "required": ["localKeypair"], "properties": { "localKeypair": { "type": "object" } } } },
+        { "if": { "properties": { "kind": { "const": "squads-v4-multisig" } } },
+          "then": { "required": ["multisig"], "properties": { "multisig": { "type": "object" } } } }
+      ]
+    },
+
+    "current": {
+      "type": "object",
+      "description": "Current build provenance — what code is running on-chain RIGHT NOW. Replaced atomically on each upgrade.",
+      "required": [
+        "gitSha",
+        "gitRepo",
+        "programDataSha256",
+        "binarySize",
+        "deployedAt",
+        "deployedAtSlot",
+        "deployedAtTx",
+        "deployedBy"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "version": { "type": ["string", "null"], "description": "Semver tag if tagged; null otherwise." },
+        "gitSha": { "type": "string", "pattern": "^[a-f0-9]{40}$", "description": "Full 40-char git SHA at the source repo." },
+        "gitRepo": { "type": "string", "format": "uri", "description": "https URL of the source repo." },
+        "gitTag": { "type": ["string", "null"], "description": "Git tag if applicable (e.g. 'v0.4.2')." },
+        "buildFeatureFlags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Cargo features active at build time (e.g. ['testnet', 'custom-heap'])."
+        },
+        "toolchain": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "solanaVersion": { "type": "string", "description": "Solana CLI version used by `cargo build-sbf` (e.g. '3.0.0')." },
+            "platformTools": { "type": "string", "description": "Platform-tools version (e.g. 'v1.51')." },
+            "rustToolchain": { "type": "string", "description": "Rust toolchain version (e.g. '1.79.0')." }
+          }
+        },
+        "programDataSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$", "description": "SHA-256 of the on-chain programData bytes. CI verifies against `solana program show`." },
+        "binarySize": { "type": "integer", "minimum": 0, "description": "Size of the deployed binary in bytes." },
+        "deployedAt": { "type": "string", "format": "date-time", "description": "UTC time of the deploy tx." },
+        "deployedAtSlot": { "type": "integer", "minimum": 0 },
+        "deployedAtTx": { "type": "string", "description": "Solana tx signature (base58)." },
+        "deployedBy": { "type": "string", "description": "Email/handle of the operator who initiated the deploy." },
+        "ciRunUrl": { "type": ["string", "null"], "format": "uri", "description": "GitHub Actions run URL for the build, if applicable." },
+        "upgradesRef": { "type": "string", "const": "./upgrades.json" }
+      }
+    },
+
+    "chainsHosted": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[0-9]+-[a-z0-9-]+$" },
+      "description": "Slug references (e.g. '121226-marcus') of chains currently registered on this program. CI invariant: each entry must have chains/<slug>/chain.json#romeEvmProgramId == this programId."
+    },
+
+    "chainsDecommissioned": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["chain", "decommissionedAt"],
+        "additionalProperties": false,
+        "properties": {
+          "chain": { "type": "string", "pattern": "^[0-9]+-[a-z0-9-]+$" },
+          "decommissionedAt": { "type": "string", "format": "date-time" },
+          "reason": { "type": "string" }
+        }
+      },
+      "description": "Chains that were once hosted on this program but have since retired."
+    },
+
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "lastReview": { "type": ["string", "null"], "format": "date" },
+        "reviewUrl": { "type": ["string", "null"], "format": "uri" }
+      }
+    },
+
+    "createdAt": { "type": "string", "format": "date-time", "description": "Initial deploy timestamp." },
+    "decommissionedAt": { "type": ["string", "null"], "format": "date-time" },
+    "closedAt": { "type": ["string", "null"], "format": "date-time", "description": "Set when `solana program close` reclaims rent. Mutually implies role=closed and status=closed." }
+  }
+}
