@@ -1,4 +1,0 @@
-{
-  "type": "default",
-  "notes": "No USDC/SOL Meteora pool on Solana devnet yet. Chain uses default gas pricing; upgrade once a pool is created."
-}
