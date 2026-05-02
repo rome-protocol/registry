@@ -10,7 +10,7 @@
     "symbol": "USDC",
     "decimals": 18
   },
-  "status": "live",
+  "status": "retired",
   "solana": {
     "cluster": "devnet",
     "tested": {

@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Changed — 121226-marcus status: live → retired
+- **`chains/121226-marcus/chain.json`** — `status` flipped from `live` to `retired`. Why: marcus is being decommissioned to deploy a new rome-evm program. Last live Rome chain on the legacy `DP1dshBz…` program; chain take-down precedes program close + new RomeD program deployment (clean-slate Phase 1 → Phase 5 per the operator's clean-slate execution plan). Marcus served as the active devnet target for Rome bridge + Oracle + DEX work for ~6 weeks (deployed 2026-03-13 → retired 2026-05-02). Decommissioning trigger is `/take-down-chain marcus` — sixth chain take-down in the active-set contraction (Maximus / Esquiline / Aventine / Cassius / Caelian / Subura preceded). Chain directory preserved per registry policy. On-chain liveness probe already skips retired chains (`tools/liveness.ts`). Marcus uses the canonical shared `DP1dshBz…` program — program close runs as a separate `/close-program` step after this take-down.
+- **`chains/121226-marcus/NOTES.md`** — appended `## Retirement` section with date, reason, successor, program-close note, and take-down trigger.
+- **`package.json` / `package-lock.json`** — `0.4.11` → `0.4.12` (data-only patch bump per `docs/SCHEMA_VERSIONING.md`; status flip is the patch-bucket policy). Lockfile bumped surgically via `jq` per the macOS Node 24 vs CI Node 25 cross-platform pitfall.
+
 ### Removed — retired chain directories (121215, 121222, 121225, 121228, 121299)
 With every previous chain now `status: retired` and Marcus the sole live chain, the retired-but-preserved chain directories were removed to keep the registry surface focused on what's live. The retirement history (each chain's purpose, why it was decommissioned, and what was learned) remains in `CHANGELOG.md` under the relevant `## [Unreleased]` / prior-version sections; the v0.4.x git tags still serve each chain's final on-chain state via the jsDelivr CDN if archival reads are needed (`cdn.jsdelivr.net/gh/rome-protocol/registry@v0.4.10/chains/121215-maximus/...` continues to resolve against the immutable tag, so any external pin against an old tag is not affected).
 
