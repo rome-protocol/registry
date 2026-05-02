@@ -1,4 +1,0 @@
-{
-  "type": "default",
-  "notes": "No Meteora WETH/WSOL pool on Solana devnet yet. proxy_track_gas=false; chain uses default ~10 gwei gas pricing. Upgrade to a meteora_damm_v1_pool entry once a Solana-devnet WETH/WSOL pool is deployed. Sourced from rome-ops/ansible/deployments/registry.json."
-}

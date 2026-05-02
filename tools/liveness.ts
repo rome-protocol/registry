@@ -1,8 +1,7 @@
 // liveness.ts — on-chain liveness probe for the rome-protocol/registry.
 //
 // For every chain in chains/<id-slug>/, runs per-kind verification per
-// docs/VERIFICATION_RULES.md. Implements the rules manually verified for
-// subura/esquiline/maximus during the v0.2 data sweep.
+// docs/VERIFICATION_RULES.md.
 //
 // Per-kind on-chain checks:
 //
