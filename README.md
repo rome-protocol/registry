@@ -8,10 +8,9 @@ Canonical chain, contract, and token metadata for the Rome Protocol ecosystem.
 
 | Chain ID | Name | Network | Status | Gas | Mode | Notes |
 |---|---|---|---|---|---|---|
-| 121215 | [Rome Maximus](chains/121215-maximus/) | devnet | live | SOL (no SPL) | single-state | Custom rome-evm program for meta-hook integration testing |
-| 121222 | [Rome Subura](chains/121222-subura/) | devnet | live | RSOL (`Hpur18Q…`) | single-state | Internal devnet; oracle deployed; non-canonical gas mint |
-| 121225 | [Rome Esquiline](chains/121225-esquiline/) | devnet | live | USDC (`4zMMC9…`) | single-state | Containerized L2; oracle deployed |
 | 121226 | [Rome Marcus](chains/121226-marcus/) | testnet | live | USDC (`4zMMC9…`) | single-state | Bridge Phase 1 + oracle; primary integration target |
+
+> Earlier chains (Maximus, Subura, Esquiline, Cassius, Aventine) were retired through 2026-04 / 2026-05 as the active chain set contracted around Marcus. Their entries were removed from `chains/` to keep the registry surface focused on what is live; `CHANGELOG.md` preserves the retirement history, and the v0.4.x git tags still serve their final on-chain state via the jsDelivr CDN if archival reads are needed.
 
 ## How to consume
 

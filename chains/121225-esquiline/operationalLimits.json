@@ -1,4 +1,0 @@
-{
-  "maxComputeUnitsPerTx": 1400000,
-  "maxCpiPerAtomicTx": 1
-}
