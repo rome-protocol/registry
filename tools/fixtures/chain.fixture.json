@@ -1,10 +1,10 @@
 {
-  "chainId": 121226,
-  "name": "Rome Marcus",
+  "chainId": 999999,
+  "name": "Rome Fixture",
   "network": "testnet",
-  "rpcUrl": "https://marcus.devnet.romeprotocol.xyz/",
-  "explorerUrl": "https://via-marcus.devnet.romeprotocol.xyz/",
-  "romeEvmProgramId": "DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3",
-  "nativeCurrency": { "name": "Rome Marcus", "symbol": "USDC", "decimals": 18 },
+  "rpcUrl": "https://fixture.devnet.romeprotocol.xyz/",
+  "explorerUrl": "https://via-fixture.devnet.romeprotocol.xyz/",
+  "romeEvmProgramId": "Fixture111111111111111111111111111111111111",
+  "nativeCurrency": { "name": "Rome Fixture", "symbol": "USDC", "decimals": 18 },
   "status": "live"
 }

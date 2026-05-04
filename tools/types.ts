@@ -38,7 +38,7 @@ export interface RomeChainCoreIdentity {
   rpcUrl: string;
   explorerUrl?: string;
   /**
-   * Rome EVM program ID (Solana base58) this chain is registered under. Required for new chains: the post-clean-slate registry has no canonical default to fall back on (legacy `DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3` closed 2026-05-02). Once the next primary rome-evm program is deployed (Phase 5), `programs/index.json#primary[<cluster>]` becomes the authoritative pointer; chains running a custom rome-evm fork (e.g. meta-hook test branches) still declare their own. Schema keeps the field optional for the v0.3.x → v0.4.x compat window (legacy `solanaProgramId` is still read as a deprecated alias). Added v0.4.0 — supersedes `solanaProgramId`.
+   * Rome EVM program ID (Solana base58) this chain is registered under. Required for new chains: the post-clean-slate registry has no canonical default to fall back on (legacy `FixtureProgramIdFixtureProgramIdFixture12345` closed 2026-05-02). Once the next primary rome-evm program is deployed (Phase 5), `programs/index.json#primary[<cluster>]` becomes the authoritative pointer; chains running a custom rome-evm fork (e.g. meta-hook test branches) still declare their own. Schema keeps the field optional for the v0.3.x → v0.4.x compat window (legacy `solanaProgramId` is still read as a deprecated alias). Added v0.4.0 — supersedes `solanaProgramId`.
    */
   romeEvmProgramId?: string;
   /**

@@ -9,14 +9,14 @@ function tmpRegistry(): string {
 }
 
 function seedMarcus(root: string): void {
-  const dir = path.join(root, "chains/121226-marcus");
+  const dir = path.join(root, "chains/999999-fixture");
   mkdirSync(dir, { recursive: true });
   writeFileSync(path.join(dir, "chain.json"), JSON.stringify({
-    chainId: 121226,
-    name: "Rome Marcus",
+    chainId: 999999,
+    name: "Rome Fixture",
     network: "testnet",
-    rpcUrl: "https://marcus.devnet.romeprotocol.xyz/",
-    nativeCurrency: { name: "Rome Marcus", symbol: "USDC", decimals: 18 },
+    rpcUrl: "https://fixture.devnet.romeprotocol.xyz/",
+    nativeCurrency: { name: "Rome Fixture", symbol: "USDC", decimals: 18 },
     status: "live",
   }, null, 2));
   writeFileSync(path.join(dir, "contracts.json"), JSON.stringify([
@@ -64,7 +64,7 @@ function seedMarcus(root: string): void {
     maxCpiPerAtomicTx: 1,
     recommendedGasBudgets: { wrap_gas_to_spl: 27000000 },
   }, null, 2));
-  writeFileSync(path.join(dir, "NOTES.md"), "# Rome Marcus — 121226\n\nOriginal Marcus.\n");
+  writeFileSync(path.join(dir, "NOTES.md"), "# Rome Fixture — 999999\n\nOriginal fixture.\n");
 }
 
 describe("add-chain fresh mode", () => {
@@ -97,21 +97,21 @@ describe("add-chain fresh mode", () => {
 });
 
 describe("add-chain rotation mode", () => {
-  it("clones marcus → marcus2; preserves mintId, source-chain, endpoints, operationalLimits; wipes addresses", () => {
+  it("clones fixture → fixture2; preserves mintId, source-chain, endpoints, operationalLimits; wipes addresses", () => {
     const root = tmpRegistry();
     seedMarcus(root);
 
     rotateChain({
       registryRoot: root,
-      copyFromSlug: "121226-marcus",
+      copyFromSlug: "999999-fixture",
       newChainId: 121227,
-      newSlug: "marcus-2",
-      newName: "Rome Marcus 2",
-      newRpcUrl: "https://marcus2.devnet.romeprotocol.xyz/",
+      newSlug: "fixture-2",
+      newName: "Rome Fixture 2",
+      newRpcUrl: "https://fixture2.devnet.romeprotocol.xyz/",
     });
 
-    const oldDir = path.join(root, "chains/121226-marcus");
-    const newDir = path.join(root, "chains/121227-marcus-2");
+    const oldDir = path.join(root, "chains/999999-fixture");
+    const newDir = path.join(root, "chains/121227-fixture-2");
 
     // old chain marked retired
     const oldChain = JSON.parse(readFileSync(path.join(oldDir, "chain.json"), "utf8"));
@@ -120,9 +120,9 @@ describe("add-chain rotation mode", () => {
     // new chain has new id + previousChainId back-link
     const newChain = JSON.parse(readFileSync(path.join(newDir, "chain.json"), "utf8"));
     expect(newChain.chainId).toBe(121227);
-    expect(newChain.name).toBe("Rome Marcus 2");
-    expect(newChain.rpcUrl).toBe("https://marcus2.devnet.romeprotocol.xyz/");
-    expect(newChain.previousChainId).toBe(121226);
+    expect(newChain.name).toBe("Rome Fixture 2");
+    expect(newChain.rpcUrl).toBe("https://fixture2.devnet.romeprotocol.xyz/");
+    expect(newChain.previousChainId).toBe(999999);
     expect(newChain.status).toBe("preparing");
 
     // contract addresses wiped to empty placeholder
