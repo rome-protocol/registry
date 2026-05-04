@@ -16,12 +16,22 @@
     "name": "RomeBridgePaymaster",
     "versions": [
       {
+        "address": "0xb7778b74722971c234c78b712c0fb26b02cc2bce",
+        "version": "1.4.0",
+        "status": "live",
+        "bytecodeSha256": "aebd226cf9ac249ce3824ce96dc53b94da57b6b507367e72e00b621b51c977e2",
+        "sourceGitSha": "dec454ed7d75c0e42da4c970c1c35a32148a3f76",
+        "deployedAt": "2026-05-05T04:30:00Z"
+      },
+      {
         "address": "0x987dc72ac3f2ed624c02408ac17af0699d2db48d",
         "version": "1.3.0",
-        "status": "live",
+        "status": "deprecated",
         "bytecodeSha256": "08354c8f2cf230c373d460b255e254ddaecb74e515496b79611d78f465268213",
         "sourceGitSha": "4030cbb67fa9c4424a2a9f6656fa048b5532296b",
-        "deployedAt": "2026-05-05T03:00:00Z"
+        "deployedAt": "2026-05-05T03:00:00Z",
+        "deprecatedAt": "2026-05-05T04:30:00Z",
+        "replacedBy": "0xb7778b74722971c234c78b712c0fb26b02cc2bce"
       },
       {
         "address": "0x069bcaf0f06af909eed8b6fef2cbc6c31a1b187a",
@@ -72,12 +82,22 @@
     "name": "SPL_ERC20_USDC",
     "versions": [
       {
+        "address": "0x7e233892225650d9b992bae415484faac3412a9a",
+        "version": "1.4.0",
+        "status": "live",
+        "bytecodeSha256": "9039fcfdfac0bd146f727edc56f01dcf3f68155a060654b6cc1b985242e1dad5",
+        "sourceGitSha": "dec454ed7d75c0e42da4c970c1c35a32148a3f76",
+        "deployedAt": "2026-05-05T04:30:00Z"
+      },
+      {
         "address": "0x8bbe731c68ae7ea458be2367eedd9203fb29c13b",
         "version": "1.3.0",
-        "status": "live",
+        "status": "deprecated",
         "bytecodeSha256": "3413bbf44086e14d3f6e5e3c405aed614cbf04153c85cfd40384d58cc215175f",
         "sourceGitSha": "4030cbb67fa9c4424a2a9f6656fa048b5532296b",
-        "deployedAt": "2026-05-05T03:00:00Z"
+        "deployedAt": "2026-05-05T03:00:00Z",
+        "deprecatedAt": "2026-05-05T04:30:00Z",
+        "replacedBy": "0x7e233892225650d9b992bae415484faac3412a9a"
       },
       {
         "address": "0x043581b6966533b90fe8a4675b5c14d5ab59dead",
@@ -245,12 +265,22 @@
     "name": "SPL_ERC20_WETH",
     "versions": [
       {
+        "address": "0x828bb1ab2bf6e989b25cc04919cb9797b6683229",
+        "version": "1.3.0",
+        "status": "live",
+        "bytecodeSha256": "7181d8b7c03aad1495913cc88f77be7bb5b279ceaa743a277f2f1693aa734c8f",
+        "sourceGitSha": "dec454ed7d75c0e42da4c970c1c35a32148a3f76",
+        "deployedAt": "2026-05-05T04:30:00Z"
+      },
+      {
         "address": "0x75f3e0f145dab2106d6f82faa3438a7982eb709b",
         "version": "1.2.0",
-        "status": "live",
+        "status": "deprecated",
         "bytecodeSha256": "f640f517701aa6c59b3dca072038b6f949cbd096c37cbedd083823d8060435b9",
         "sourceGitSha": "4030cbb67fa9c4424a2a9f6656fa048b5532296b",
-        "deployedAt": "2026-05-05T03:00:00Z"
+        "deployedAt": "2026-05-05T03:00:00Z",
+        "deprecatedAt": "2026-05-05T04:30:00Z",
+        "replacedBy": "0x828bb1ab2bf6e989b25cc04919cb9797b6683229"
       },
       {
         "address": "0xb52660b6b69986002a238f01fcc4aad859be3c36",
@@ -278,12 +308,22 @@
     "name": "RomeBridgeWithdraw",
     "versions": [
       {
+        "address": "0x17c42fe8d8766bcce01e2cf160c017b3c94d796e",
+        "version": "1.3.0",
+        "status": "live",
+        "bytecodeSha256": "e703f2af1fca9a135bb35a1b95d9be29da6ffb92ab24adf6705239ee276a94b5",
+        "sourceGitSha": "dec454ed7d75c0e42da4c970c1c35a32148a3f76",
+        "deployedAt": "2026-05-05T04:30:00Z"
+      },
+      {
         "address": "0x5b981e2abc71d51c1c6061a4b0afdd1e2cae501e",
         "version": "1.2.0",
-        "status": "live",
+        "status": "deprecated",
         "bytecodeSha256": "64233d7ee1bfc90bb2b25ace62d30da08db6dfc0635eb5530b9edec5d1d5cac5",
         "sourceGitSha": "4030cbb67fa9c4424a2a9f6656fa048b5532296b",
-        "deployedAt": "2026-05-05T03:00:00Z"
+        "deployedAt": "2026-05-05T03:00:00Z",
+        "deprecatedAt": "2026-05-05T04:30:00Z",
+        "replacedBy": "0x17c42fe8d8766bcce01e2cf160c017b3c94d796e"
       },
       {
         "address": "0xcaa44d93b260fbcc8701306e5a1b75ade06616ab",
