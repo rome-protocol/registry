@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Added — Marcus: RomeBridgeWithdraw + Wormhole-bridged WETH wrapper + Oracle Gateway V2 feeds
+- **`chains/121301-marcus/contracts.json`** — added `RomeBridgeWithdraw` (`0x911ea410…`) + `SPL_ERC20_WETH` (`0x002d299b…`). Bumped `SPL_ERC20_USDC` (`0x4ab59bbd…`) and `RomeBridgePaymaster` (`0xa4475caf…`) to v1.1.0; prior 1.0.0 entries marked deprecated/replacedBy. The new wrapper set is the one wired into Withdraw's constructor; the prior wrappers point to the same SPL ATAs (functionally equivalent for balance reads, but `burnUSDC` calls only go through the new contracts).
+- **`chains/121301-marcus/bridge.json`** — added `solana.wethMint = 6F5YWWrUMNpee8C6BDUc6DmRvYRMDDTgJHwKhbXuifWs` (canonical Wormhole-wrapped Sepolia WETH on Solana devnet, derived via `tools/lib/canonical-mint.ts`). Earlier session attempted to use a typo'd address (`6F5YWWrUBg62…`) which doesn't exist on-chain → SPL_ERC20 constructor's `load_mint` CPI reverted with `0x524de5b3` → blocked the whole RomeBridgeWithdraw deploy.
+- **`chains/121301-marcus/tokens.json`** — `WUSDC` address bumped to `0x4ab59bbd…`; new `WETH` entry at `0x002d299b…` (decimals 8 — Wormhole truncates at 8 to fit `u64` SPL token amounts).
+- **`chains/121301-marcus/oracle.json`** — populated `factory: 0x80a971f2…` + 6 feeds (5 Pyth: SOL/BTC/ETH/USDC/USDT, 1 Switchboard: SOL). Adapters were deployed via `scripts/oracle/deploy-seed-feeds.ts` on 2026-05-04; the `add-bundle.ts` scaffold left `oracle.json` as a placeholder (factory: 0x000…, feeds: {}).
+
 ### Changed — Marcus bridge.json: complete sourceEvm Sepolia addresses
 - **`chains/121301-marcus/bridge.json`** — added the Sepolia program addresses (`cctpTokenMessenger`, `cctpMessageTransmitter`, `wormholeTokenBridge`) + `rpcUrl` to `sourceEvm`. The rome-ui frontend's `normalizeBridge` (`src/lib/config/chains.ts:24`) drops the entire bridge block when any of these are missing — Solana SPL balance reads + Sepolia balance reads silently fall to 0 even though every Solana-side field was already resolved. Canonical addresses from Circle (CCTP V1) + Wormhole Sepolia docs.
 

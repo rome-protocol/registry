@@ -16,12 +16,24 @@
     "name": "RomeBridgePaymaster",
     "versions": [
       {
+        "address": "0xa4475cafceb431fa5cba1583660df5b83f4783e9",
+        "version": "1.1.0",
+        "status": "deprecated",
+        "bytecodeSha256": "d46d80392172f877ccdef6bea4e03a5899f5188bf94051d1313b0a1639cd1c5a",
+        "sourceGitSha": "e6c17fa3750e1d4960e3384ef680db38ad897181",
+        "deployedAt": "2026-05-04T18:32:00Z",
+        "deprecatedAt": "2026-05-04T18:32:00Z",
+        "replacedBy": "0xa4475cafceb431fa5cba1583660df5b83f4783e9"
+      },
+      {
         "address": "0x1551cb2767291d033da2e242fd69bc86428c5d64",
         "version": "1.0.0",
-        "status": "live",
+        "status": "deprecated",
         "bytecodeSha256": "4f915a9d8a3c9822541dbba5f998fe9781544b56f1af6000dc9f94a73caa023b",
         "sourceGitSha": "e6c17fa3750e1d4960e3384ef680db38ad897181",
-        "deployedAt": "2026-05-04T13:00:00Z"
+        "deployedAt": "2026-05-04T13:00:00Z",
+        "deprecatedAt": "2026-05-04T18:32:00Z",
+        "replacedBy": "0xa4475cafceb431fa5cba1583660df5b83f4783e9"
       }
     ]
   },
@@ -42,12 +54,24 @@
     "name": "SPL_ERC20_USDC",
     "versions": [
       {
-        "address": "0x739cf06175a547570a1022db59488e02d26817cb",
-        "version": "1.0.0",
-        "status": "live",
+        "address": "0x4ab59bbd7141aced6eecfdbcf45af74681a0fbe0",
+        "version": "1.1.0",
+        "status": "deprecated",
         "bytecodeSha256": "7ae26f028f10160b6ee8a4eabce6f76ed8288d4d0e8b58c4e16df98bd629453d",
         "sourceGitSha": "e6c17fa3750e1d4960e3384ef680db38ad897181",
-        "deployedAt": "2026-05-04T13:00:00Z"
+        "deployedAt": "2026-05-04T18:32:00Z",
+        "deprecatedAt": "2026-05-04T18:32:00Z",
+        "replacedBy": "0x4ab59bbd7141aced6eecfdbcf45af74681a0fbe0"
+      },
+      {
+        "address": "0x739cf06175a547570a1022db59488e02d26817cb",
+        "version": "1.0.0",
+        "status": "deprecated",
+        "bytecodeSha256": "7ae26f028f10160b6ee8a4eabce6f76ed8288d4d0e8b58c4e16df98bd629453d",
+        "sourceGitSha": "e6c17fa3750e1d4960e3384ef680db38ad897181",
+        "deployedAt": "2026-05-04T13:00:00Z",
+        "deprecatedAt": "2026-05-04T18:32:00Z",
+        "replacedBy": "0x4ab59bbd7141aced6eecfdbcf45af74681a0fbe0"
       }
     ]
   },
@@ -178,6 +202,32 @@
         "bytecodeSha256": "404bbdff081eab6781f87ae53a183078d58ab79947e551677f8e4d86f226c777",
         "sourceGitSha": "da93c6b0785018e79eff9e13640d0c9a78860f44",
         "deployedAt": "2026-05-04T13:30:00Z"
+      }
+    ]
+  },
+  {
+    "name": "SPL_ERC20_WETH",
+    "versions": [
+      {
+        "address": "0x002d299b6f41f7daffe6e417d079d15e145d1082",
+        "version": "1.0.0",
+        "status": "live",
+        "bytecodeSha256": "a20129ea07ffee444795f34a363092f2d7a8bef1b8ea8516f37188d2ed742e3f",
+        "sourceGitSha": "e6c17fa3750e1d4960e3384ef680db38ad897181",
+        "deployedAt": "2026-05-04T18:32:00Z"
+      }
+    ]
+  },
+  {
+    "name": "RomeBridgeWithdraw",
+    "versions": [
+      {
+        "address": "0x911ea410abcbffcfad95347685d50a0391da4c15",
+        "version": "1.0.0",
+        "status": "live",
+        "bytecodeSha256": "fe27827381a7c7b71a22fe01ce1838a2866daf8b31f3e1fdcc3c33e14b97c71c",
+        "sourceGitSha": "e6c17fa3750e1d4960e3384ef680db38ad897181",
+        "deployedAt": "2026-05-04T18:32:00Z"
       }
     ]
   }
