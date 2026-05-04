@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Changed — Marcus bridge redeploy: ERC20 auto-register on first mutation
+- **`chains/121301-marcus/contracts.json`** — bumped `RomeBridgePaymaster` to v1.3.0 (`0x987dc72a…`), `SPL_ERC20_USDC` to v1.3.0 (`0x8bbe731c…`), `SPL_ERC20_WETH` to v1.2.0 (`0x75f3e0f1…`), `RomeBridgeWithdraw` to v1.2.0 (`0x5b981e2a…`). Predecessors marked `deprecated` with `replacedBy` set to the new live address. Source: rome-solidity@4030cbb (rome-solidity #101).
+- **`chains/121301-marcus/tokens.json`** — `WUSDC` address bumped to `0x8bbe731c…`; `WETH` address bumped to `0x75f3e0f1…`. Decimals + names + assetRefs unchanged.
+
+#### Why
+- Pre-redeploy `SPL_ERC20.{transfer,transferFrom,approve,mint_to,ensure_token_account,bridgeOutToSolana,ensureRecipientAta}` called `_users.get_user(msg.sender)` — which reverts with "User does not exist" for any address that never explicitly called `ERC20SPLFactory.create_user`. Bridged-in users (canonical Wormhole / CCTP wrappers, never deployed via factory) hit this on every wrapper interaction — the first `approve` for pool creation, swap, or LP deposit reverted before doing anything. The work-around was a manual "Activate" button click on the rome-ui Portfolio page.
+- New wrappers call `_users.ensure_user(...)` on every mutation entry point, idempotent — first call self-registers in `ERC20Users`, repeat callers see the existing PDA returned. Same self-bootstrap UX as Phantom and every other Solana wallet. The Activate button can be removed in a follow-up. (rome-solidity #101.)
+
 ### Changed — Marcus bridge redeploy: getAta + Wormhole targetChain fixes
 - **`chains/121301-marcus/contracts.json`** — bumped `RomeBridgePaymaster` to v1.2.0 (`0x069bcaf0…`), `SPL_ERC20_USDC` to v1.2.0 (`0x043581b6…`), `SPL_ERC20_WETH` to v1.1.0 (`0xb52660b6…`), `RomeBridgeWithdraw` to v1.1.0 (`0xcaa44d93…`). Predecessors marked `deprecated` with `replacedBy` set to the new live address. Earlier paymaster + USDC entries that pointed `replacedBy` at themselves (a self-reference left by the prior redeploy) are now repointed at the current live address. Source: rome-solidity@cbcbe8a (rome-solidity #99 + #100).
 - **`chains/121301-marcus/tokens.json`** — `WUSDC` address bumped to `0x043581b6…`; `WETH` address bumped to `0xb52660b6…`. Decimals + names + assetRefs unchanged.
