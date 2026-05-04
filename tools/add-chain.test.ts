@@ -8,7 +8,7 @@ function tmpRegistry(): string {
   return mkdtempSync(path.join(tmpdir(), "registry-add-"));
 }
 
-function seedMarcus(root: string): void {
+function seedFixture(root: string): void {
   const dir = path.join(root, "chains/999999-fixture");
   mkdirSync(dir, { recursive: true });
   writeFileSync(path.join(dir, "chain.json"), JSON.stringify({
@@ -33,8 +33,8 @@ function seedMarcus(root: string): void {
   ], null, 2));
   writeFileSync(path.join(dir, "tokens.json"), JSON.stringify([
     {
-      address: "0x1f7dfaf9444d46fc10b4b4736d906da5caf46195",
-      mintId: "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU",
+      address: "0x000000000000000000000000000000000000bbbb",
+      mintId: "2222222222222222222222222222222222222222222",
       symbol: "wUSDC", name: "Rome USDC", decimals: 6, kind: "spl_wrapper",
       assetRef: "usdc",
       underlying: { chain: "solana-devnet", asset: "USDC" },
@@ -46,7 +46,7 @@ function seedMarcus(root: string): void {
       usdc: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
     },
     solana: {
-      usdcMint: "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU",
+      usdcMint: "2222222222222222222222222222222222222222222",
       wormholeChainIdRef: "sepolia",
       cctpDomainRef: "sepolia",
     },
@@ -99,7 +99,7 @@ describe("add-chain fresh mode", () => {
 describe("add-chain rotation mode", () => {
   it("clones fixture → fixture2; preserves mintId, source-chain, endpoints, operationalLimits; wipes addresses", () => {
     const root = tmpRegistry();
-    seedMarcus(root);
+    seedFixture(root);
 
     rotateChain({
       registryRoot: root,
@@ -135,13 +135,13 @@ describe("add-chain rotation mode", () => {
     // token address wiped, mintId + assetRef preserved
     const newTokens = JSON.parse(readFileSync(path.join(newDir, "tokens.json"), "utf8"));
     expect(newTokens[0].address).toBe("0x0000000000000000000000000000000000000000");
-    expect(newTokens[0].mintId).toBe("4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"); // preserved
+    expect(newTokens[0].mintId).toBe("2222222222222222222222222222222222222222222"); // preserved
     expect(newTokens[0].assetRef).toBe("usdc");
 
     // bridge sourceEvm + solana mints preserved
     const newBridge = JSON.parse(readFileSync(path.join(newDir, "bridge.json"), "utf8"));
     expect(newBridge.sourceEvm.usdc).toBe("0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238");
-    expect(newBridge.solana.usdcMint).toBe("4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU");
+    expect(newBridge.solana.usdcMint).toBe("2222222222222222222222222222222222222222222");
 
     // oracle factory + feed addresses wiped
     const newOracle = JSON.parse(readFileSync(path.join(newDir, "oracle.json"), "utf8"));

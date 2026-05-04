@@ -124,7 +124,7 @@ When a partner launches their own L2 with the Rome stack and registers in the re
    - The gas-pool derivation rule is the same for every Rome chain — `find_program_address([chainId.to_le_bytes(8), "CONTRACT_SOL_WALLET"], romeEvmProgram)` then ATA against the partner's mint and the SPL Token program. Liveness probe verifies on-chain.
 
 5. **Populate `gasPricing.json`**:
-   - Initially: `{ "type": "default" }` if no pricing pool exists yet. Marcus is in this state today.
+   - Initially: `{ "type": "default" }` if no pricing pool exists yet — chains start in this state.
    - Once the partner opens a pricing pool (Meteora / Raydium / Orca / Phoenix / etc.): `{ "type": "<protocol>", "poolAddress": "<pool>", "pair": { "base": "<gas mint>", "quote": "<USDC or SOL>" } }`. Liveness verifies the pool exists, is owned by the correct AMM program, and pairs the gas mint correctly.
 
 6. **Bridge wiring** in `bridge.json` only if the partner's chain participates in CCTP / Wormhole. May not — isolated rollups can skip.

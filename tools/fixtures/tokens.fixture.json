@@ -1,17 +1,17 @@
 [
   {
     "address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-    "mintId": "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU",
-    "gasPool": "5tB4UTaukKzfiZ9LHmk343G7XHdart7Z7uKboaRHpEsf",
+    "mintId": "2222222222222222222222222222222222222222222",
+    "gasPool": "3333333333333333333333333333333333333333333",
     "symbol": "USDC",
-    "name": "Rome Marcus",
+    "name": "Rome Fixture",
     "decimals": 18,
     "kind": "gas",
     "assetRef": "usdc"
   },
   {
-    "address": "0x1f7dfaf9444d46fc10b4b4736d906da5caf46195",
-    "mintId":  "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU",
+    "address": "0x000000000000000000000000000000000000bbbb",
+    "mintId":  "2222222222222222222222222222222222222222222",
     "symbol":  "WUSDC",
     "name":    "Rome Wrapped USDC",
     "decimals": 6,

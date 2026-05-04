@@ -10,7 +10,7 @@
   },
   "cctpIrisApiBase": "https://iris-api-sandbox.circle.com",
   "solana": {
-    "usdcMint": "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU",
+    "usdcMint": "2222222222222222222222222222222222222222222",
     "wethMint": "6F5YWWrUMNpee8C6BDUc6DmRvYRMDDTgJHwKhbXuifWs",
     "wsolMint": "So11111111111111111111111111111111111111112",
     "wormholeChainIdRef": "sepolia",
