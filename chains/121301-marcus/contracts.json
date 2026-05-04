@@ -115,5 +115,70 @@
         "deployedAt": "2026-05-04T13:00:00Z"
       }
     ]
+  },
+  {
+    "name": "WETH9",
+    "versions": [
+      {
+        "address": "0x8430cd93135e1ba656fad86d134669e94a0e58ea",
+        "version": "1.0.0",
+        "status": "live",
+        "bytecodeSha256": "658d2426e36ab3bb89c926969a1d96912073b9cd3b056a503135a751fd01bf6a",
+        "sourceGitSha": "da93c6b0785018e79eff9e13640d0c9a78860f44",
+        "deployedAt": "2026-05-04T13:30:00Z"
+      }
+    ]
+  },
+  {
+    "name": "Multicall3",
+    "versions": [
+      {
+        "address": "0x00328ea9209301b06021c796bc9fc0c85c166f8b",
+        "version": "1.0.0",
+        "status": "live",
+        "bytecodeSha256": "5fd99c97c645b2104226eb1dbbaf77791d4c58e6aa14b0d7cf82d89c119a6228",
+        "sourceGitSha": "da93c6b0785018e79eff9e13640d0c9a78860f44",
+        "deployedAt": "2026-05-04T13:30:00Z"
+      }
+    ]
+  },
+  {
+    "name": "UniswapV2Factory",
+    "versions": [
+      {
+        "address": "0x3572c04fe95e4d9688a7fbb070f1f6847cf3634d",
+        "version": "1.0.0",
+        "status": "live",
+        "bytecodeSha256": "73d820e9b38b12aa058df65dcc4e8ce8d5424b61120bdef821b042b1bad6f4fb",
+        "sourceGitSha": "da93c6b0785018e79eff9e13640d0c9a78860f44",
+        "deployedAt": "2026-05-04T13:30:00Z"
+      }
+    ]
+  },
+  {
+    "name": "UniswapV2Router",
+    "versions": [
+      {
+        "address": "0x4772531a65809edb04dd57f5fad1672e1f13810a",
+        "version": "1.0.0",
+        "status": "live",
+        "bytecodeSha256": "917d58d4000d32d39af8618913fa21176ab4aaddc28d861f44eaf42701d4e9ab",
+        "sourceGitSha": "da93c6b0785018e79eff9e13640d0c9a78860f44",
+        "deployedAt": "2026-05-04T13:30:00Z"
+      }
+    ]
+  },
+  {
+    "name": "ERC20Factory",
+    "versions": [
+      {
+        "address": "0x684c6f40f3c8ec86817c760cb7d6b1b031d62b6d",
+        "version": "1.0.0",
+        "status": "live",
+        "bytecodeSha256": "404bbdff081eab6781f87ae53a183078d58ab79947e551677f8e4d86f226c777",
+        "sourceGitSha": "da93c6b0785018e79eff9e13640d0c9a78860f44",
+        "deployedAt": "2026-05-04T13:30:00Z"
+      }
+    ]
   }
 ]
