@@ -72,7 +72,7 @@ Per-chain entry in the operator-side deploy registry (private). Operator-private
 
 **Per-entry additions:**
 - `deployment_mode` — three values:
-  - `internal` — Rome team operates this rollup for our own use (testing, integration, dev). **Not partner-facing.** Internal rollups today (Marcus and the local `testrollup` stack) carry this mode.
+  - `internal` — Rome team operates this rollup for our own use (testing, integration, dev). **Not partner-facing.** The local `testrollup` stack and any Rome-team-operated devnet chains carry this mode.
   - `full_service` — Rome runs validator + Hercules + proxy on behalf of a partner. Partner submitted via Sovereign Portal.
   - `self_hosted` — Partner runs everything; Rome only stamps the on-chain registration via the Rome-controlled `registration_key`.
 - `sovereign_submission_id` — `string | null` back-link to the Layer 3 portal record. `null` for `internal` rollups (no partner).

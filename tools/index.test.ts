@@ -43,7 +43,7 @@ beforeEach(() => {
 });
 
 describe("public NPM API", () => {
-  it("getChain returns the seeded Marcus entry", () => {
+  it("getChain returns the seeded fixture entry", () => {
     const m = getChain(999999);
     expect(m?.chainId).toBe(999999);
     expect(m?.name).toBe("Rome Fixture");
@@ -53,7 +53,7 @@ describe("public NPM API", () => {
     expect(getChain(99999)).toBeUndefined();
   });
 
-  it("listChains returns Marcus", () => {
+  it("listChains returns the fixture", () => {
     const all = listChains();
     expect(all).toHaveLength(1);
     expect(all[0].chainId).toBe(999999);

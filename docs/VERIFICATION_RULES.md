@@ -31,12 +31,12 @@ If any check fails, the entry is rejected with a human-readable error message na
 
 **Not to be confused with kind=erc20.** Both have an EVM ERC-20-like surface, but gas has Solana SPL backing in a chain-wide pool; erc20 has no Solana side at all.
 
-**Marcus example (verified 2026-04-27):**
-- `mintId`: `4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU` (USDC, Solana devnet)
-- `gasPool`: `6LGWm6pm3DREkxCaQnULuAkWMsMTfR2XbHpHocYFarka`
-- Derived `sol_wallet`: `GEujTMkvVsytUKpxddXgFLC5CX5MTswjwDFM5oLfHv1Y` (bump 255)
-- Pool's on-chain owner field: `GEujTMkvVs…` ✓ matches derived sol_wallet
-- Pool's on-chain mint: `4zMMC9srt5…` ✓ matches USDC
+**Worked example (illustrative shape):**
+- `mintId`: a Solana SPL mint pubkey (e.g. devnet USDC).
+- `gasPool`: a Solana SPL token-account pubkey, computed as the ATA of `sol_wallet` for `mintId`.
+- Derived `sol_wallet`: `find_program_address([chainId.to_le_bytes(8), "CONTRACT_SOL_WALLET"], romeEvmProgramId)`.
+- Pool's on-chain owner field equals derived `sol_wallet` ✓.
+- Pool's on-chain mint equals `mintId` ✓.
 
 ---
 
@@ -51,7 +51,7 @@ If any check fails, the entry is rejected with a human-readable error message na
 1. EVM RPC `eth_getCode(entry.address)` returns non-empty bytecode (it's a real contract).
 2. EVM RPC `eth_call(entry.address, mint_id())` returns a 32-byte value. Convert hex → base58. Assert equals `entry.mintId`.
 3. EVM RPC `eth_call(entry.address, decimals())` returns `entry.decimals`.
-4. EVM RPC `eth_call(entry.address, symbol())` returns a string. Soft-assert equals `entry.symbol` (case-insensitive); record a warning when the on-chain symbol differs from the registry's display convention (e.g., on-chain `wUSDC` vs registry `WUSDC` — see Marcus NOTES.md).
+4. EVM RPC `eth_call(entry.address, symbol())` returns a string. Soft-assert equals `entry.symbol` (case-insensitive); record a warning when the on-chain symbol differs from the registry's display convention (e.g., on-chain `wUSDC` vs registry `WUSDC` — capture in the chain's `NOTES.md`).
 5. EVM RPC `eth_call(entry.address, name())` returns a string. Informational only; not load-bearing.
 
 The wrapper has no chain-wide pool to check — the underlying SPL lives per-user. The check that this contract is in fact a wrapper of THIS mint is what `mint_id()` provides.
@@ -59,9 +59,9 @@ The wrapper has no chain-wide pool to check — the underlying SPL lives per-use
 **Decimals nuance — wrapper-truncation legitimately diverges from asset catalog:**
 For Wormhole-bridged ETH (asset catalog says 18 decimals), the Wormhole-wrapped Solana mint has 8 decimals (Wormhole truncates to fit u64 SPL token amounts). The Rome-side `SPL_ERC20` wrapper inherits the underlying mint's decimals → 8. Registry's `decimals` field captures the per-chain wrapper's decimals (8), not the canonical asset's (18). When `assetRef` is set and the per-chain decimals differ from the catalog, this is a legitimate override — CI should warn but not fail.
 
-**Marcus examples (verified 2026-04-27):**
-- WUSDC at `0x1f7dfaf9444d46fc10b4b4736d906da5caf46195` → on-chain `mint_id()` = `4zMMC9srt5…` ✓, `decimals()` = 6 ✓, `symbol()` = `wUSDC` (registry uses `WUSDC`; tracked discrepancy).
-- WETH at `0x3d81cb32d32b917a1ba3778832536cbf63c3cc15` → on-chain `mint_id()` = `6F5YWWrU…` ✓, `decimals()` = **8** ✓ (Wormhole truncation; ETH catalog has 18), `symbol()` = `WETH` ✓.
+**Worked examples (illustrative shape):**
+- A `WUSDC` wrapper at some EVM contract address → on-chain `mint_id()` matches the Solana USDC mint ✓, `decimals()` returns `6` ✓, `symbol()` returns `wUSDC` (lower-case `w`; registry display convention uses `WUSDC` — soft warning).
+- A `WETH` Wormhole-bridged wrapper → on-chain `mint_id()` matches the Wormhole-bridged ETH mint ✓, `decimals()` returns `8` ✓ (Wormhole truncation; ETH catalog has 18), `symbol()` returns `WETH` ✓.
 
 ---
 
@@ -82,7 +82,7 @@ For Wormhole-bridged ETH (asset catalog says 18 decimals), the Wormhole-wrapped 
 
 **Distinguishing erc20 from gas.** Both present an EVM ERC-20-like surface. The erc20 contract has *only* EVM presence — no SPL backing, no pool, no PDA. The negative `mint_id()` check above is the structural test that catches misclassification.
 
-**Marcus example.** None yet. Marcus carries gas + spl_wrapper entries; native ERC-20s are a v0.2+ concern as DeFi protocols deploy on Marcus.
+**Worked example.** None yet — every chain brought up to date carries `gas` + `spl_wrapper` entries only. Native ERC-20 entries become relevant once non-wrapper DeFi tokens (governance tokens, native protocol tokens) deploy on a Rome chain.
 
 ---
 
@@ -104,7 +104,7 @@ The asset catalog is the canonical "what is this asset" record. Per-chain entrie
 
 Every chain has a `chains/<id>/gasPricing.json` capturing how the chain prices gas. Two states:
 
-**`type: "default"`** — chain uses Rome's built-in gas pricing, no external pool. No further on-chain checks; only the schema requirement (must NOT have `poolAddress`). This is Marcus's current state — no Solana devnet pool yet for USDC/SOL.
+**`type: "default"`** — chain uses Rome's built-in gas pricing, no external pool. No further on-chain checks; only the schema requirement (must NOT have `poolAddress`). This is the initial state of any new chain — until the operator opens a Solana pricing pool the chain reports `default`.
 
 **Pool-based** — `type: "meteora_damm_v1_pool" | "meteora_damm_v2_pool" | "raydium_amm_v4" | "raydium_clmm" | "raydium_cpmm" | "orca_whirlpool" | "orca_amm_v2" | "phoenix"`. Requires `poolAddress` (Solana base58). Verification:
 
@@ -124,7 +124,7 @@ Partners using Rome stack to launch their own L2 follow this flow when registeri
 
 3. **Chain entry** via `tools/add-chain.ts`:
    - `chain.json` with the new chainId, RPC, native currency.
-   - `tokens.json` gas entry: `kind: "gas"`, `mintId: <partner mint>`, `gasPool: <derived>`, `assetRef: <partner asset>`. The gas-pool derivation rule is the same as Marcus — `find_program_address([chainId.to_le_bytes(8), "CONTRACT_SOL_WALLET"], romeEvmProgram)` then ATA — independent of which mint or which partner.
+   - `tokens.json` gas entry: `kind: "gas"`, `mintId: <partner mint>`, `gasPool: <derived>`, `assetRef: <partner asset>`. The gas-pool derivation rule is fixed for every Rome chain — `find_program_address([chainId.to_le_bytes(8), "CONTRACT_SOL_WALLET"], romeEvmProgram)` then ATA — independent of which mint or which partner.
    - `gasPricing.json` with `type: "default"` initially (no pool yet) or with the partner's pool address once their Meteora/Raydium/Orca pool is live.
 
 4. **Pool registration** (when partner opens a pricing pool):
@@ -156,5 +156,5 @@ A token can graduate from ephemeral to canonical via PR — someone curates a po
 
 ## Implementation status
 
-- v0.1 (current): static schema validation enforces required fields per kind via JSON-Schema `if/then/else`. Rules above are documented + Marcus's gas pool, WUSDC, and WETH have been manually verified once on-chain.
+- v0.1 (current): static schema validation enforces required fields per kind via JSON-Schema `if/then/else`. Rules above are documented; gas-pool / WUSDC / WETH derivations have been manually verified on devnet.
 - v0.2 (task #160): `tools/liveness.ts` implements all the on-chain checks above per kind, runs in CI on every PR that touches `chains/**/tokens.json`. CI failure messages follow §Persona affordances UX rule (file:line + field + expected/actual + suggestion).

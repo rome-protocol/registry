@@ -49,7 +49,7 @@ describe("bridge.schema: optional fields (rpcUrl, cctpIrisApiBase, wsolMint)", (
       usdc: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
     },
     solana: {
-      usdcMint: "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU",
+      usdcMint: "2222222222222222222222222222222222222222222",
     },
   });
 

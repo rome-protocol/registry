@@ -98,13 +98,13 @@ Two paths via `/prepare-rollup`:
 
 In this path, you pick decimals based on what you want the gas-token to *resemble* — pick 6 for "USDC-grade gas," 9 for "SOL-grade," 18 for "EVM wei parity," etc.
 
-Every Rome chain to date (Marcus, Cassius rehearsal) has used **6** because USDC-grade precision is the cleanest fit for typical user-facing balances and exchange flows.
+For USDC-gas chains the value to pass is **6** — USDC-grade precision is the cleanest fit for typical user-facing balances and exchange flows, and matches USDC's on-chain decimals on Solana so the wrap/unwrap conversion is direct.
 
 ### Path B — existing mint (`/prepare-rollup --mint <pubkey>`)
 
 If the operator passes `--mint <pubkey>`, `/prepare-rollup` skips the mint and uses the existing one. **Decimals are then read from the on-chain mint account**; `--mint-decimals` is ignored (per `/prepare-rollup SKILL.md:12`).
 
-This path is for chains that want to use a real SPL token (e.g., devnet USDC `4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU`) directly as gas. The decimals choice is no longer a choice — it's whatever the mint says.
+This path is for chains that want to use a pre-existing SPL token (e.g. devnet USDC) directly as gas. The decimals choice is no longer a choice — it's whatever the mint says.
 
 ## What `/bring-up-chain` does for you
 
