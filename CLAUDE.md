@@ -59,14 +59,15 @@ Each artifact has a JSON Schema in `schema/`. CI validates every PR against sche
 
 ### Vanity prefix for new program IDs
 
-When `/deploy-program` provisions a new rome-evm program, it grinds a vanity prefix via `solana-keygen grind --starts-with`:
+When `/deploy-program` provisions a new rome-evm program, it grinds a vanity prefix via `solana-keygen grind --starts-with`. The prefix is keyed by the **Rome environment** the program serves (`network` field on `program.json`), not the Solana cluster (`cluster` field) — Rome devnet AND Rome testnet both run on Solana devnet but get distinct programs:
 
-| Cluster | Prefix | Example |
-|---|---|---|
-| `mainnet` | `RomeP` | `RomePxMzQk7vN8pH3wF6gT4cJ…` |
-| `devnet` | `RomeD` | `RomeDpHjN9aF4qX5vK2sM8wL6…` |
+| Rome env (`network`) | Solana cluster | Prefix | Example |
+|---|---|---|---|
+| `mainnet` | `mainnet` | `RomeP` | `RomePxMzQk7vN8pH3wF6gT4cJ…` |
+| `testnet` | `devnet`  | `RomeT` | `RomeTaB5kJxQ8vN4hF2gW6cM1…` |
+| `devnet`  | `devnet`  | `RomeD` | `RomeDpHjN9aF4qX5vK2sM8wL6…` |
 
-Lowercase `o` is required (capital `O` is excluded from base58). One-time grind (~2 min on M-series Mac); zero SOL cost. The convention is documented in `programId.description` of `program.schema.json`; it's enforced at deploy time by the skill, not by the schema (legacy/imported programs may not match — CI may warn but won't reject).
+Lowercase `o` is required (capital `O` is excluded from base58). One-time grind (~2 min on M-series Mac for 5-char prefix); zero SOL cost. The convention is documented in `programId.description` of `program.schema.json`; it's enforced at deploy time by the skill, not by the schema (legacy/imported programs may not match — CI may warn but won't reject).
 
 ### Mainnet immutability — agent boundaries
 
@@ -148,9 +149,9 @@ All lifecycle skills inherit from `/Users/anilkumar/rome/CLAUDE.md`'s **mainnet 
 
 ## Common Solana program IDs (programs/index.json policy)
 
-- `programs/index.json#primary[<cluster>]` — exactly one primary per cluster (CI invariant)
-- New chains via `/prepare-rollup` default to `programs/index.json#primary[<cluster>]` unless `--program-id` overrides
-- Promotion (secondary → primary) goes through `/promote-program`, which atomically updates both programs' `roleHistory` AND `index.json#primary[<cluster>]`
+- `programs/index.json#primary[<network>]` — exactly one primary per **Rome environment** (devnet / testnet / mainnet); CI invariant. Keyed by `network`, not `cluster`, since Rome devnet + Rome testnet both run on Solana devnet but have distinct primary programs.
+- New chains via `/prepare-rollup` default to `programs/index.json#primary[<env>]` for the chain's Rome env, unless `--program-id` overrides.
+- Promotion (secondary → primary) goes through `/promote-program`, which atomically updates both programs' `roleHistory` AND `index.json#primary[<network>]`.
 
 ## Don'ts
 

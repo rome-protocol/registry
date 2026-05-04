@@ -2,11 +2,13 @@
   "schemaVersion": "1",
   "primary": {
     "devnet": "RomeDbGQYbqomGVk13h9JkQHKoNWKB84Lw1ij9AtRXT",
+    "testnet": null,
     "mainnet": null
   },
   "programs": {
     "RomeDbGQYbqomGVk13h9JkQHKoNWKB84Lw1ij9AtRXT": {
       "cluster": "devnet",
+      "network": "devnet",
       "role": "primary",
       "kind": "rome-evm",
       "chainsHosted": []

@@ -9,6 +9,7 @@
     "programId",
     "kind",
     "cluster",
+    "network",
     "status",
     "role",
     "loader",
@@ -25,7 +26,7 @@
     "programId": {
       "type": "string",
       "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
-      "description": "On-chain Solana program ID (base58). Rome convention for new deploys: prefix `RomeP` for mainnet rome-evm programs, `RomeD` for devnet rome-evm programs — produced via `solana-keygen grind --starts-with` in /deploy-program. Convention is enforced at deploy time by skill, not by schema (legacy/imported programs may not match). CI may warn on violations but not block."
+      "description": "On-chain Solana program ID (base58). Rome convention for new deploys: prefix `RomeP` for mainnet (Rome mainnet → Solana mainnet), `RomeT` for testnet (Rome testnet → Solana devnet), `RomeD` for devnet (Rome devnet → Solana devnet) — produced via `solana-keygen grind --starts-with` in /deploy-program. Convention is enforced at deploy time by skill, not by schema (legacy/imported programs may not match). CI may warn on violations but not block."
     },
 
     "name": {
@@ -40,7 +41,12 @@
 
     "cluster": {
       "enum": ["devnet", "mainnet"],
-      "description": "Solana cluster this program is deployed on. Rome only targets mainnet and devnet."
+      "description": "**Solana cluster** this program is deployed on. Rome only targets mainnet and devnet — never Solana testnet. Note: distinct from `network` which is the Rome environment. A Rome testnet program runs on Solana devnet (cluster=devnet, network=testnet)."
+    },
+
+    "network": {
+      "enum": ["devnet", "testnet", "mainnet"],
+      "description": "**Rome environment** this program serves. devnet/testnet rollups both run on Solana devnet (cluster=devnet); the network field disambiguates them. Vanity-prefix convention follows network: RomeD/RomeT/RomeP. Added v0.4.18."
     },
 
     "status": {

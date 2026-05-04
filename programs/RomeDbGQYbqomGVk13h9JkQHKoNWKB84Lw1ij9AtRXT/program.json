@@ -4,6 +4,7 @@
   "name": "rome-evm devnet primary",
   "kind": "rome-evm",
   "cluster": "devnet",
+  "network": "devnet",
   "status": "live",
   "role": "primary",
   "rolePromotedAt": null,
@@ -43,7 +44,10 @@
     "gitSha": "547cf290f590d0311ccbbe7fc3199d76e049ed8c",
     "gitRepo": "https://github.com/rome-protocol/rome-evm-private",
     "gitTag": null,
-    "buildFeatureFlags": ["testnet", "custom-heap"],
+    "buildFeatureFlags": [
+      "testnet",
+      "custom-heap"
+    ],
     "toolchain": {
       "solanaVersion": "ci-default",
       "platformTools": "ci-default",
