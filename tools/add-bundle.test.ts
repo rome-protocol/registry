@@ -179,6 +179,31 @@ describe("add-bundle", () => {
     expect(tokens[1].underlying).toEqual({ chain: "solana-devnet", asset: "USDC" });
   });
 
+  it("populates bridge.json with sourceEvm + solana.usdcMint (default: devnet → sepolia + solana-devnet USDC)", () => {
+    const root = tmpRegistry();
+    addBundle({ registryRoot: root, manifestPath: writeManifest(root, fixtureManifest()) });
+
+    const bridge = JSON.parse(
+      readFileSync(path.join(root, "chains/121299-atrium-test/bridge.json"), "utf8"),
+    );
+
+    // sourceEvm — full Sepolia constants (rome-ui's normalizeBridge requires
+    // every cctp / wormhole address non-empty).
+    expect(bridge.sourceEvm).toEqual({
+      chainId: 11155111,
+      name: "Sepolia",
+      rpcUrl: "https://ethereum-sepolia-rpc.publicnode.com",
+      usdc: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+      cctpTokenMessenger: "0x9f3B8679c73C2Fef8b59B4f3444d4e156fb70AA5",
+      cctpMessageTransmitter: "0x7865fAfC2db2093669d92c0F33AeEF291086BEFD",
+      wormholeTokenBridge: "0xDB5492265f6038831E89f495670FF909aDe94bd9",
+    });
+
+    // solana.usdcMint — defaults to canonical Solana-devnet USDC for a
+    // devnet manifest. Operator can override via manifest.bridge.solana.usdcMint.
+    expect(bridge.solana.usdcMint).toBe("4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU");
+  });
+
   it("CHANGELOG and package.json are updated", () => {
     const root = tmpRegistry();
     addBundle({ registryRoot: root, manifestPath: writeManifest(root, fixtureManifest()) });

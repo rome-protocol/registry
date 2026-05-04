@@ -76,7 +76,60 @@ type Manifest = {
     cluster?: "mainnet" | "devnet";
     tested?: { version: string; verifiedAt: string; notes?: string };
   };
+  // Optional bridge override. When absent, defaults derive from
+  // `chain.network` (devnet/testnet → sepolia; mainnet → ethereum) and
+  // `solana.cluster` (devnet → solana-devnet USDC, mainnet → solana-mainnet
+  // USDC). Operators can override either side here when bringing up a chain
+  // wired to a non-default source EVM (e.g. a partner chain bridging from
+  // Polygon, or a testnet chain bridging from a custom L2).
+  bridge?: {
+    sourceEvm?: "sepolia" | "ethereum" | {
+      chainId: number;
+      name: string;
+      rpcUrl: string;
+      usdc: string;
+      cctpTokenMessenger: string;
+      cctpMessageTransmitter: string;
+      wormholeTokenBridge: string;
+    };
+    solana?: { usdcMint?: string };
+  };
 };
+
+// ── Source-EVM constants ───────────────────────────────────────────────────
+// Well-known program addresses per source EVM. The rome-ui frontend's
+// normalizeBridge requires every cctpTokenMessenger / cctpMessageTransmitter /
+// wormholeTokenBridge to be a non-empty string — without these the bridge
+// block is dropped and SPL/EVM balance reads silently fall to 0. These
+// constants are checked in here so add-bundle.ts populates them without
+// the operator having to know the well-known addresses.
+
+const SOURCE_EVM_CONSTANTS = {
+  sepolia: {
+    chainId: 11155111,
+    name: "Sepolia",
+    rpcUrl: "https://ethereum-sepolia-rpc.publicnode.com",
+    usdc: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+    cctpTokenMessenger: "0x9f3B8679c73C2Fef8b59B4f3444d4e156fb70AA5",
+    cctpMessageTransmitter: "0x7865fAfC2db2093669d92c0F33AeEF291086BEFD",
+    wormholeTokenBridge: "0xDB5492265f6038831E89f495670FF909aDe94bd9",
+  },
+  ethereum: {
+    chainId: 1,
+    name: "Ethereum",
+    rpcUrl: "https://ethereum-rpc.publicnode.com",
+    usdc: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    cctpTokenMessenger: "0xBd3fa81B58Ba92a82136038B25aDec7066af3155",
+    cctpMessageTransmitter: "0x0a992d191DEeC32aFe36203Ad87D7d289a738F81",
+    wormholeTokenBridge: "0x3ee18B2214AFF97000D974cf647E54B6f4ABc283",
+  },
+} as const;
+
+// Canonical USDC SPL mints per Solana cluster (Circle-issued).
+const USDC_MINT_BY_CLUSTER = {
+  devnet: "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU",
+  mainnet: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+} as const;
 
 // ── Public API ─────────────────────────────────────────────────────────────
 
@@ -124,6 +177,12 @@ export function addBundle(args: BundleArgs): BundleResult {
 
   // Step 4: Write tokens.json (gas-token + spl_wrapper entries).
   const wrapperCount = writeTokensJson(chainDir, manifest);
+
+  // Step 4b: Populate bridge.json with sourceEvm + solana.usdcMint. The
+  // scaffold in addChainFresh writes a placeholder (chainId:0, usdc:0x0…,
+  // usdcMint:""); rome-ui's normalizeBridge rejects that as malformed and
+  // drops the bridge block, silently breaking SPL/EVM balance reads.
+  writeBridgeJson(chainDir, manifest);
 
   // Step 5: Update CHANGELOG.md.
   updateChangelog(args.registryRoot, chainId, slug, name);
@@ -391,6 +450,41 @@ function buildWrapperEntry(
     underlying: { chain: underlyingChain, asset: underlyingAsset },
     factory: "ERC20SPLFactory",
   };
+}
+
+function writeBridgeJson(chainDir: string, manifest: Manifest): void {
+  const sourceEvm = resolveSourceEvm(manifest);
+  const usdcMint = resolveSolanaUsdcMint(manifest);
+  const bridge = {
+    sourceEvm,
+    solana: { usdcMint },
+  };
+  writeJson(path.join(chainDir, "bridge.json"), bridge);
+}
+
+function resolveSourceEvm(manifest: Manifest): typeof SOURCE_EVM_CONSTANTS.sepolia {
+  const override = manifest.bridge?.sourceEvm;
+  if (typeof override === "object" && override !== null) {
+    // Operator passed a fully-formed sourceEvm object — trust it verbatim.
+    return override;
+  }
+  const key: "sepolia" | "ethereum" = (() => {
+    if (override === "sepolia" || override === "ethereum") return override;
+    // Default by chain.network — devnet/testnet → sepolia, mainnet → ethereum.
+    if (manifest.chain.network === "mainnet") return "ethereum";
+    return "sepolia";
+  })();
+  return SOURCE_EVM_CONSTANTS[key];
+}
+
+function resolveSolanaUsdcMint(manifest: Manifest): string {
+  const override = manifest.bridge?.solana?.usdcMint;
+  if (override) return override;
+  // Default by Solana cluster (devnet/mainnet). Falls back to devnet when
+  // the cluster isn't explicitly set on the manifest — same default as
+  // patchChainJson.
+  const cluster = manifest.solana?.cluster ?? "devnet";
+  return USDC_MINT_BY_CLUSTER[cluster];
 }
 
 function updateChangelog(registryRoot: string, chainId: number, slug: string, name: string): void {
