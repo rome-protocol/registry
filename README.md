@@ -4,25 +4,20 @@ Canonical chain, contract, and token metadata for the Rome Protocol ecosystem.
 
 [![Validate](https://github.com/rome-protocol/registry/actions/workflows/validate.yml/badge.svg)](https://github.com/rome-protocol/registry/actions/workflows/validate.yml)
 
-## Available chains
-
-_(no live chains — clean-slate transition. The previous devnet chain set was decommissioned through 2026-04 / 2026-05 ahead of a fresh `RomeD…` rome-evm program deploy. New chains will be registered here once the new program is live and `/prepare-rollup` registers the first chain on it.)_
-
-> Retired chains (Marcus, Maximus, Subura, Esquiline, Cassius, Aventine, Caelian, Martius) were retired through 2026-04 / 2026-05. Their entries were removed from `chains/` to keep the registry surface focused on what is live; `CHANGELOG.md` preserves the retirement history, and the v0.4.x git tags still serve their final on-chain state via the jsDelivr CDN if archival reads are needed (`cdn.jsdelivr.net/gh/rome-protocol/registry@v0.4.11/chains/121226-marcus/...` etc. continue to resolve against the immutable tags).
+> **Status:** POC. The registry currently has no live chains. New chains are added by the `/bring-up-chain` skill once a rome-evm program is deployed and a chain is brought up against it.
 
 ## How to consume
 
 **Browser / runtime fetch (jsDelivr CDN):**
 
 ```js
-// Replace <chain-slug> with the slug from chains/ (e.g. "121226-marcus") and
-// pin to the registry tag (e.g. "@v0.4.14") for the schema version you target.
+// Replace <chain-slug> with a slug from chains/ once a chain is registered.
 const tokens = await fetch(
-  "https://cdn.jsdelivr.net/gh/rome-protocol/registry@v0.4.14/chains/<chain-slug>/tokens.json"
+  "https://cdn.jsdelivr.net/gh/rome-protocol/registry@latest/chains/<chain-slug>/tokens.json"
 ).then(r => r.json());
 
 const usdcAsset = await fetch(
-  "https://cdn.jsdelivr.net/gh/rome-protocol/registry@v0.4.14/assets/usdc.json"
+  "https://cdn.jsdelivr.net/gh/rome-protocol/registry@latest/assets/usdc.json"
 ).then(r => r.json());
 ```
 
@@ -35,8 +30,6 @@ import {
   getOperationalLimits, getProtocol, getSolanaPrograms,
 } from "@rome-protocol/registry";
 
-// Replace <chainId> with a chainId returned by listChains() (currently empty
-// during the clean-slate transition; see CHANGELOG.md).
 const chain = getChain(<chainId>);
 const tokens = listTokens(<chainId>);
 const usdcAsset = getAsset("USDC");
@@ -47,17 +40,20 @@ const usdcAsset = getAsset("USDC");
 | Path | What lives here |
 |---|---|
 | `chains/<id>-<slug>/` | Per-chain metadata: chain.json, contracts.json, tokens.json, bridge.json, oracle.json, endpoints.json, operationalLimits.json, NOTES.md |
-| `assets/` | Cross-chain logical asset catalog (USDC, ETH, SOL, BTC, USDT) — symbol/name/issuer/decimals/logoURI |
-| `abis/` | Contract ABIs, one file per `<name>@<version>.json`. Populates with v0.2 data sweep. |
+| `programs/<programId>/` | Per-rome-evm-program: program.json, upgrades.json, authority.json |
+| `services/<service>/` | Shared services (rome-ui-worker, monitoring, etc.): service.json |
+| `assets/` | Cross-chain logical asset catalog (USDC, ETH, SOL, BTC, USDT) |
+| `abis/` | Contract ABIs, one file per `<name>@<version>.json` |
 | `protocols/` | Bridge-protocol constants — CCTP domain ids, Wormhole chain ids |
 | `solana/programs/` | Solana program IDs (mainnet, devnet) — SPL Token, ATA, Wormhole, CCTP |
+| `solana/clusters.json` | Versioned Solana cluster compatibility |
 | `schema/` | JSON-Schemas (draft-2020-12) for every file shape |
-| `tools/` | CLI scaffolder, drift-check library, validation, type generation |
-| `docs/` | Contributing guide, schema-versioning policy, registration architecture, verification rules |
+| `tools/` | CLI scaffolder, drift-check, validation, type generation |
+| `docs/` | Contributing, schema-versioning, registration architecture, verification rules |
 
 ## Token kinds
 
-Three structural kinds, distinguished by ownership semantics — this matters for any consumer dealing with balances:
+Three structural kinds, distinguished by ownership semantics:
 
 | Kind | Underlying SPL location | Required schema fields |
 |---|---|---|
@@ -72,12 +68,7 @@ The CI on-chain liveness probe verifies the gas-pool's owner is the Rome EVM pro
 See [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md). Two registration paths:
 
 - **Path A — manual PR.** Fork, add files, open PR. CI validates schemas + on-chain liveness.
-- **Path B — CLI scaffolder.** `npx @rome-protocol/registry add-chain --deployments-from <path>` for fresh chains, or `--copy-from <slug>` for chain rotations (clones the previous chain folder, wipes addresses, preserves Solana mints / source-chain wiring / endpoints / operationalLimits).
-
-## Spec
-
-- Design: [`rome-specs/active/technical/2026-04-27-rome-registry-design.md`](https://github.com/rome-protocol/rome-specs/blob/main/active/technical/2026-04-27-rome-registry-design.md)
-- v0.1 implementation plan (archived): [`rome-specs/archive/technical/rome-registry-v0.1-plan.md`](https://github.com/rome-protocol/rome-specs/blob/main/archive/technical/rome-registry-v0.1-plan.md)
+- **Path B — CLI scaffolder.** `npx @rome-protocol/registry add-chain --deployments-from <path>` for fresh chains, or `--copy-from <slug>` for chain rotations.
 
 ## License
 
