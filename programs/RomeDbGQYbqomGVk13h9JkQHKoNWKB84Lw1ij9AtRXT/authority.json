@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1",
+  "programId": "RomeDbGQYbqomGVk13h9JkQHKoNWKB84Lw1ij9AtRXT",
+  "entries": [
+    {
+      "kind": "initial-set",
+      "from": null,
+      "to": {
+        "pubkey": "9rq5RpdxnWmLWsNi5KkoeYPmT1XQ4YiTLtTiyy5BxweQ",
+        "kind": "hot-keypair"
+      },
+      "rotatedAt": "2026-05-04T05:10:42Z",
+      "rotatedAtSlot": 459959730,
+      "rotatedAtTx": "3G3mmXAcY5eNpVauVWQPN1VThXX45XZ9CLCkuLUDCT86ThCjcvH4jnr3pkAjw9MDXgSCtfDxBfmCUge5eZyxNnRJ",
+      "rotatedBy": "anil@romeprotocol.com",
+      "reason": "Initial deploy with transient hot-keypair authority (Ledger Solana app rejected solana-cli 4.0.0-rc.0 deploy tx with 'invalid header'; hot keypair used as workaround)."
+    },
+    {
+      "kind": "rotation",
+      "from": {
+        "pubkey": "9rq5RpdxnWmLWsNi5KkoeYPmT1XQ4YiTLtTiyy5BxweQ",
+        "kind": "hot-keypair"
+      },
+      "to": {
+        "pubkey": "C1XmmCBGXGETZF2KGSFR1vtSKWWh9x86qMKfdJHhvXAb",
+        "kind": "squads-v4-multisig"
+      },
+      "rotatedAt": "2026-05-04T05:11:21Z",
+      "rotatedAtSlot": 459959832,
+      "rotatedAtTx": "5iPKwTtNhyPNbvyn4RsisMWbiTBdytZJxQZXJCvdypdbEEF1S75GEorjJy4HuQbZV6mvEaGiz8Uz4FcY58nXXKA4",
+      "rotatedBy": "anil@romeprotocol.com",
+      "reason": "Transfer authority from transient hot keypair to Squads multisig (1-of-2; members anil 9bRQgY + sattvik 6teWDe2s). Note: actual on-chain owner program is Squads Smart Account (SMPLecH534NA9acpos4G6x7uf3LWbCAwZQE9e8ZekMu) rather than the older Squads V4 program (SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf); registry schema's 'squads-v4-multisig' enum value is the closest available label and behavior is functionally equivalent."
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "1",
+  "programId": "RomeDbGQYbqomGVk13h9JkQHKoNWKB84Lw1ij9AtRXT",
+  "name": "rome-evm devnet primary",
+  "kind": "rome-evm",
+  "cluster": "devnet",
+  "status": "live",
+  "role": "primary",
+  "rolePromotedAt": null,
+  "roleHistory": [
+    {
+      "role": "primary",
+      "since": "2026-05-04T05:10:42Z",
+      "reason": "initial deploy (clean-slate Phase 5; first program in registry programs/ namespace)"
+    }
+  ],
+  "loader": "BPFLoaderUpgradeab1e11111111111111111111111",
+  "programDataAddress": "Aov9yt4bAXdn2yWSWUUqjRtEKU8WXWXoXYs5zqRn1W15",
+  "currentAuthority": {
+    "pubkey": "C1XmmCBGXGETZF2KGSFR1vtSKWWh9x86qMKfdJHhvXAb",
+    "kind": "squads-v4-multisig",
+    "operator": "anil@romeprotocol.com",
+    "multisig": {
+      "multisigPda": "C1XmmCBGXGETZF2KGSFR1vtSKWWh9x86qMKfdJHhvXAb",
+      "threshold": 1,
+      "members": [
+        {
+          "pubkey": "9bRQgY6NuHR8dx2TAymJnKuZmAiMrU5yQgP7rRntV483",
+          "kind": "cold-ledger",
+          "operator": "anil@romeprotocol.com"
+        },
+        {
+          "pubkey": "6teWDe2sMeYUXbnkLYcGa7ci67gkTMbjTwXDm6VtJFPX",
+          "kind": "cold-ledger",
+          "operator": "sattvik@romeprotocol.com"
+        }
+      ]
+    },
+    "rotationLog": "./authority.json"
+  },
+  "current": {
+    "version": null,
+    "gitSha": "547cf290f590d0311ccbbe7fc3199d76e049ed8c",
+    "gitRepo": "https://github.com/rome-protocol/rome-evm-private",
+    "gitTag": null,
+    "buildFeatureFlags": ["testnet", "custom-heap"],
+    "toolchain": {
+      "solanaVersion": "ci-default",
+      "platformTools": "ci-default",
+      "rustToolchain": "ci-default"
+    },
+    "programDataSha256": "38cd4457a4c64c8b54c24f7c3a09e34a62ae8cca859ff51007e8c19e674bf384",
+    "binarySize": 1171320,
+    "deployedAt": "2026-05-04T05:10:42Z",
+    "deployedAtSlot": 459959730,
+    "deployedAtTx": "3G3mmXAcY5eNpVauVWQPN1VThXX45XZ9CLCkuLUDCT86ThCjcvH4jnr3pkAjw9MDXgSCtfDxBfmCUge5eZyxNnRJ",
+    "deployedBy": "anil@romeprotocol.com",
+    "ciRunUrl": "https://github.com/rome-protocol/rome-evm-private/actions/runs/25301675873",
+    "upgradesRef": "./upgrades.json"
+  },
+  "chainsHosted": [],
+  "chainsDecommissioned": [],
+  "audit": {
+    "lastReview": null,
+    "reviewUrl": null
+  },
+  "createdAt": "2026-05-04T05:10:42Z",
+  "decommissionedAt": null,
+  "closedAt": null
+}
