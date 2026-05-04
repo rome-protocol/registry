@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1",
+  "programId": "RomeDbGQYbqomGVk13h9JkQHKoNWKB84Lw1ij9AtRXT",
+  "entries": [
+    {
+      "kind": "initial",
+      "version": null,
+      "gitSha": "547cf290f590d0311ccbbe7fc3199d76e049ed8c",
+      "previousGitSha": null,
+      "gitRepo": "https://github.com/rome-protocol/rome-evm-private",
+      "buildFeatureFlags": ["testnet", "custom-heap"],
+      "toolchain": {
+        "solanaVersion": "ci-default",
+        "platformTools": "ci-default"
+      },
+      "programDataSha256": "38cd4457a4c64c8b54c24f7c3a09e34a62ae8cca859ff51007e8c19e674bf384",
+      "previousProgramDataSha256": null,
+      "binarySize": 1171320,
+      "deployedAt": "2026-05-04T05:10:42Z",
+      "deployedAtSlot": 459959730,
+      "deployedAtTx": "3G3mmXAcY5eNpVauVWQPN1VThXX45XZ9CLCkuLUDCT86ThCjcvH4jnr3pkAjw9MDXgSCtfDxBfmCUge5eZyxNnRJ",
+      "deployedBy": "anil@romeprotocol.com",
+      "authority": {
+        "pubkey": "9rq5RpdxnWmLWsNi5KkoeYPmT1XQ4YiTLtTiyy5BxweQ",
+        "kind": "hot-keypair"
+      },
+      "feePayer": {
+        "pubkey": "9rq5RpdxnWmLWsNi5KkoeYPmT1XQ4YiTLtTiyy5BxweQ",
+        "kind": "hot-keypair"
+      },
+      "summary": "Initial deploy. Hot keypair was used as transient deploy-time authority because the operator's Ledger Solana app threw 'invalid header' against solana-cli 4.0.0-rc.0; authority transferred to multisig PDA in a follow-up set-upgrade-authority tx (see authority.json entries[1]).",
+      "verified": true
+    }
+  ]
+}

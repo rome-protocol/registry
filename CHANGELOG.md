@@ -6,6 +6,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+## [0.4.18] - 2026-05-04
+
+### Added — first program in `programs/` namespace
+
+- **`programs/RomeDbGQYbqomGVk13h9JkQHKoNWKB84Lw1ij9AtRXT/program.json`** — initial deploy of the post-clean-slate primary devnet rome-evm program. `status: live`, `role: primary`. Upgrade authority is a Squads multisig PDA (1-of-2; members anil + sattvik). Deploy tx `3G3mmX…NnRJ`, slot 459959730, programDataSha256 `38cd4457…`, binary 1,171,320 bytes.
+- **`programs/RomeDbGQYbqomGVk13h9JkQHKoNWKB84Lw1ij9AtRXT/upgrades.json`** — first entry: initial deploy. Hot keypair `9rq5Rp…BxweQ` was used as transient deploy-time authority because the operator's Ledger Solana app threw `invalid header` against `solana-cli 4.0.0-rc.0` at deploy time; authority transferred to the multisig PDA in a follow-up `set-upgrade-authority` tx (see authority.json entries[1]).
+- **`programs/RomeDbGQYbqomGVk13h9JkQHKoNWKB84Lw1ij9AtRXT/authority.json`** — two entries: initial-set (hot keypair) + rotation (hot → multisig PDA). Rotation tx `5iPKwT…XKA4`, slot 459959832.
+- **`programs/index.json`** — first cluster→primary pointer: `primary.devnet → RomeDbGQYbqomGVk13h9JkQHKoNWKB84Lw1ij9AtRXT`. mainnet still null.
+
+### Note on multisig kind
+
+The on-chain owner program for the multisig PDA is the Squads **Smart Account** program (`SMPLecH534NA9acpos4G6x7uf3LWbCAwZQE9e8ZekMu`), not the older Squads V4 program (`SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf`). The registry schema's `currentAuthority.kind` enum doesn't yet include a Smart Account variant; `squads-v4-multisig` is the closest existing label and is functionally equivalent for our use (PDA-controlled upgrade authority, member voting via `app.squads.so`). Schema may grow a `squads-smart-account` enum value in a later PR — non-blocking.
+
+### Tooling note
+
+`tools/validate.ts` does not yet scan `programs/`. The four artifacts in this PR were validated manually via `ajv/dist/2020` against the four `program*.schema.json` files. Adding `programs/` traversal to `tools/validate.ts` is a separate small follow-up.
+
+### Versioning
+
+`package.json` / `package-lock.json` — `0.4.17` → `0.4.18` (data-only patch bump per `docs/SCHEMA_VERSIONING.md`).
+
 ## [0.4.17] - 2026-05-04
 
 ### Reset
