@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Added — New chain: Rome Marcus (121301)
 - **`chains/121301-marcus/`** — bundled bring-up: `chain.json` (with `romeEvmProgramId` + `solana` block), `contracts.json` (full deploy set from rome-solidity + rome-uniswap-v2), `tokens.json` (gas-token + SPL wrappers), plus `bridge.json` / `oracle.json` / `endpoints.json` / `operationalLimits.json` / `NOTES.md` scaffolds. Status: `preparing` — flip to `live` via a separate `bump-status` PR after the chain proves out via smoke.
+
+### Added — Romeswap deploy on marcus (121301)
+- **`chains/121301-marcus/contracts.json`** — 5 new entries: `WETH9` (`0x8430cd93…`), `Multicall3` (`0x00328ea9…`), `UniswapV2Factory` (`0x3572c04f…`), `UniswapV2Router` (`0x4772531a…`), `ERC20Factory` (`0x684c6f40…`). Source: rome-uniswap-v2@`da93c6b0`. The original bring-up bundle deferred Romeswap — a stale-`node_modules` issue in rome-uniswap-v2 was blocking; clean reinstall (`rm -rf node_modules && yarn install --frozen-lockfile`) unblocked the deploy. With these entries landed, the rome-ui backend's registry-load path now passes shape validation (was failing on the missing `ERC20Factory` field, falling back to the resilience yaml and serving raw `cctpDomainRef` / `wormholeChainIdRef` instead of resolved program ids).
+
 ## [0.4.19] - 2026-05-04
 
 ### Added — `network` field on programs (Rome env, distinct from Solana cluster)
