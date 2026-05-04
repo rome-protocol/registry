@@ -9,6 +9,7 @@
     "wormholeTokenBridge": "0xDB5492265f6038831E89f495670FF909aDe94bd9"
   },
   "solana": {
-    "usdcMint": "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
+    "usdcMint": "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU",
+    "wethMint": "6F5YWWrUMNpee8C6BDUc6DmRvYRMDDTgJHwKhbXuifWs"
   }
 }

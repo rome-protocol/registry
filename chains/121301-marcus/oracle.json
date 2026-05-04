@@ -1,4 +1,11 @@
 {
-  "factory": "0x0000000000000000000000000000000000000000",
-  "feeds": {}
+  "factory": "0x80a971f2a8fe2c384d4bcb6088210a8207adcae6",
+  "feeds": {
+    "SOL/USD": { "address": "0x6FcE6648C0350e3f7dA0C0f432405df98dD0D12E", "source": "pyth" },
+    "BTC/USD": { "address": "0x6aC3Ad6Eb697911fd65C85853bBB056ca5f94638", "source": "pyth" },
+    "ETH/USD": { "address": "0xA08BA3aBd1BA9173646744071A854eB88779e73B", "source": "pyth" },
+    "USDC/USD": { "address": "0x78019Eb5D919098CbD503422260ba4a06e29fE8A", "source": "pyth" },
+    "USDT/USD": { "address": "0x0BCE0AB9712779C5c1CE4b9Fa0F6e7bC901E4861", "source": "pyth" },
+    "SOL/USD-SB": { "address": "0x8C0e000815496a77F2Cf11aAabcdaFaB022cDee9", "source": "switchboard" }
+  }
 }
