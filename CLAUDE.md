@@ -10,7 +10,7 @@ The Rome registry is the **canonical source of truth** for:
 
 - **Chains** — per-chain identity (chainId, RPC URL, contracts, tokens, gas pricing, oracle adapters, bridge wiring)
 - **Programs** — per-rome-evm-program identity (current build, authority, lifecycle, chains hosted)
-- **Services** — shared services that span programs/chains (rome-ui-worker, oracle-keeper, monitoring, bridge relayers, frontend apps, block explorers)
+- **Services** — shared services that span programs/chains (oracle-keeper, monitoring, bridge relayers, frontend apps, block explorers; the rome-ui worker is created by the first `/bring-up-chain` per cluster)
 - **Solana clusters** — versioned cluster compatibility metadata
 - **Cross-cutting**: assets, protocols, schemas
 
@@ -35,8 +35,8 @@ registry/
     upgrades.json                        # append-only deploy log
     authority.json                       # append-only authority-rotation log
     NOTES.md                             # optional narrative
-  programs/index.json                    # cluster→primary pointer + flat program inventory
-  services/<service>/                    # shared services (rome-ui-worker, monitoring, etc.)
+  programs/index.json                    # network→primary pointer (Rome env-keyed) + flat program inventory
+  services/<service>/                    # shared services (oracle-keeper, monitoring, etc.)
     service.json                         # identity, scope, servesPrograms[], secretRefs[]
   solana/                                # cluster versions
     clusters.json
@@ -125,8 +125,8 @@ Mainnet teardown / authority rotation / program close = operator-typed at the gc
 | `/close-program` | retired program with `chainsHosted=[]` | `programs/<id>/program.json` (assert `status in (retired, decommissioning)` + `chainsHosted=[]`) | set `status=closed`, `closedAt`, `rentRecipient`; append authority.json `kind: burn` |
 | `/rotate-program-authority` | authority change | `programs/<id>/program.json#currentAuthority` | replace `currentAuthority`; append authority.json `kind: rotation/freeze/burn` |
 | `/take-down-chain` | chain decommission | `chains/<id>-<slug>/chain.json` (assert not mainnet) | set chain status to retired; remove chain from `programs/<programId>/program.json#chainsHosted`; remove from `services/<service>/service.json#servesPrograms[]` if applicable |
-| `/bring-up-chain` / `/prepare-rollup` | chain bring-up | `programs/index.json#primary[<cluster>]` for default program | create `chains/<id>-<slug>/`; append to `programs/<id>/program.json#chainsHosted`; ensure shared services exist (provision if first-time) and add reference |
-| `/promote-program` (when drafted) | secondary→primary | `programs/index.json` | flip `primary[<cluster>]`; demote prior primary to secondary; update both programs' `roleHistory` |
+| `/bring-up-chain` / `/prepare-rollup` | chain bring-up | `programs/index.json#primary[<network>]` for default program | create `chains/<id>-<slug>/`; append to `programs/<id>/program.json#chainsHosted`; ensure shared services exist (provision if first-time) and add reference |
+| `/promote-program` (when drafted) | secondary→primary | `programs/index.json` | flip `primary[<network>]`; demote prior primary to secondary; update both programs' `roleHistory` |
 | `/decommission-service` (when drafted) | service with `servesPrograms[]=[]` | `services/<service>/service.json` | set `lifecycle.decommissionedAt`; destroy infrastructure |
 | `/publish-registry-pr` | any registry change | scattered | edits + opens single-purpose PR per `SCHEMA_VERSIONING.md` |
 

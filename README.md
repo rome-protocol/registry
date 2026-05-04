@@ -41,7 +41,7 @@ const usdcAsset = getAsset("USDC");
 |---|---|
 | `chains/<id>-<slug>/` | Per-chain metadata: chain.json, contracts.json, tokens.json, bridge.json, oracle.json, endpoints.json, operationalLimits.json, NOTES.md |
 | `programs/<programId>/` | Per-rome-evm-program: program.json, upgrades.json, authority.json |
-| `services/<service>/` | Shared services (rome-ui-worker, monitoring, etc.): service.json |
+| `services/<service>/` | Shared services (oracle-keeper, monitoring, etc.): service.json |
 | `assets/` | Cross-chain logical asset catalog (USDC, ETH, SOL, BTC, USDT) |
 | `abis/` | Contract ABIs, one file per `<name>@<version>.json` |
 | `protocols/` | Bridge-protocol constants — CCTP domain ids, Wormhole chain ids |
