@@ -6,6 +6,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+## [0.4.19] - 2026-05-04
+
+### Added — `network` field on programs (Rome env, distinct from Solana cluster)
+
+- **`schema/program.schema.json`** — added required `network: enum [devnet, testnet, mainnet]`. Distinct from `cluster: enum [devnet, mainnet]`. The two were conflated when only RomeD existed; adding `RomeT` (Rome testnet on Solana devnet) forces the split. Description on `programId` updated to mention the `RomeT` prefix convention.
+- **`schema/programIndex.schema.json`** — added `testnet` to `primary.required` (3 keys now: devnet/testnet/mainnet, all required, all nullable). Added `network` to per-entry shape. Updated description: "primary keyed by Rome environment, not Solana cluster" — since Rome devnet AND Rome testnet both run on Solana devnet but have distinct primary programs (RomeD vs RomeT).
+
+### Changed — backfill existing program entry
+
+- **`programs/RomeDbGQYbqomGVk13h9JkQHKoNWKB84Lw1ij9AtRXT/program.json`** — added `network: "devnet"` (semantically unchanged: Rome devnet program runs on Solana devnet → cluster=devnet, network=devnet).
+- **`programs/index.json`** — added `primary.testnet: null` (no testnet program deployed yet); added `programs.RomeDbGQ.../network: "devnet"`. `primary.devnet` unchanged.
+
+### Changed — docs reflecting the split
+
+- **`CLAUDE.md`** — vanity-prefix table now lists three rows (RomeD/RomeT/RomeP) keyed by Rome env, with Solana cluster as a separate column. `programs/index.json#primary[<network>]` documented as keyed by Rome env, not Solana cluster.
+
+### Tooling
+
+- **`tools/types.ts`** — regenerated from the updated schemas via `npm run codegen`.
+
+### Migration impact
+
+- Schema-additive: existing entries that lack `network` would fail validation, but the only existing entry (RomeDbGQ) was backfilled in this PR.
+- No public consumers of `programs/index.json` read `primary[<cluster>]` today (the only writer is `/deploy-program`; the only future reader is `/bring-up-chain` which threads `--env <network>`). Both will be updated in the rome.git skills PR pairing this one.
+
 ## [0.4.18] - 2026-05-04
 
 ### Added — first program in `programs/` namespace

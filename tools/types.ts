@@ -38,7 +38,7 @@ export interface RomeChainCoreIdentity {
   rpcUrl: string;
   explorerUrl?: string;
   /**
-   * Rome EVM program ID (Solana base58) this chain is registered under. Required for new chains: the post-clean-slate registry has no canonical default to fall back on (legacy `FixtureProgramIdFixtureProgramIdFixture12345` closed 2026-05-02). Once the next primary rome-evm program is deployed (Phase 5), `programs/index.json#primary[<cluster>]` becomes the authoritative pointer; chains running a custom rome-evm fork (e.g. meta-hook test branches) still declare their own. Schema keeps the field optional for the v0.3.x → v0.4.x compat window (legacy `solanaProgramId` is still read as a deprecated alias). Added v0.4.0 — supersedes `solanaProgramId`.
+   * Rome EVM program ID (Solana base58) this chain is registered under. Required for new chains: the post-clean-slate registry has no canonical default to fall back on (legacy `DP1dshBzmXXVsRxH5kCKMemrDuptg1JvJ1j5AsFV4Hm3` closed 2026-05-02). Once the next primary rome-evm program is deployed (Phase 5), `programs/index.json#primary[<cluster>]` becomes the authoritative pointer; chains running a custom rome-evm fork (e.g. meta-hook test branches) still declare their own. Schema keeps the field optional for the v0.3.x → v0.4.x compat window (legacy `solanaProgramId` is still read as a deprecated alias). Added v0.4.0 — supersedes `solanaProgramId`.
    */
   romeEvmProgramId?: string;
   /**
@@ -284,7 +284,7 @@ export interface PerChainOracleGatewayConfig {
 export interface RomeOnChainProgramIdentityLifecycleCurrentBuild {
   schemaVersion: "1";
   /**
-   * On-chain Solana program ID (base58). Rome convention for new deploys: prefix `RomeP` for mainnet rome-evm programs, `RomeD` for devnet rome-evm programs — produced via `solana-keygen grind --starts-with` in /deploy-program. Convention is enforced at deploy time by skill, not by schema (legacy/imported programs may not match). CI may warn on violations but not block.
+   * On-chain Solana program ID (base58). Rome convention for new deploys: prefix `RomeP` for mainnet (Rome mainnet → Solana mainnet), `RomeT` for testnet (Rome testnet → Solana devnet), `RomeD` for devnet (Rome devnet → Solana devnet) — produced via `solana-keygen grind --starts-with` in /deploy-program. Convention is enforced at deploy time by skill, not by schema (legacy/imported programs may not match). CI may warn on violations but not block.
    */
   programId: string;
   /**
@@ -296,9 +296,13 @@ export interface RomeOnChainProgramIdentityLifecycleCurrentBuild {
    */
   kind: "rome-evm" | "meta-hook" | "cardo-orchestrator";
   /**
-   * Solana cluster this program is deployed on. Rome only targets mainnet and devnet.
+   * **Solana cluster** this program is deployed on. Rome only targets mainnet and devnet — never Solana testnet. Note: distinct from `network` which is the Rome environment. A Rome testnet program runs on Solana devnet (cluster=devnet, network=testnet).
    */
   cluster: "devnet" | "mainnet";
+  /**
+   * **Rome environment** this program serves. devnet/testnet rollups both run on Solana devnet (cluster=devnet); the network field disambiguates them. Vanity-prefix convention follows network: RomeD/RomeT/RomeP. Added v0.4.18.
+   */
+  network: "devnet" | "testnet" | "mainnet";
   /**
    * Lifecycle of the on-chain program. live = serving traffic; decommissioning = no new chains, existing chains migrating off; retired = no chains hosted, binary still on chain; closed = `solana program close` ran, rent reclaimed, programId permanently unusable. **Mainnet immutability rule**: transitions AWAY from `live` on mainnet programs require human-tagged commits; no automation may flip mainnet status.
    */
@@ -462,15 +466,16 @@ export interface RomeProgramAuthorityLogAppendOnlyRotationHistory {
 }
 
 /**
- * Denormalized index over registry/programs/<id>/program.json files. Source of truth still lives in each program.json; this file enables (a) fast lookup of the primary program per cluster, (b) flat inventory of all known programs without filesystem traversal. CI invariant: each entry's role/cluster/chainsHosted must match its program.json.
+ * Denormalized index over registry/programs/<id>/program.json files. Source of truth still lives in each program.json; this file enables (a) fast lookup of the primary program per Rome environment (devnet/testnet/mainnet), (b) flat inventory of all known programs without filesystem traversal. CI invariant: each entry's role/cluster/network/chainsHosted must match its program.json.
  */
 export interface RomeProgramIndexPrimaryPointerFlatInventory {
   schemaVersion: "1";
   /**
-   * ProgramId designated as the cluster's primary (the default program for new chains). null when no primary has been promoted yet. CI invariant: at most one primary per cluster, and primary[cluster] must match the corresponding program.json#role=='primary'.
+   * ProgramId designated as the **Rome environment's** primary (the default program for new chains in that env). Keyed by Rome network, not Solana cluster — Rome devnet AND Rome testnet both run on Solana devnet but have distinct programs (RomeD vs RomeT). null when no primary has been promoted yet for that env. CI invariant: at most one primary per network, and primary[network] must match the corresponding program.json#role=='primary' AND program.json#network==<key>.
    */
   primary: {
     devnet: string | null;
+    testnet: string | null;
     mainnet: string | null;
   };
   /**
@@ -479,7 +484,14 @@ export interface RomeProgramIndexPrimaryPointerFlatInventory {
   programs: {
     [k: string]:
       | {
+          /**
+           * Solana cluster the program is deployed on.
+           */
           cluster: "devnet" | "mainnet";
+          /**
+           * Rome environment the program serves. Added v0.4.18.
+           */
+          network: "devnet" | "testnet" | "mainnet";
           role: "primary" | "secondary" | "rehearsal" | "decommissioning" | "retired" | "closed";
           kind: "rome-evm" | "meta-hook" | "cardo-orchestrator";
           chainsHosted: string[];
