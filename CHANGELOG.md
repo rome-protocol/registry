@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Changed — Marcus bridge.json: complete sourceEvm Sepolia addresses
+- **`chains/121301-marcus/bridge.json`** — added the Sepolia program addresses (`cctpTokenMessenger`, `cctpMessageTransmitter`, `wormholeTokenBridge`) + `rpcUrl` to `sourceEvm`. The rome-ui frontend's `normalizeBridge` (`src/lib/config/chains.ts:24`) drops the entire bridge block when any of these are missing — Solana SPL balance reads + Sepolia balance reads silently fall to 0 even though every Solana-side field was already resolved. Canonical addresses from Circle (CCTP V1) + Wormhole Sepolia docs.
+
+## [0.4.21] - 2026-05-04
+
 ### Added — New chain: Rome Marcus (121301)
 - **`chains/121301-marcus/`** — bundled bring-up: `chain.json` (with `romeEvmProgramId` + `solana` block), `contracts.json` (full deploy set from rome-solidity + rome-uniswap-v2), `tokens.json` (gas-token + SPL wrappers), plus `bridge.json` / `oracle.json` / `endpoints.json` / `operationalLimits.json` / `NOTES.md` scaffolds. Status: `preparing` — flip to `live` via a separate `bump-status` PR after the chain proves out via smoke.
 
