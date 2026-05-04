@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Changed — Marcus bridge redeploy: getAta + Wormhole targetChain fixes
+- **`chains/121301-marcus/contracts.json`** — bumped `RomeBridgePaymaster` to v1.2.0 (`0x069bcaf0…`), `SPL_ERC20_USDC` to v1.2.0 (`0x043581b6…`), `SPL_ERC20_WETH` to v1.1.0 (`0xb52660b6…`), `RomeBridgeWithdraw` to v1.1.0 (`0xcaa44d93…`). Predecessors marked `deprecated` with `replacedBy` set to the new live address. Earlier paymaster + USDC entries that pointed `replacedBy` at themselves (a self-reference left by the prior redeploy) are now repointed at the current live address. Source: rome-solidity@cbcbe8a (rome-solidity #99 + #100).
+- **`chains/121301-marcus/tokens.json`** — `WUSDC` address bumped to `0x043581b6…`; `WETH` address bumped to `0xb52660b6…`. Decimals + names + assetRefs unchanged.
+
+#### Why
+- Pre-redeploy `SPL_ERC20.getAta(user)` returned `_accounts[user]` — `bytes32(0)` for any user that had never registered. rome-ui's outbound CCTP / SPL bridge hook treats `bytes32(0)` as "no recipient ATA" and routed the burn ix into rome-evm with an unallocated source ATA, hitting `mollusk error: Failure(Custom(3007))`. The new wrappers return the canonical AUTHORITY_PDA-derived ATA via `UserPda.ata(user, mint_id)`, matching `balanceOf`'s post-#82 read path. (rome-solidity #99.)
+- Pre-redeploy `RomeBridgeWithdraw.wormholeTargetChain` constant was `2` (Ethereum mainnet) because PR #97's marcus-sweep had replaced the deploy script's `networkName === "marcus"` check with a stale `"<chain>"` placeholder. `burnETH` therefore encoded VAAs with `target_chain: 2`, which guardians attested but Sepolia couldn't redeem. New constant is `10002` (Sepolia). (rome-solidity #100.)
+
 ### Added — Marcus: RomeBridgeWithdraw + Wormhole-bridged WETH wrapper + Oracle Gateway V2 feeds
 - **`chains/121301-marcus/contracts.json`** — added `RomeBridgeWithdraw` (`0x911ea410…`) + `SPL_ERC20_WETH` (`0x002d299b…`). Bumped `SPL_ERC20_USDC` (`0x4ab59bbd…`) and `RomeBridgePaymaster` (`0xa4475caf…`) to v1.1.0; prior 1.0.0 entries marked deprecated/replacedBy. The new wrapper set is the one wired into Withdraw's constructor; the prior wrappers point to the same SPL ATAs (functionally equivalent for balance reads, but `burnUSDC` calls only go through the new contracts).
 - **`chains/121301-marcus/bridge.json`** — added `solana.wethMint = 6F5YWWrUMNpee8C6BDUc6DmRvYRMDDTgJHwKhbXuifWs` (canonical Wormhole-wrapped Sepolia WETH on Solana devnet, derived via `tools/lib/canonical-mint.ts`). Earlier session attempted to use a typo'd address (`6F5YWWrUBg62…`) which doesn't exist on-chain → SPL_ERC20 constructor's `load_mint` CPI reverted with `0x524de5b3` → blocked the whole RomeBridgeWithdraw deploy.
