@@ -37,7 +37,7 @@ function loadSolanaPrograms(network: "mainnet" | "devnet"): SolanaPrograms {
 }
 
 // Default Rome EVM program — there is no canonical default during the
-// clean-slate transition (legacy DP1dshBz… closed 2026-05-02; new RomeD-prefix
+// clean-slate transition (legacy program closed 2026-05-02; new RomeD-prefix
 // program lands in Phase 5). Each chain.json MUST declare romeEvmProgramId
 // (chain.json.solanaProgramId is the v0.3.x deprecated alias, still read as
 // fallback during v0.4.x → v1.0.0 deprecation). Once Phase 5 lands a new

@@ -174,7 +174,7 @@ function validateSlug(slug: string): void {
 }
 
 function humanizeName(slug: string): string {
-  // "marcus" → "Rome Marcus"; "marcus-test" → "Rome Marcus Test"
+  // "fixture" → "Rome Fixture"; "fixture-test" → "Rome Fixture Test"
   return "Rome " + slug.split("-").map(capitalize).join(" ");
 }
 
@@ -299,7 +299,7 @@ function writeTokensJson(chainDir: string, manifest: Manifest): number {
   }
 
   // Gas-token entry — kind:"gas". Address is the canonical sentinel
-  // (0xeee…eee) per existing pattern (matches marcus). Decimals on the
+  // (0xeee…eee) per existing pattern (matches existing convention). Decimals on the
   // EVM side is 18 (Ethereum-equivalent native currency); gas-token mint
   // decimals are tracked separately as the SPL mint's decimals.
   tokens.push({

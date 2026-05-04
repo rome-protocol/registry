@@ -6,9 +6,9 @@ import path from "node:path";
 
 function tmpRegistry(): string {
   const root = mkdtempSync(path.join(tmpdir(), "registry-"));
-  mkdirSync(path.join(root, "chains/121226-marcus"), { recursive: true });
+  mkdirSync(path.join(root, "chains/999999-fixture"), { recursive: true });
   writeFileSync(
-    path.join(root, "chains/121226-marcus/contracts.json"),
+    path.join(root, "chains/999999-fixture/contracts.json"),
     JSON.stringify([
       {
         name: "RomeBridgePaymaster",
@@ -22,8 +22,8 @@ function tmpRegistry(): string {
     ]),
   );
   writeFileSync(
-    path.join(root, "chains/121226-marcus/chain.json"),
-    JSON.stringify({ chainId: 121226, name: "Rome Marcus" }),
+    path.join(root, "chains/999999-fixture/chain.json"),
+    JSON.stringify({ chainId: 999999, name: "Rome Fixture" }),
   );
   return root;
 }
@@ -35,7 +35,7 @@ describe("drift-check", () => {
     writeFileSync(
       manifest,
       `checks:
-  - registryPath: chains/121226-marcus/contracts.json#[?name=='RomeBridgePaymaster'].versions[?status=='live'].address
+  - registryPath: chains/999999-fixture/contracts.json#[?name=='RomeBridgePaymaster'].versions[?status=='live'].address
     expected: "0xcaf1fbcf60c3686d87d0a5111f340a99250ce4ef"
 `,
     );
@@ -50,7 +50,7 @@ describe("drift-check", () => {
     writeFileSync(
       manifest,
       `checks:
-  - registryPath: chains/121226-marcus/contracts.json#[?name=='RomeBridgePaymaster'].versions[?status=='live'].address
+  - registryPath: chains/999999-fixture/contracts.json#[?name=='RomeBridgePaymaster'].versions[?status=='live'].address
     expected: "0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
 `,
     );
@@ -70,8 +70,8 @@ describe("drift-check", () => {
     writeFileSync(
       manifest,
       `checks:
-  - registryPath: chains/121226-marcus/chain.json#chainId
-    expected: 121226
+  - registryPath: chains/999999-fixture/chain.json#chainId
+    expected: 999999
 `,
     );
     const result = await driftCheck({ manifestPath: manifest, registryRoot: root });

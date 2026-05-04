@@ -76,9 +76,9 @@ export function addChainFresh(args: FreshArgs): string {
 
 export type RotateArgs = {
   registryRoot: string;
-  copyFromSlug: string;          // e.g. "121226-marcus"
+  copyFromSlug: string;          // e.g. "999999-fixture"
   newChainId: number;
-  newSlug: string;               // e.g. "marcus-2"
+  newSlug: string;               // e.g. "fixture-2"
   newName: string;
   newRpcUrl: string;
 };
