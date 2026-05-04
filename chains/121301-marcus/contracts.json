@@ -1,0 +1,119 @@
+[
+  {
+    "name": "ERC20SPLFactory",
+    "versions": [
+      {
+        "address": "0x701c4129394129f2b8244f6a68806ec43aec5ec1",
+        "version": "1.0.0",
+        "status": "live",
+        "bytecodeSha256": "5777443dea6f6df5c1a1d7552e8f7cc15297fa0d7393ddefbef38de92de186e8",
+        "sourceGitSha": "e6c17fa3750e1d4960e3384ef680db38ad897181",
+        "deployedAt": "2026-05-04T13:00:00Z"
+      }
+    ]
+  },
+  {
+    "name": "RomeBridgePaymaster",
+    "versions": [
+      {
+        "address": "0x1551cb2767291d033da2e242fd69bc86428c5d64",
+        "version": "1.0.0",
+        "status": "live",
+        "bytecodeSha256": "4f915a9d8a3c9822541dbba5f998fe9781544b56f1af6000dc9f94a73caa023b",
+        "sourceGitSha": "e6c17fa3750e1d4960e3384ef680db38ad897181",
+        "deployedAt": "2026-05-04T13:00:00Z"
+      }
+    ]
+  },
+  {
+    "name": "ERC20Users",
+    "versions": [
+      {
+        "address": "0xddbb7d989b70ed93ca0849c0b9a007f6e0009359",
+        "version": "1.0.0",
+        "status": "live",
+        "bytecodeSha256": "3000d3a66b1f7c67945dc65717de1c7acdb157c86c5d1089eaf48e51b8fe402a",
+        "sourceGitSha": "e6c17fa3750e1d4960e3384ef680db38ad897181",
+        "deployedAt": "2026-05-04T13:00:00Z"
+      }
+    ]
+  },
+  {
+    "name": "SPL_ERC20_USDC",
+    "versions": [
+      {
+        "address": "0x739cf06175a547570a1022db59488e02d26817cb",
+        "version": "1.0.0",
+        "status": "live",
+        "bytecodeSha256": "7ae26f028f10160b6ee8a4eabce6f76ed8288d4d0e8b58c4e16df98bd629453d",
+        "sourceGitSha": "e6c17fa3750e1d4960e3384ef680db38ad897181",
+        "deployedAt": "2026-05-04T13:00:00Z"
+      }
+    ]
+  },
+  {
+    "name": "OracleAdapterFactory",
+    "versions": [
+      {
+        "address": "0x80a971f2a8fe2c384d4bcb6088210a8207adcae6",
+        "version": "1.0.0",
+        "status": "live",
+        "bytecodeSha256": "cb1528fbce6d5f424fb95e14f0c233b489517eb23459fa6b2a31aef5d443ee60",
+        "sourceGitSha": "e6c17fa3750e1d4960e3384ef680db38ad897181",
+        "deployedAt": "2026-05-04T13:00:00Z"
+      }
+    ]
+  },
+  {
+    "name": "PythPullAdapter",
+    "versions": [
+      {
+        "address": "0xe59ba8f82b032ba8aecd03f1ff593e6a3bd26980",
+        "version": "1.0.0",
+        "status": "live",
+        "bytecodeSha256": "605468a3452e57a6915d8a94161df83412ed4989c09fd056486bc5e14fd87cb3",
+        "sourceGitSha": "e6c17fa3750e1d4960e3384ef680db38ad897181",
+        "deployedAt": "2026-05-04T13:00:00Z"
+      }
+    ]
+  },
+  {
+    "name": "SwitchboardV3Adapter",
+    "versions": [
+      {
+        "address": "0x160efea549db72c25647e8683548cff9993d155c",
+        "version": "1.0.0",
+        "status": "live",
+        "bytecodeSha256": "c50de585a92c0769193d977d0e98f8e4e2d7a8efc37ec9d9ba99317d7f4954d2",
+        "sourceGitSha": "e6c17fa3750e1d4960e3384ef680db38ad897181",
+        "deployedAt": "2026-05-04T13:00:00Z"
+      }
+    ]
+  },
+  {
+    "name": "BatchReader",
+    "versions": [
+      {
+        "address": "0x755f6779292e23576257589826df5df4837e958f",
+        "version": "1.0.0",
+        "status": "live",
+        "bytecodeSha256": "579d6aa1e438417e8ce4745b68f1b4e52abd1ad617eef214158181f6fbe7c4a9",
+        "sourceGitSha": "e6c17fa3750e1d4960e3384ef680db38ad897181",
+        "deployedAt": "2026-05-04T13:00:00Z"
+      }
+    ]
+  },
+  {
+    "name": "MeteoraDAMMv1Factory",
+    "versions": [
+      {
+        "address": "0x7155f98abf83d58da6d00ffdbe56764219680cca",
+        "version": "1.0.0",
+        "status": "live",
+        "bytecodeSha256": "4385c5a3c559ce66db39a84c5950349b9a352a81cb6610c0295dc30199128d8f",
+        "sourceGitSha": "e6c17fa3750e1d4960e3384ef680db38ad897181",
+        "deployedAt": "2026-05-04T13:00:00Z"
+      }
+    ]
+  }
+]
