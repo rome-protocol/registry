@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Changed — Marcus bridge redeploy: SPL_ERC20 write path on AUTHORITY_PDA's ATA
+- **`chains/121301-marcus/contracts.json`** — bumped `RomeBridgePaymaster` v1.4.0 (`0xb7778b74…`), `SPL_ERC20_USDC` v1.4.0 (`0x7e233892…`), `SPL_ERC20_WETH` v1.3.0 (`0x828bb1ab…`), `RomeBridgeWithdraw` v1.3.0 (`0x17c42fe8…`). Predecessors marked `deprecated`. Source: rome-solidity@dec454e (rome-solidity #102).
+- **`chains/121301-marcus/tokens.json`** — `WUSDC` → `0x7e233892…`; `WETH` → `0x828bb1ab…`.
+
+#### Why
+- Pre-redeploy `SPL_ERC20.{_transfer,approve,transferFrom,mint_to}` operated on `_accounts[user]` (PAYER_PDA-owned ATA); `balanceOf` / `getAta` already read AUTHORITY_PDA's ATA (post-#82). Bridged-in users saw a non-zero balance but `approve` / `transferFrom` failed with `mollusk error: Failure(Custom(1))` (SPL Token InsufficientFunds — source ATA was empty). Romeswap pool creation failed at the second sign for any user funded via Wormhole / CCTP / wrap_gas_to_spl.
+- New wrappers route every mutation path through `UserPda.ataForKey(AUTHORITY_PDA(user), mint)` — the canonical ATA where balances actually live. Authority semantics: direct path signs as AUTHORITY_PDA (empty seeds), `transferFrom` signs as PAYER_PDA(spender) with `[payer_salt]` (delegate). `_ensureAuthorityAta` early-returns when the ATA already exists, keeping the common recipient-already-exists case on a single-CPI fast path. (rome-solidity #102.)
+
+#### Operator note (post-mortem)
+- Initial v1.4.0 deploy attempts failed with `mollusk error: Failure(Custom(1))` even though the new wrappers were not yet on-chain. Root cause was unrelated — Marcus's three `proxy_key_*` Solana keypairs (in `devnet-marcus` Secret Manager) had drained to ~0.003 SOL each from sustained sim load. mollusk surfaces SystemProgram `ResultWithNegativeLamports` and SPL Token `InsufficientFunds` both as `Custom(1)` — generic enough that the symptom looked like a wrapper bug. Topped each proxy to 10 SOL from `devnet-registration-authority` (60.5 → 30.5 SOL); next run deployed cleanly. **Followup**: alert on proxy-key SOL ≤ 1 SOL per chain. The bridge relayer monitoring already covers Solana relayer keys (per `rome-ui/deploy/RELAYER_SETUP.md`); proxy keys need parity coverage.
+
 ### Changed — Marcus bridge redeploy: ERC20 auto-register on first mutation
 - **`chains/121301-marcus/contracts.json`** — bumped `RomeBridgePaymaster` to v1.3.0 (`0x987dc72a…`), `SPL_ERC20_USDC` to v1.3.0 (`0x8bbe731c…`), `SPL_ERC20_WETH` to v1.2.0 (`0x75f3e0f1…`), `RomeBridgeWithdraw` to v1.2.0 (`0x5b981e2a…`). Predecessors marked `deprecated` with `replacedBy` set to the new live address. Source: rome-solidity@4030cbb (rome-solidity #101).
 - **`chains/121301-marcus/tokens.json`** — `WUSDC` address bumped to `0x8bbe731c…`; `WETH` address bumped to `0x75f3e0f1…`. Decimals + names + assetRefs unchanged.
