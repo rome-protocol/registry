@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Changed — Marcus bridge redeploy: revert to well-tested SPL_ERC20 baseline
+- **`chains/121301-marcus/contracts.json`** — bumped `RomeBridgePaymaster` v1.5.0 (`0xf9aa1d09…`), `ERC20Users` v1.1.0 (`0x305646ad…`), `SPL_ERC20_USDC` v1.5.0 (`0xd804b352…`), `SPL_ERC20_WETH` v1.4.0 (`0x8eb46e73…`), `RomeBridgeWithdraw` v1.4.0 (`0xa55a17ef…`). Predecessors marked `deprecated`. Source: rome-solidity@826edc8 (rome-solidity #104 — revert to baseline).
+- **`chains/121301-marcus/tokens.json`** — `WUSDC` → `0xd804b352…`; `WETH` → `0x8eb46e73…`.
+
+#### Why
+- rome-solidity #99 / #101 / #102 / #103 layered changes onto `SPL_ERC20` over a single session, none individually validated end-to-end. A/B sims showed `transferFrom` failed on every wrapper version, including the post-#103 v1.5.0. The post-#102 / #103 changes added new failure modes (Custom(1) → NonEvmCallError) on top of the original gap.
+- rome-solidity #104 reverts the wrapper to its byte-for-byte state at commit `7a538da` — the well-tested baseline that worked on prior Marcus 121226. This redeploy puts the baseline contracts on Marcus 121301.
+- Side note: `ERC20Users` was redeployed alongside the wrappers (the local `deployments/marcus.json` was cleaned in the same operation). New users will register fresh against `0x305646ad…` via `factory.create_user` or first wrapper interaction.
+
+#### Known limitations of baseline
+- `getAta` returns `_accounts[user]` — `bytes32(0)` for any user not yet registered through a wrapper interaction. Outbound CCTP via `RomeBridgeWithdraw.burnUSDC` reads this to populate the burn account; users must first call something like `factory.create_user` (or have a wrapper interaction populate `_accounts`) before bridging out via CCTP.
+- `transferFrom` requires both spender and owner to be registered in `ERC20Users` (else "User does not exist"). DEX router pool creation needs the router to be registered too — not automatic today; resolved in a future focused PR.
+
 ### Changed — Marcus bridge redeploy: SPL_ERC20 write path on AUTHORITY_PDA's ATA
 - **`chains/121301-marcus/contracts.json`** — bumped `RomeBridgePaymaster` v1.4.0 (`0xb7778b74…`), `SPL_ERC20_USDC` v1.4.0 (`0x7e233892…`), `SPL_ERC20_WETH` v1.3.0 (`0x828bb1ab…`), `RomeBridgeWithdraw` v1.3.0 (`0x17c42fe8…`). Predecessors marked `deprecated`. Source: rome-solidity@dec454e (rome-solidity #102).
 - **`chains/121301-marcus/tokens.json`** — `WUSDC` → `0x7e233892…`; `WETH` → `0x828bb1ab…`.
