@@ -9,7 +9,7 @@
     "symbol": "USDC",
     "decimals": 18
   },
-  "status": "preparing",
+  "status": "live",
   "romeEvmProgramId": "RomeDbGQYbqomGVk13h9JkQHKoNWKB84Lw1ij9AtRXT",
   "solana": {
     "cluster": "devnet"

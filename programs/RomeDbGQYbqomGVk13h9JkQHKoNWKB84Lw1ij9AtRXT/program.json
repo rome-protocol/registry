@@ -62,7 +62,7 @@
     "ciRunUrl": "https://github.com/rome-protocol/rome-evm-private/actions/runs/25301675873",
     "upgradesRef": "./upgrades.json"
   },
-  "chainsHosted": [],
+  "chainsHosted": ["121301-marcus"],
   "chainsDecommissioned": [],
   "audit": {
     "lastReview": null,
