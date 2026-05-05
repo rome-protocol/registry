@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Changed — Marcus bridge redeploy: ensure_user auto-fund restored (rome-solidity #105)
+- **`chains/121301-marcus/contracts.json`** — bumped `RomeBridgePaymaster` v1.6.0 (`0xfcfdd18d…`), `ERC20Users` v1.2.0 (`0x0531433f…`), `SPL_ERC20_USDC` v1.6.0 (`0x2240e989…`), `SPL_ERC20_WETH` v1.5.0 (`0x9a8950c7…`), `RomeBridgeWithdraw` v1.5.0 (`0x980f1f5d…`). Predecessors marked `deprecated`. Source: rome-solidity@11c8cbd.
+- **`chains/121301-marcus/tokens.json`** — `WUSDC` → `0x2240e989…`; `WETH` → `0x9a8950c7…`.
+
+#### Why
+- rome-solidity #105 restores `RomeEVMAccount.create_payer` inside `ERC20Users.ensure_user` — silently dropped in commit 0751b75 ("change token ownership model"). Bridge contracts' comments document the auto-fund as the expected contract; the regression had been live since that refactor.
+- All wrapper mutation entry points (`transfer`, `approve`, `transferFrom`, `mint_to`, `bridgeOutToSolana`, `ensureRecipientAta`, `ensure_token_account`) now use `_users.ensure_user(...)` instead of `_users.get_user(...)` — first ERC20 mutation auto-registers + funds PAYER_PDA. No Activate click needed.
+- `ERC20Users` was redeployed (the fix is in `ensure_user` itself); all wrappers point at the new instance.
+
+#### Known remaining limitation (separate from this PR)
+- Users with balance from `wrap_gas_to_spl` or Wormhole `complete_transfer_wrapped` have tokens at `AUTHORITY_PDA(user)`'s ATA (post-#82 read path used by `balanceOf`). Wrapper mutation paths still operate on `_accounts[user]` (legacy mapping populated by `ensure_token_account`). For these users, `transfer` / `approve` / `transferFrom` / `bridgeOutToSolana` reverts with "Token account does not exist" or `Custom(1)`. Separate write-path migration needed; closed-PR-102 attempted but introduced regressions.
+
 ### Changed — Marcus bridge redeploy: revert to well-tested SPL_ERC20 baseline
 - **`chains/121301-marcus/contracts.json`** — bumped `RomeBridgePaymaster` v1.5.0 (`0xf9aa1d09…`), `ERC20Users` v1.1.0 (`0x305646ad…`), `SPL_ERC20_USDC` v1.5.0 (`0xd804b352…`), `SPL_ERC20_WETH` v1.4.0 (`0x8eb46e73…`), `RomeBridgeWithdraw` v1.4.0 (`0xa55a17ef…`). Predecessors marked `deprecated`. Source: rome-solidity@826edc8 (rome-solidity #104 — revert to baseline).
 - **`chains/121301-marcus/tokens.json`** — `WUSDC` → `0xd804b352…`; `WETH` → `0x8eb46e73…`.
