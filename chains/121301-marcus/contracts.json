@@ -16,12 +16,22 @@
     "name": "RomeBridgePaymaster",
     "versions": [
       {
+        "address": "0xc0a106cd7b6644316904ef54cd58929e47aba839",
+        "version": "1.7.0",
+        "status": "live",
+        "bytecodeSha256": "f570b95a7e78df16e0153d4df9dcbe0e5e6316d3b51da482f27760c2961d3bb1",
+        "sourceGitSha": "e1babac96505d9767db17a18cd05add1aea9934d",
+        "deployedAt": "2026-05-05T05:50:00Z"
+      },
+      {
         "address": "0xfcfdd18d29a40aab72146344d4618b3e86d2ee6e",
         "version": "1.6.0",
-        "status": "live",
+        "status": "deprecated",
         "bytecodeSha256": "725a95e3502f981bb37a00d38cd2cc35fa620b8519af6615217ed35d70f34db8",
         "sourceGitSha": "11c8cbd5985cc62af2289bf4070f936f2229963a",
-        "deployedAt": "2026-05-05T05:30:00Z"
+        "deployedAt": "2026-05-05T05:30:00Z",
+        "deprecatedAt": "2026-05-05T05:50:00Z",
+        "replacedBy": "0xc0a106cd7b6644316904ef54cd58929e47aba839"
       },
       {
         "address": "0xf9aa1d09edb2f50217a1523287676d15f08475b6",
@@ -122,12 +132,22 @@
     "name": "SPL_ERC20_USDC",
     "versions": [
       {
-        "address": "0x2240e989e9bce0ac7105c70e4fcf25d45a008b92",
-        "version": "1.6.0",
+        "address": "0x36d47ba9cd80af9c0b29899e3237390f45a4a325",
+        "version": "1.7.0",
         "status": "live",
         "bytecodeSha256": "a8f11fd556e5f5287a4829a77fa476d48448e9ad9afaa6d38c98209173da4c74",
+        "sourceGitSha": "e1babac96505d9767db17a18cd05add1aea9934d",
+        "deployedAt": "2026-05-05T05:50:00Z"
+      },
+      {
+        "address": "0x2240e989e9bce0ac7105c70e4fcf25d45a008b92",
+        "version": "1.6.0",
+        "status": "deprecated",
+        "bytecodeSha256": "a8f11fd556e5f5287a4829a77fa476d48448e9ad9afaa6d38c98209173da4c74",
         "sourceGitSha": "11c8cbd5985cc62af2289bf4070f936f2229963a",
-        "deployedAt": "2026-05-05T05:30:00Z"
+        "deployedAt": "2026-05-05T05:30:00Z",
+        "deprecatedAt": "2026-05-05T05:50:00Z",
+        "replacedBy": "0x36d47ba9cd80af9c0b29899e3237390f45a4a325"
       },
       {
         "address": "0xd804b352745e2b0e6a834f6f5212920546347914",
@@ -325,12 +345,22 @@
     "name": "SPL_ERC20_WETH",
     "versions": [
       {
-        "address": "0x9a8950c7ab829f28ae8d42ce2ef099ae86ba3f2c",
-        "version": "1.5.0",
+        "address": "0xa67864616641da7d0d04afbb37b8bd44fb4740e5",
+        "version": "1.6.0",
         "status": "live",
         "bytecodeSha256": "926f6f42a34ddb8249248ed7702b5fa0e33e55799271c0b5221e4603907efe2b",
+        "sourceGitSha": "e1babac96505d9767db17a18cd05add1aea9934d",
+        "deployedAt": "2026-05-05T05:50:00Z"
+      },
+      {
+        "address": "0x9a8950c7ab829f28ae8d42ce2ef099ae86ba3f2c",
+        "version": "1.5.0",
+        "status": "deprecated",
+        "bytecodeSha256": "926f6f42a34ddb8249248ed7702b5fa0e33e55799271c0b5221e4603907efe2b",
         "sourceGitSha": "11c8cbd5985cc62af2289bf4070f936f2229963a",
-        "deployedAt": "2026-05-05T05:30:00Z"
+        "deployedAt": "2026-05-05T05:30:00Z",
+        "deprecatedAt": "2026-05-05T05:50:00Z",
+        "replacedBy": "0xa67864616641da7d0d04afbb37b8bd44fb4740e5"
       },
       {
         "address": "0x8eb46e73b2fc23952b4aab0b9f491c2ec5e46051",
@@ -388,12 +418,22 @@
     "name": "RomeBridgeWithdraw",
     "versions": [
       {
+        "address": "0x36223d141a5e870cc09ae7e2205eff0bbc94fb7a",
+        "version": "1.6.0",
+        "status": "live",
+        "bytecodeSha256": "bcaaa86c0438eb70b49ac73bc52b284e9b07081b88e2e9662a33ff90333e7d31",
+        "sourceGitSha": "e1babac96505d9767db17a18cd05add1aea9934d",
+        "deployedAt": "2026-05-05T05:50:00Z"
+      },
+      {
         "address": "0x980f1f5d2407de0b1e2cdb6c29c73dd5c8327fe3",
         "version": "1.5.0",
-        "status": "live",
+        "status": "deprecated",
         "bytecodeSha256": "bce14ca7b1825eebad069730cac16bfddebaa049d0a9937b301c0bede9c7ad08",
         "sourceGitSha": "11c8cbd5985cc62af2289bf4070f936f2229963a",
-        "deployedAt": "2026-05-05T05:30:00Z"
+        "deployedAt": "2026-05-05T05:30:00Z",
+        "deprecatedAt": "2026-05-05T05:50:00Z",
+        "replacedBy": "0x36223d141a5e870cc09ae7e2205eff0bbc94fb7a"
       },
       {
         "address": "0xa55a17ef4702d07bded781e254b67ea2aa644a48",
